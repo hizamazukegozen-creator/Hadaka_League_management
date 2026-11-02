@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HadakaLeague 管理ツール & 配信オーバーレイ</title>
+    <title>裸 LEAGUE 管理ツール & 配信オーバーレイ</title>
     <style>
         body {
             background-color: #0f111a;
@@ -33,14 +33,45 @@
             overflow-y: auto;
         }
 
-        .sidebar h1 {
-            color: #ff4655;
-            text-shadow: 0 0 10px rgba(255, 70, 85, 0.5);
-            letter-spacing: 1px;
-            font-size: 1.3rem;
-            margin-top: 0;
-            margin-bottom: 25px;
+        /* サイドバーロゴデザイン */
+        .sidebar-logo-container {
             text-align: center;
+            margin-bottom: 25px;
+            padding: 5px 0;
+            filter: drop-shadow(0 0 15px rgba(255, 70, 85, 0.4));
+        }
+
+        .sidebar-main-logo {
+            font-size: 1.45rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            background: linear-gradient(180deg, #ffffff 20%, #ffcd00 65%, #ff4655 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 
+                2px 2px 0px #ff4655,
+                4px 4px 0px rgba(0, 0, 0, 0.9),
+                0 0 12px rgba(255, 70, 85, 0.8);
+            margin: 0;
+            line-height: 1.1;
+            transform: skewX(-7deg);
+        }
+
+        .sidebar-sub-logo {
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00ffcc;
+            margin-top: 4px;
+            text-shadow: 
+                0 0 8px rgba(0, 255, 204, 0.8),
+                1px 1px 2px rgba(0, 0, 0, 0.9);
+            transform: skewX(-7deg);
         }
 
         .tab-menu {
@@ -707,7 +738,7 @@
             flex-direction: column;
             justify-content: space-between;
             background: transparent;
-            padding: 15px 10px;
+            padding: 10px 10px;
             position: relative;
             box-sizing: border-box;
             min-height: 720px;
@@ -717,22 +748,78 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px; /* 上部要素間の縦の隙間を縮小 */
             margin-left: 15px;
         }
 
-        .stream-stage-header {
+        /* 配信画面用：デザインロゴコンテナ（高さを縮小） */
+        .stream-stage-logo-box {
             text-align: center;
-            font-size: 1.05rem;
+            position: relative;
+            padding: 3px 14px;
+            filter: drop-shadow(0 0 15px rgba(255, 70, 85, 0.4));
+            background: rgba(13, 16, 26, 0.75);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 70, 85, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .stream-main-logo {
+            font-size: 1.6rem; /* フォントサイズを大幅にコンパクト化 */
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ffffff;
+            background: linear-gradient(180deg, #ffffff 20%, #ffcd00 65%, #ff4655 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 
+                2px 2px 0px #ff4655,
+                3px 3px 0px rgba(0, 0, 0, 0.9),
+                0 0 10px rgba(255, 70, 85, 0.8),
+                0 0 20px rgba(255, 204, 0, 0.4);
+            margin: 0;
+            line-height: 1.05;
+            transform: skewX(-7deg);
+        }
+
+        .stream-sub-logo {
+            font-size: 0.7rem; /* サブタイトルも縮小 */
+            font-weight: 800;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #00ffcc;
+            margin-top: 1px;
+            text-shadow: 
+                0 0 8px rgba(0, 255, 204, 0.8),
+                1px 1px 2px rgba(0, 0, 0, 0.9);
+            transform: skewX(-7deg);
+            position: relative;
+        }
+
+        .stream-sub-logo::before,
+        .stream-sub-logo::after {
+            content: "■";
+            font-size: 0.5rem;
+            color: #ff4655;
+            margin: 0 4px;
+            vertical-align: middle;
+            text-shadow: 0 0 5px #ff4655;
+        }
+
+        .stream-stage-match-title {
+            text-align: center;
+            font-size: 0.8rem;
             color: #ffcc00;
             font-weight: bold;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 204, 0, 0.6);
-            text-transform: uppercase;
-            background: rgba(13, 16, 26, 0.75);
-            padding: 5px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 204, 0, 0.4);
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+            background: rgba(20, 23, 36, 0.85);
+            padding: 2px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
         }
 
         .stream-versus-box {
@@ -740,38 +827,38 @@
             justify-content: space-between;
             align-items: center;
             width: 122%;
-            max-width: 980px;
-            gap: 15px;
-            margin-top: 4px;
+            max-width: 900px;
+            gap: 12px;
+            margin-top: 2px;
         }
 
         .stream-player-card {
             flex: 1;
             background: rgba(15, 17, 26, 0.88);
             border: 2px solid #3f466b;
-            border-radius: 7px;
-            padding: 10px 16px;
+            border-radius: 6px;
+            padding: 6px 12px; /* 上下パディングを狭めてスリム化 */
             text-align: center;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             backdrop-filter: blur(4px);
         }
 
-        .stream-player-card.p1-card { border-left: 7px solid #00ffcc; }
-        .stream-player-card.p2-card { border-right: 7px solid #ff4655; }
+        .stream-player-card.p1-card { border-left: 6px solid #00ffcc; }
+        .stream-player-card.p2-card { border-right: 6px solid #ff4655; }
 
         .stream-player-name {
-            font-size: 1.45rem;
+            font-size: 1.15rem; /* プレイヤーネームの文字サイズをコンパクト化 */
             font-weight: bold;
             color: #fff;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            margin-bottom: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .stream-player-detail {
-            font-size: 0.82rem;
+            font-size: 0.72rem; /* 詳細情報（ランク・コスト）も縮小 */
             color: #a0a6cc;
             font-weight: 500;
         }
@@ -780,15 +867,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 2px;
         }
 
         .stream-vs-text {
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             font-style: italic;
             font-weight: 900;
             color: #ff4655;
-            text-shadow: 0 0 12px rgba(255, 70, 85, 0.9), 0 2px 4px rgba(0,0,0,0.9);
+            text-shadow: 0 0 10px rgba(255, 70, 85, 0.9), 0 2px 4px rgba(0,0,0,0.9);
             padding: 0 2px;
             line-height: 1;
         }
@@ -797,20 +884,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: rgba(13, 16, 26, 0.92);
-            padding: 3px 14px;
-            border-radius: 16px;
+            padding: 2px 10px;
+            border-radius: 12px;
             border: 1.5px solid #3f466b;
-            font-size: 1.35rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            letter-spacing: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+            letter-spacing: 3px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
         }
 
         .stream-score-num {
             color: #ffcc00;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
         }
 
         .stream-stage-bottom-space {
@@ -926,7 +1013,10 @@
     <div class="app-container">
         <!-- 左側：サイドバー -->
         <div class="sidebar">
-            <h1>HADAKA LEAGUE</h1>
+            <div class="sidebar-logo-container">
+                <h1 class="sidebar-main-logo">裸 LEAGUE</h1>
+                <div class="sidebar-sub-logo">ANGER MANAGEMENT</div>
+            </div>
             <div class="tab-menu">
                 <button type="button" class="tab-btn active" onclick="switchTab('tab-league-team', this)">① 裸リーグ（チーム）</button>
                 <button type="button" class="tab-btn" onclick="switchTab('tab-league-solo', this)">② 裸リーグ（個人戦）</button>
@@ -1038,7 +1128,11 @@
                         </thead>
                         <tbody id="solo-registry-tbody"></tbody>
                     </table>
-                    <button type="button" class="action-btn" onclick="importCheckedMembers()">☑ チェックしたメンバーをエントリー</button>
+
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+                        <button type="button" class="action-btn" onclick="importCheckedMembers()">☑ チェックしたメンバーをエントリー</button>
+                        <button type="button" class="delete-btn" onclick="clearSoloParticipants()">エントリーを全クリア</button>
+                    </div>
 
                     <h3 style="margin-top: 30px;">2. エントリー済みプレイヤー一覧</h3>
                     <div id="solo-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; min-height: 40px; color: #00ffcc;">
@@ -1372,7 +1466,12 @@
                     <div class="stream-view-container">
                         <div class="stream-main-stage">
                             <div class="stream-stage-top-box">
-                                <div class="stream-stage-header" id="stream-stage-title">HADAKA LEAGUE - FEATURED MATCH</div>
+                                <!-- 大会メインデザインロゴ -->
+                                <div class="stream-stage-logo-box">
+                                    <h1 class="stream-main-logo">裸 LEAGUE</h1>
+                                    <div class="stream-sub-logo">ANGER MANAGEMENT</div>
+                                </div>
+                                <div class="stream-stage-match-title" id="stream-stage-title">FEATURED MATCH</div>
                                 
                                 <div class="stream-versus-box">
                                     <div class="stream-player-card p1-card">
@@ -2782,7 +2881,6 @@
             var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
             var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
 
-            // 1. 勝者組内の進行
             for (var i = 0; i < wbKeys.length - 1; i++) {
                 var curWb = tourneyMatches[wbKeys[i]];
                 var nextWb = tourneyMatches[wbKeys[i+1]];
@@ -2810,7 +2908,6 @@
                 }
             }
 
-            // 2. 勝者組各マッチの勝者・敗者を決定
             wbKeys.forEach(wk => {
                 tourneyMatches[wk].forEach(m => {
                     if (m.s1 === 2 && m.s2 < 2) {
@@ -2829,7 +2926,6 @@
                 });
             });
 
-            // 3. 敗者組各マッチの勝者を決定
             lbKeys.forEach(lk => {
                 tourneyMatches[lk].forEach(cm => {
                     if (cm.p1 === '（未定）' || cm.p2 === '（未定）' || cm.p1 === 'BYE' || cm.p2 === 'BYE') {
@@ -2849,7 +2945,6 @@
                 });
             });
 
-            // 4. 勝者組1回戦（wb_r1）の敗者を敗者組1回戦（lb_r1）へ配置
             var wb1 = tourneyMatches['wb_r1'];
             var lb1 = tourneyMatches['lb_r1'];
             if (wb1 && lb1) {
@@ -2868,19 +2963,17 @@
                 }
             }
 
-            // 5. 【修正箇所】敗者組1回戦（lb_r1）の勝者を敗者組2回戦（lb_r2）の各上側（p1）へ1対1で直結
             var lb2 = tourneyMatches['lb_r2'];
             if (lb1 && lb2) {
                 for (var idx1 = 0; idx1 < lb1.length; idx1++) {
                     var m1 = lb1[idx1];
                     var w1 = (m1.winner && m1.winner !== 'BYE') ? m1.winner : '（未定）';
                     if (lb2[idx1]) {
-                        lb2[idx1].p1 = w1; // 1試合目勝者 -> 2回戦第1試合p1, 2試合目勝者 -> 2回戦第2試合p1
+                        lb2[idx1].p1 = w1;
                     }
                 }
             }
 
-            // 6. 勝者組2回戦以降の敗者ドロップ（lb_r2, lb_r4等の下側p2へ流し込み）
             for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
                 var curWb = tourneyMatches['wb_r' + rIdx];
                 if (curWb) {
@@ -2906,7 +2999,6 @@
                 }
             }
 
-            // 7. 敗者組内部の進行（lb_r2以降の勝者を次の敗者組ラウンドへ送信）
             for (var lkIdx = 1; lkIdx < lbKeys.length - 1; lkIdx++) {
                 var curLb = tourneyMatches[lbKeys[lkIdx]];
                 var nextLb = tourneyMatches[lbKeys[lkIdx + 1]];
@@ -2924,7 +3016,6 @@
                 }
             }
 
-            // 8. 勝者組決勝（WB Final）の敗者を敗者組決勝（LB Final）へ送る
             var wbFinalKey = wbKeys[wbKeys.length - 1];
             var lbFinalKey = lbKeys[lbKeys.length - 1];
             if (tourneyMatches[wbFinalKey] && tourneyMatches[lbFinalKey]) {
@@ -2937,7 +3028,6 @@
                 }
             }
 
-            // 9. グランドファイナル（GF）への反映
             var gf = tourneyMatches['grand_final'];
             var lastWb = tourneyMatches[wbFinalKey];
             var lastLb = tourneyMatches[lbFinalKey];
@@ -3013,6 +3103,16 @@
             updateSoloParticipantDisplay();
             saveAppData();
             alert(addedCount + '人のメンバーをエントリーしました！');
+        }
+
+        function clearSoloParticipants() {
+            if (confirm('個人戦のエントリーをクリアしますか？')) {
+                soloParticipants = [];
+                soloMatches = [];
+                updateSoloParticipantDisplay();
+                document.getElementById('solo-tournament-card').style.display = 'none';
+                saveAppData();
+            }
         }
 
         function updateSoloParticipantDisplay() {
@@ -3531,7 +3631,7 @@
             var p1Detail = isPatternC ? "" : "ランク: -";
             var p2Detail = isPatternC ? "" : "ランク: -";
             var s1 = 0, s2 = 0;
-            var stageTitle = "HADAKA LEAGUE - FEATURED MATCH";
+            var stageTitle = "FEATURED MATCH";
 
             if (activeStreamMatch.mode === 'team') {
                 var m = teamMatches[activeStreamMatch.matchIndex];
