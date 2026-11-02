@@ -5,34 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>裸 LEAGUE - 配信オーバーレイ</title>
     <style>
-        body {
-            background-color: rgba(0, 0, 0, 0);
+        html, body {
+            background-color: rgba(0, 0, 0, 0) !important;
             color: #f0f0f0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
             width: 1920px;
             height: 1080px;
-            box-sizing: border-box;
             overflow: hidden;
             position: relative;
         }
 
-        /* 白いエリアと同じ横並びのレイアウトバランスを完全に固定 */
+        .top-action-bar {
+            display: none !important;
+        }
+
         .stream-view-container {
             display: flex;
             gap: 40px;
             background: transparent;
             border: none;
             padding: 40px;
-            box-shadow: none;
-            width: 100%;
-            height: 100%;
             box-sizing: border-box;
             align-items: flex-start;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         .stream-main-stage {
@@ -50,7 +50,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             position: relative;
             z-index: 2;
             width: 100%;
@@ -59,7 +59,7 @@
         .stream-stage-logo-box {
             text-align: center;
             position: relative;
-            padding: 6px 20px;
+            padding: 6px 24px;
             filter: drop-shadow(0 0 15px rgba(255, 70, 85, 0.4));
             background: rgba(13, 16, 26, 0.85);
             border-radius: 8px;
@@ -103,13 +103,13 @@
 
         .stream-stage-match-title {
             text-align: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ffcc00;
             font-weight: bold;
             letter-spacing: 1px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
             background: rgba(20, 23, 36, 0.9);
-            padding: 4px 16px;
+            padding: 4px 18px;
             border-radius: 8px;
             border: 1px solid rgba(255, 204, 0, 0.3);
         }
@@ -119,9 +119,9 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            max-width: 950px;
-            gap: 15px;
-            margin-top: 5px;
+            max-width: 1000px;
+            gap: 20px;
+            margin-top: 8px;
         }
 
         .stream-player-card {
@@ -129,7 +129,7 @@
             background: rgba(15, 17, 26, 0.92);
             border: 2px solid #3f466b;
             border-radius: 8px;
-            padding: 10px 18px;
+            padding: 12px 20px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             backdrop-filter: blur(4px);
@@ -139,10 +139,10 @@
         .stream-player-card.p2-card { border-right: 6px solid #ff4655; }
 
         .stream-player-name {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #fff;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             overflow: hidden;
             text-overflow: ellipsis;
@@ -150,7 +150,7 @@
         }
 
         .stream-player-detail {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #a0a6cc;
             font-weight: 500;
         }
@@ -159,11 +159,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .stream-vs-text {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-style: italic;
             font-weight: 900;
             color: #ff4655;
@@ -175,12 +175,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             background: rgba(13, 16, 26, 0.95);
-            padding: 4px 14px;
+            padding: 6px 16px;
             border-radius: 12px;
             border: 1.5px solid #3f466b;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
             letter-spacing: 3px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.7);
@@ -192,7 +192,7 @@
         }
 
         .stream-side-panel {
-            width: 320px;
+            width: 360px;
             background: rgba(20, 23, 36, 0.92);
             backdrop-filter: blur(6px);
             border: 2px solid #3f466b;
@@ -207,22 +207,44 @@
         .stream-side-header {
             background: #1a1d2d;
             color: #00ffcc;
-            padding: 12px 14px;
+            padding: 10px 12px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-bottom: 1px solid #3f466b;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 6px;
         }
+
+        .header-left-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .stream-eyecatch-btn {
+            background-color: #ff4655;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+        .stream-eyecatch-btn:hover { background-color: #cc3744; }
 
         .stream-mode-selector {
             background: #10121b;
             color: #fff;
             border: 1px solid #3f466b;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         .stream-card-list {
@@ -232,7 +254,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 500px;
+            max-height: 520px;
         }
 
         .stream-card-item {
@@ -265,7 +287,7 @@
         }
 
         .stream-card-sub {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             color: #a0a6cc;
         }
 
@@ -286,18 +308,18 @@
             accent-color: #9146FF;
         }
 
-        /* アイキャッチ演出用オーバーレイ */
+        /* アイキャッチ演出用全画面オーバーレイ */
         .eyecatch-fullscreen-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 1920px;
+            height: 1080px;
             background: rgba(5, 6, 10, 0.96);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 99999;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -384,16 +406,15 @@
 </head>
 <body>
 
-    <div class="stream-view-container">
-        <!-- アイキャッチ演出用オーバーレイ -->
-        <div class="eyecatch-fullscreen-overlay" id="eyecatchOverlay">
-            <div class="flash-layer"></div>
-            <div class="logo-container">
-                <div class="logo-hdk">HDK</div>
-                <div class="logo-league">LEAGUE</div>
-            </div>
+    <div class="eyecatch-fullscreen-overlay" id="eyecatchOverlay">
+        <div class="flash-layer"></div>
+        <div class="logo-container">
+            <div class="logo-hdk">HDK</div>
+            <div class="logo-league">LEAGUE</div>
         </div>
+    </div>
 
+    <div class="stream-view-container">
         <div class="stream-main-stage">
             <div class="stream-stage-top-box">
                 <div class="stream-stage-logo-box">
@@ -427,7 +448,10 @@
 
         <div class="stream-side-panel">
             <div class="stream-side-header">
-                <span>対戦カード一覧</span>
+                <div class="header-left-group">
+                    <span>対戦カード一覧</span>
+                    <button type="button" class="stream-eyecatch-btn" onclick="triggerEyecatchAll()">⚡ アイキャッチ</button>
+                </div>
                 <select id="stream-mode-select" class="stream-mode-selector" onchange="renderStreamCardList()">
                     <option value="team">① チーム戦カード</option>
                     <option value="solo">② 個人戦スケジュール</option>
@@ -645,6 +669,44 @@
             p2DetailElem.textContent = p2Detail;
             s1Elem.textContent = s1;
             s2Elem.textContent = s2;
+        }
+
+        function playEyecatchSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = audioCtx.sampleRate * 1.5;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
+
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+            filter.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.6);
+
+            const fireGain = audioCtx.createGain();
+            fireGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            fireGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.3);
+            fireGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 1.5);
+
+            whiteNoise.connect(filter);
+            filter.connect(fireGain);
+            fireGain.connect(audioCtx.destination);
+            whiteNoise.start();
+        }
+
+        function triggerEyecatchAll() {
+            var overlay = document.getElementById('eyecatchOverlay');
+            overlay.classList.remove('play-anim');
+            overlay.classList.add('active-eyecatch');
+            setTimeout(function() { overlay.classList.add('play-anim'); }, 50);
+            playEyecatchSound();
+            setTimeout(function() {
+                overlay.classList.remove('active-eyecatch');
+                overlay.classList.remove('play-anim');
+            }, 2300);
         }
 
         window.addEventListener('storage', function(e) {
