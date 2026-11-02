@@ -1335,12 +1335,17 @@
                             <label style="display: block; margin-bottom: 12px; cursor: pointer; line-height: 1.4;">
                                 <input type="radio" name="cost-bonus-mode" value="normal" checked disabled onchange="saveAppData(); renderTeamLeagueUI();"> 
                                 <b style="color: #00ffcc;">パターンA（チームコスト差を「格下の対戦数」で割る方式）</b><br>
-                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">チーム全体のコスト差を、その対戦カードで「格下」だった総人数で割り、格下側が勝った試合ごとにボーナス点として加算します（負けた時は加算なし）。</span>
+                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">チーム全体のコスト差を、その対戦カードで「格下」だった総人数で割り、格下側が勝った試合ごとにボーナス点として加算します。</span>
                             </label>
-                            <label style="display: block; cursor: pointer; line-height: 1.4;">
+                            <label style="display: block; margin-bottom: 12px; cursor: pointer; line-height: 1.4;">
                                 <input type="radio" name="cost-bonus-mode" value="exact_diff" disabled onchange="saveAppData(); renderTeamLeagueUI();"> 
                                 <b style="color: #ffcc00;">パターンB（個別の対戦コスト差をそのまま加算する方式）</b><br>
-                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">個別の対戦カードにおける「2人のコストの差（個人コスト差）」を、格下のメンバーが勝った試合ごとにそのままボーナス点として加算します（負けた時は加算なし）。</span>
+                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">個別の対戦カードにおける「2人のコストの差」を、格下のメンバーが勝った試合ごとにそのままボーナス点として加算します。</span>
+                            </label>
+                            <label style="display: block; cursor: pointer; line-height: 1.4;">
+                                <input type="radio" name="cost-bonus-mode" value="none" disabled onchange="saveAppData(); renderTeamLeagueUI();"> 
+                                <b style="color: #ff808b;">パターンC（ノーマル・コスト差補正なし）</b><br>
+                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">コスト差による補正ボーナスを一切計算せず、取得した勝利ポイントのみで順位を競います。</span>
                             </label>
                         </div>
                     </div>
@@ -1923,7 +1928,14 @@
 
             var roles = ['senho', 'jiho', 'fukusho', 'taisho'];
 
-            if (bonusMode === 'exact_diff') {
+            if (bonusMode === 'none') {
+                // パターンC：補正なし（純粋な勝利ポイントのみ）
+                roles.forEach(r => {
+                    var res = results[r];
+                    if (res && res.winner === 1) raw1 += pts[r];
+                    if (res && res.winner === 2) raw2 += pts[r];
+                });
+            } else if (bonusMode === 'exact_diff') {
                 roles.forEach(r => {
                     var res = results[r];
                     var idx1 = order1[r];
@@ -2014,6 +2026,9 @@
             var maxCostElem = document.getElementById('setting-max-cost');
             var maxCost = maxCostElem ? parseInt(maxCostElem.value, 10) || 20 : 20;
 
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
+
             teamMatches.forEach(function(m, idx) {
                 if (!m.order1) {
                     var found1 = teams.find(t => t.name === m.t1Name);
@@ -2038,19 +2053,22 @@
                 var box = document.createElement('div');
                 box.className = 'team-match-box';
 
-                var badgeText1 = `${c1.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c1.raw}+補正${c1.bonus})</span>`;
-                var badgeText2 = `${c2.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c2.raw}+補正${c2.bonus})</span>`;
+                var badgeText1 = isPatternC ? `${c1.final} pt` : `${c1.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c1.raw}+補正${c1.bonus})</span>`;
+                var badgeText2 = isPatternC ? `${c2.final} pt` : `${c2.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c2.raw}+補正${c2.bonus})</span>`;
+
+                var headerT1Html = isPatternC ? `<span>${m.t1Name}</span>` : `<span>${m.t1Name}</span> <span style="font-size:0.85rem; color:${c1.cost > maxCost ? '#ff4655':'#a0a6cc'}">[コスト: ${c1.cost}/${maxCost}]</span>`;
+                var headerT2Html = isPatternC ? `<span>${m.t2Name}</span>` : `<span>${m.t2Name}</span> <span style="font-size:0.85rem; color:${c2.cost > maxCost ? '#ff4655':'#a0a6cc'}">[コスト: ${c2.cost}/${maxCost}]</span>`;
 
                 var html = `
                     <div class="team-match-header">
-                        <div>
-                            <span style="color:#00ffcc;">${m.t1Name}</span> <span style="font-size:0.85rem; color:${c1.cost > maxCost ? '#ff4655':'#a0a6cc'}">[コスト: ${c1.cost}/${maxCost}]</span>
+                        <div style="color:#00ffcc;">
+                            ${headerT1Html}
                         </div>
                         <div class="team-score-badge">
                             ${badgeText1}  vs  ${badgeText2}
                         </div>
-                        <div>
-                            <span style="color:#00ffcc;">${m.t2Name}</span> <span style="font-size:0.85rem; color:${c2.cost > maxCost ? '#ff4655':'#a0a6cc'}">[コスト: ${c2.cost}/${maxCost}]</span>
+                        <div style="color:#00ffcc;">
+                            ${headerT2Html}
                         </div>
                     </div>
                     <table class="team-match-table">
@@ -2117,11 +2135,15 @@
         }
 
         function createMatchMemberSelect(matchIdx, teamNum, roleKey, currentSelectedIdx) {
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
+
             var html = `<select class="match-member-select" onchange="updateMatchOrder(${matchIdx}, ${teamNum}, '${roleKey}', this.value)">`;
             html += `<option value="">-- 未選択 --</option>`;
             members.forEach(function(m, mIdx) {
                 var selected = (String(currentSelectedIdx) === String(mIdx)) ? 'selected' : '';
-                html += `<option value="${mIdx}" ${selected}>${m.name}（${m.cost}）</option>`;
+                var labelText = isPatternC ? m.name : `${m.name}（${m.cost}）`;
+                html += `<option value="${mIdx}" ${selected}>${labelText}</option>`;
             });
             html += `</select>`;
             return html;
@@ -2175,12 +2197,17 @@
             var resCalc = calculateMatchPoints(m, pts);
             var c1 = resCalc.t1, c2 = resCalc.t2;
 
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
+
             var container = document.getElementById('team-matches-container');
             if (container && container.children[matchIdx]) {
                 var box = container.children[matchIdx];
                 var badge = box.querySelector('.team-score-badge');
                 if (badge) {
-                    badge.innerHTML = `${c1.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c1.raw}+補正${c1.bonus})</span>  vs  ${c2.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c2.raw}+補正${c2.bonus})</span>`;
+                    var badgeText1 = isPatternC ? `${c1.final} pt` : `${c1.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c1.raw}+補正${c1.bonus})</span>`;
+                    var badgeText2 = isPatternC ? `${c2.final} pt` : `${c2.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c2.raw}+補正${c2.bonus})</span>`;
+                    badge.innerHTML = `${badgeText1}  vs  ${badgeText2}`;
                 }
 
                 var rows = box.querySelectorAll('tbody tr');
@@ -2221,6 +2248,9 @@
                 fukusho: getPts('pts-fukusho'),
                 taisho: getPts('pts-taisho')
             };
+
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
 
             var stats = {};
             
@@ -2276,12 +2306,14 @@
                 var rawPtsVal = (t.rawPts !== undefined && !isNaN(t.rawPts)) ? t.rawPts : 0;
                 var bonusPtsVal = (t.bonusPts !== undefined && !isNaN(t.bonusPts)) ? t.bonusPts : 0;
 
+                var detailText = isPatternC ? `通常 ${rawPtsVal}pt` : `通常 ${rawPtsVal}pt ＋ 補正 ${bonusPtsVal.toFixed(2)}pt`;
+
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight:bold; color:${idx === 0 ? '#ffcc00':'#fff'}">${idx + 1}位</td>
                     <td style="font-weight:bold;">${t.name}</td>
                     <td style="color:#00ffcc; font-weight:bold; font-size:1.1rem;">${totalPtsVal.toFixed(2)} pt</td>
-                    <td style="color:#a0a6cc; font-size:0.9rem;">通常 ${rawPtsVal}pt ＋ 補正 ${bonusPtsVal.toFixed(2)}pt</td>
+                    <td style="color:#a0a6cc; font-size:0.9rem;">${detailText}</td>
                     <td>${t.wins}勝</td>
                 `;
                 tbody.appendChild(tr);
@@ -3011,6 +3043,9 @@
             var bar = document.getElementById('team-tabs-bar');
             if (!bar) return;
 
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
+
             var html = '';
             teams.forEach(function(t, idx) {
                 var activeClass = (idx === currentTeamIndex) ? ' active' : '';
@@ -3027,7 +3062,7 @@
                 members.forEach(function(m, mIdx) {
                     var opt = document.createElement('option');
                     opt.value = mIdx;
-                    opt.textContent = `${m.name}（${m.cost}）`;
+                    opt.textContent = isPatternC ? m.name : `${m.name}（${m.cost}）`;
                     sel.appendChild(opt);
                 });
             });
@@ -3090,17 +3125,20 @@
             var display = document.getElementById('display-' + role);
             if (!sel || !display) return;
 
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
+
             var idx = sel.value;
             teams[currentTeamIndex].members[role] = idx;
 
             if (idx === "") {
-                display.innerHTML = '<span>ランク: -</span><span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>';
+                display.innerHTML = isPatternC ? '<span>選出なし</span>' : '<span>ランク: -</span><span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>';
             } else {
                 var m = members[idx];
                 if (m) {
-                    display.innerHTML = '<span>ランク: ' + m.rankName + '</span><span style="color: #ffcc00; font-weight: bold;">コスト: ' + m.cost + '</span>';
+                    display.innerHTML = isPatternC ? `<span>ランク: ${m.rankName}</span>` : `<span>ランク: ${m.rankName}</span><span style="color: #ffcc00; font-weight: bold;">コスト: ${m.cost}</span>`;
                 } else {
-                    display.innerHTML = '<span>ランク: -</span><span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>';
+                    display.innerHTML = isPatternC ? '<span>選出なし</span>' : '<span>ランク: -</span><span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>';
                 }
             }
             updateTeamCost();
@@ -3261,10 +3299,13 @@
 
             if (!p1NameElem) return;
 
+            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
+            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
+
             var p1Name = "P1 プレイヤー名";
             var p2Name = "P2 プレイヤー名";
-            var p1Detail = "ランク: -";
-            var p2Detail = "ランク: -";
+            var p1Detail = isPatternC ? "" : "ランク: -";
+            var p2Detail = isPatternC ? "" : "ランク: -";
             var s1 = 0, s2 = 0;
             var stageTitle = "HADAKA LEAGUE - FEATURED MATCH";
 
@@ -3281,12 +3322,12 @@
                     if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
                         var mem1 = members[idx1];
                         p1Name = mem1.name;
-                        p1Detail = `ランク: ${mem1.rankName} (コスト ${mem1.cost})`;
+                        p1Detail = isPatternC ? `ランク: ${mem1.rankName}` : `ランク: ${mem1.rankName} (コスト ${mem1.cost})`;
                     }
                     if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
                         var mem2 = members[idx2];
                         p2Name = mem2.name;
-                        p2Detail = `ランク: ${mem2.rankName} (コスト ${mem2.cost})`;
+                        p2Detail = isPatternC ? `ランク: ${mem2.rankName}` : `ランク: ${mem2.rankName} (コスト ${mem2.cost})`;
                     }
                 }
             } else if (activeStreamMatch.mode === 'tourney') {
@@ -3301,8 +3342,8 @@
                     
                     var m1Obj = members.find(x => x.name === tm.p1);
                     var m2Obj = members.find(x => x.name === tm.p2);
-                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : "トーナメント選手";
-                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : "トーナメント選手";
+                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : (isPatternC ? "" : "トーナメント選手");
+                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : (isPatternC ? "" : "トーナメント選手");
                 }
             } else if (activeStreamMatch.mode === 'solo') {
                 var sm = soloMatches[activeStreamMatch.matchIndex];
@@ -3315,8 +3356,8 @@
 
                     var m1Obj = members.find(x => x.name === sm.p1);
                     var m2Obj = members.find(x => x.name === sm.p2);
-                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : "個人戦プレイヤー";
-                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : "個人戦プレイヤー";
+                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : (isPatternC ? "" : "個人戦プレイヤー");
+                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : (isPatternC ? "" : "個人戦プレイヤー");
                 }
             }
 
