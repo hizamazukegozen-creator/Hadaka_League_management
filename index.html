@@ -304,7 +304,7 @@
 
         .tournament-wrapper {
             display: flex;
-            gap: 40px;
+            gap: 30px;
             overflow-x: auto;
             padding: 20px 10px;
             align-items: flex-start;
@@ -375,12 +375,12 @@
         }
 
         .bracket-score-input {
-            width: 34px;
+            width: 36px;
             text-align: center;
             background: #1a1d2d;
             border: 1px solid #3f466b;
             color: #fff;
-            padding: 2px 4px;
+            padding: 3px 4px;
             border-radius: 4px;
             font-size: 0.85rem;
         }
@@ -945,7 +945,6 @@
                 <div class="card">
                     <h2>① 裸リーグ（チーム）対抗戦</h2>
                     
-                    <!-- 過去ログ選択・保存バー -->
                     <div class="archive-bar">
                         <label style="color: #00ffcc; font-weight: bold;">📂 過去の大会履歴:</label>
                         <select id="team-archive-select" onchange="loadTeamArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;">
@@ -1140,7 +1139,7 @@
 
                 <div class="card" id="tourney-display-card" style="display: none; max-width: 1200px;">
                     <h2 id="tourney-display-title">トーナメント表</h2>
-                    <p style="font-size: 0.85rem; color: #ffcc00;">※ 通常試合は2本先取、グランドファイナル（GF）およびリセットマッチは3本先取です。勝者は自動で次ラウンドへ進出し、敗者も敗者組へ正しく振り分けられます。</p>
+                    <p style="font-size: 0.85rem; color: #ffcc00;">※ すべての対戦は2本先取（2先）、シングル決勝戦・グランドファイナル（GF）およびリセットマッチのみ3本先取（3先）です。スコア入力で勝者と敗者が自動進行します。</p>
 
                     <div class="tournament-wrapper" id="tourney-brackets-container"></div>
                 </div>
@@ -1929,7 +1928,6 @@
             var roles = ['senho', 'jiho', 'fukusho', 'taisho'];
 
             if (bonusMode === 'none') {
-                // パターンC：補正なし（純粋な勝利ポイントのみ）
                 roles.forEach(r => {
                     var res = results[r];
                     if (res && res.winner === 1) raw1 += pts[r];
@@ -2496,7 +2494,8 @@
             }
 
             var shuffled = shuffleArray(tourneyParticipants);
-            var type = document.querySelector('input[name="tourney-type"]:checked').value;
+            var typeRadio = document.querySelector('input[name="tourney-type"]:checked');
+            var type = typeRadio ? typeRadio.value : 'single';
 
             tourneyMatches = {};
             
@@ -2510,10 +2509,17 @@
                     var p1 = shuffled[i];
                     var p2 = shuffled[i+1];
                     var initialWinner = "";
-                    if (p2 === "BYE") initialWinner = p1;
-                    else if (p1 === "BYE") initialWinner = p2;
+                    var s1 = 0, s2 = 0;
 
-                    round1.push({ id: 's_r1_m' + (i/2), p1: p1, p2: p2, s1: 0, s2: 0, winner: initialWinner });
+                    if (p2 === "BYE") {
+                        initialWinner = p1;
+                        s1 = 2; s2 = 0;
+                    } else if (p1 === "BYE") {
+                        initialWinner = p2;
+                        s1 = 0; s2 = 2;
+                    }
+
+                    round1.push({ id: 's_r1_m' + (i/2), p1: p1, p2: p2, s1: s1, s2: s2, winner: initialWinner, loser: (p2 === "BYE" ? "BYE" : (p1 === "BYE" ? "BYE" : "")) });
                 }
                 tourneyMatches['single_r1'] = round1;
 
@@ -2534,36 +2540,54 @@
                 while (power2 < shuffled.length) power2 *= 2;
                 while (shuffled.length < power2) shuffled.push("BYE");
 
-                var wbR1 = [];
-                for (var k = 0; k < shuffled.length; k += 2) {
-                    var pA = shuffled[k];
-                    var pB = shuffled[k+1];
-                    var wInit = "";
-                    var lInit = "";
-                    if (pB === "BYE") { wInit = pA; lInit = "BYE"; }
-                    else if (pA === "BYE") { wInit = pB; lInit = "BYE"; }
+                var wbRoundsCount = Math.log2(power2);
+                for (var r = 1; r <= wbRoundsCount; r++) {
+                    var matchCount = power2 / Math.pow(2, r);
+                    var roundMatches = [];
+                    for (var m = 0; m < matchCount; m++) {
+                        var isWbFinal = (r === wbRoundsCount);
+                        var p1Val = (r === 1) ? shuffled[m * 2] : '（未定）';
+                        var p2Val = (r === 1) ? shuffled[m * 2 + 1] : '（未定）';
+                        var initWin = '';
+                        var initLos = '';
+                        var s1Val = 0, s2Val = 0;
 
-                    wbR1.push({ id: 'wb_r1_m' + (k/2), p1: pA, p2: pB, s1: 0, s2: 0, winner: wInit, loser: lInit });
+                        if (r === 1) {
+                            if (p2Val === "BYE") {
+                                initWin = p1Val;
+                                initLos = "BYE";
+                                s1Val = 2; s2Val = 0;
+                            } else if (p1Val === "BYE") {
+                                initWin = p2Val;
+                                initLos = "BYE";
+                                s1Val = 0; s2Val = 2;
+                            }
+                        }
+
+                        roundMatches.push({
+                            id: 'wb_r' + r + '_m' + m,
+                            p1: p1Val,
+                            p2: p2Val,
+                            s1: s1Val, s2: s2Val, winner: initWin, loser: initLos, isWbFinal: isWbFinal
+                        });
+                    }
+                    tourneyMatches['wb_r' + r] = roundMatches;
                 }
-                tourneyMatches['wb_r1'] = wbR1;
 
-                var wbR2Count = Math.max(1, wbR1.length / 2);
-                var wbR2 = [];
-                for (var w2 = 0; w2 < wbR2Count; w2++) {
-                    wbR2.push({ id: 'wb_r2_m' + w2, p1: '（未定）', p2: '（未定）', s1: 0, s2: 0, winner: '', loser: '' });
+                var totalLbRounds = (wbRoundsCount - 1) * 2;
+                for (var lr = 1; lr <= totalLbRounds; lr++) {
+                    var lbMatchCount = power2 / Math.pow(2, Math.floor((lr + 3) / 2));
+                    if (lbMatchCount < 1) lbMatchCount = 1;
+                    var lbMatches = [];
+                    for (var lm = 0; lm < lbMatchCount; lm++) {
+                        lbMatches.push({
+                            id: 'lb_r' + lr + '_m' + lm,
+                            p1: '（未定）', p2: '（未定）',
+                            s1: 0, s2: 0, winner: '', loser: '', isLbFinal: (lr === totalLbRounds)
+                        });
+                    }
+                    tourneyMatches['lb_r' + lr] = lbMatches;
                 }
-                tourneyMatches['wb_r2'] = wbR2;
-
-                var lbR1Count = wbR1.length / 2;
-                var lbR1 = [];
-                for (var l1 = 0; l1 < lbR1Count; l1++) {
-                    lbR1.push({ id: 'lb_r1_m' + l1, p1: '（未定）', p2: '（未定）', s1: 0, s2: 0, winner: '', loser: '' });
-                }
-                tourneyMatches['lb_r1'] = lbR1;
-
-                tourneyMatches['lb_r2'] = [
-                    { id: 'lb_r2_m0', p1: '（未定）', p2: '（未定）', s1: 0, s2: 0, winner: '', loser: '' }
-                ];
 
                 tourneyMatches['grand_final'] = [
                     { id: 'gf_m0', p1: '（勝者組1位）', p2: '（敗者組1位）', s1: 0, s2: 0, winner: '', isGrandFinal: true }
@@ -2585,6 +2609,7 @@
             document.getElementById('tourney-display-title').textContent = title + ' - トーナメント表';
 
             var container = document.getElementById('tourney-brackets-container');
+            if (!container) return;
             container.innerHTML = '';
 
             var keys = Object.keys(tourneyMatches);
@@ -2593,38 +2618,42 @@
 
                 if (roundKey === 'reset_final') {
                     var gf = tourneyMatches['grand_final'] ? tourneyMatches['grand_final'][0] : null;
-                    if (!gf || gf.winner !== gf.p2 || gf.p2 === '（敗者組1位）' || !gf.winner) {
+                    if (!gf || !gf.winner || gf.winner !== gf.p2 || gf.p2 === '（敗者組1位）') {
                         return;
                     }
                 }
 
-                var roundName = getRoundDisplayName(roundKey, keys.length);
+                var roundName = getRoundDisplayName(roundKey);
 
                 var col = document.createElement('div');
                 col.className = 'bracket-column';
                 col.innerHTML = `<h4>${roundName}</h4>`;
 
                 matches.forEach(function(m, mIdx) {
-                    var isGF = m.isGrandFinal || m.isResetMatch;
-                    var maxScore = isGF ? 3 : 2;
+                    var isFinalRound = m.isFinal || m.isGrandFinal || m.isResetMatch;
+                    var maxScore = isFinalRound ? 3 : 2;
 
                     var matchBox = document.createElement('div');
                     var boxClass = 'bracket-match';
                     if (m.isGrandFinal) boxClass += ' grand-final';
                     if (m.isResetMatch) boxClass += ' reset-match';
+                    if (m.isFinal) boxClass += ' grand-final';
                     matchBox.className = boxClass;
 
                     var p1WinnerClass = (m.winner && m.winner === m.p1) ? ' winner' : '';
                     var p2WinnerClass = (m.winner && m.winner === m.p2) ? ' winner' : '';
 
+                    var isByeMatch = (m.p1 === 'BYE' || m.p2 === 'BYE' || m.p1 === '（未定）' || m.p2 === '（未定）' || m.p1.startsWith('（') || m.p2.startsWith('（'));
+                    var inputDisabled = isByeMatch ? 'disabled style="background:#222; color:#555;"' : '';
+
                     matchBox.innerHTML = `
                         <div class="bracket-player${p1WinnerClass}">
                             <span class="bracket-player-name" title="${m.p1}">${m.p1}</span>
-                            <input type="number" class="bracket-score-input" min="0" max="${maxScore}" value="${m.s1}" oninput="updateTourneyScore('${roundKey}', ${mIdx}, 's1', this.value, ${maxScore})">
+                            <input type="number" class="bracket-score-input" min="0" max="${maxScore}" value="${m.s1}" ${inputDisabled} oninput="updateTourneyScore('${roundKey}', ${mIdx}, 's1', this.value, ${maxScore})">
                         </div>
                         <div class="bracket-player${p2WinnerClass}">
                             <span class="bracket-player-name" title="${m.p2}">${m.p2}</span>
-                            <input type="number" class="bracket-score-input" min="0" max="${maxScore}" value="${m.s2}" oninput="updateTourneyScore('${roundKey}', ${mIdx}, 's2', this.value, ${maxScore})">
+                            <input type="number" class="bracket-score-input" min="0" max="${maxScore}" value="${m.s2}" ${inputDisabled} oninput="updateTourneyScore('${roundKey}', ${mIdx}, 's2', this.value, ${maxScore})">
                         </div>
                     `;
                     col.appendChild(matchBox);
@@ -2633,17 +2662,31 @@
             });
         }
 
-        function getRoundDisplayName(rKey, totalRounds) {
-            if (rKey.includes('single_r1')) return '1回戦 (2先)';
-            if (rKey.includes('single_r2') && totalRounds === 2) return '決勝戦 (3先)';
-            if (rKey.includes('single_r2')) return '準決勝 (2先)';
-            if (rKey.includes('single_r3')) return '決勝戦 (3先)';
-            if (rKey.includes('wb_r1')) return '勝者組 1回戦 (2先)';
-            if (rKey.includes('wb_r2')) return '勝者組 決勝 (2先)';
-            if (rKey.includes('lb_r1')) return '敗者組 1回戦 (2先)';
-            if (rKey.includes('lb_r2')) return '敗者組 決勝 (2先)';
-            if (rKey.includes('grand_final')) return '👑 グランドファイナル (3先)';
-            if (rKey.includes('reset_final')) return '🔥 最終リセットマッチ (3先)';
+        function getRoundDisplayName(rKey) {
+            if (rKey.startsWith('single_r')) {
+                var keys = Object.keys(tourneyMatches).filter(k => k.startsWith('single_r'));
+                var curIdx = keys.indexOf(rKey);
+                if (curIdx === keys.length - 1) return '👑 決勝戦 (3先)';
+                if (curIdx === keys.length - 2 && keys.length > 2) return '準決勝 (2先)';
+                return `${curIdx + 1}回戦 (2先)`;
+            }
+
+            if (rKey.startsWith('wb_r')) {
+                var rNum = parseInt(rKey.replace('wb_r', ''), 10);
+                var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
+                if (rNum === wbKeys.length) return '勝者組 決勝 (2先)';
+                return `勝者組 ${rNum}回戦 (2先)`;
+            }
+
+            if (rKey.startsWith('lb_r')) {
+                var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
+                var lIdx = lbKeys.indexOf(rKey);
+                if (lIdx === lbKeys.length - 1) return '敗者組 決勝 (2先)';
+                return `敗者組 ${lIdx + 1}回戦 (2先)`;
+            }
+
+            if (rKey === 'grand_final') return '👑 グランドファイナル (3先)';
+            if (rKey === 'reset_final') return '🔥 最終リセットマッチ (3先)';
             return rKey;
         }
 
@@ -2656,7 +2699,17 @@
             var match = tourneyMatches[roundKey][matchIdx];
             match[field] = num;
 
-            if (match.s1 === maxScore && match.s2 < maxScore) {
+            if (match.p2 === "BYE") {
+                match.winner = match.p1;
+                match.loser = "BYE";
+                match.s1 = maxScore;
+                match.s2 = 0;
+            } else if (match.p1 === "BYE") {
+                match.winner = match.p2;
+                match.loser = "BYE";
+                match.s1 = 0;
+                match.s2 = maxScore;
+            } else if (match.s1 === maxScore && match.s2 < maxScore) {
                 match.winner = match.p1;
                 match.loser = match.p2;
             } else if (match.s2 === maxScore && match.s1 < maxScore) {
@@ -2667,75 +2720,181 @@
                 match.loser = '';
             }
 
+            if (roundKey === 'grand_final') {
+                var rf = tourneyMatches['reset_final'] ? tourneyMatches['reset_final'][0] : null;
+                if (rf) {
+                    if (match.winner && match.winner === match.p2) {
+                        rf.p1 = match.p1;
+                        rf.p2 = match.p2;
+                    } else {
+                        rf.p1 = '（未定）';
+                        rf.p2 = '（未定）';
+                        rf.s1 = 0;
+                        rf.s2 = 0;
+                        rf.winner = '';
+                        rf.loser = '';
+                    }
+                }
+            }
+
             propagateTourneyWinners();
             renderTourneyUI();
             saveAppData();
         }
 
         function propagateTourneyWinners() {
-            var keys = Object.keys(tourneyMatches).filter(k => k.startsWith('single_r'));
-            for (var k = 0; k < keys.length - 1; k++) {
-                var currentRound = tourneyMatches[keys[k]];
-                var nextRound = tourneyMatches[keys[k+1]];
+            var typeRadio = document.querySelector('input[name="tourney-type"]:checked');
+            var type = typeRadio ? typeRadio.value : 'single';
 
-                if (currentRound && nextRound) {
-                    for (var i = 0; i < currentRound.length; i++) {
-                        var targetMatchIdx = Math.floor(i / 2);
-                        var targetSlot = (i % 2 === 0) ? 'p1' : 'p2';
-                        var winnerName = currentRound[i].winner || '（未定）';
-                        nextRound[targetMatchIdx][targetSlot] = winnerName;
+            if (type === 'single') {
+                var keys = Object.keys(tourneyMatches).filter(k => k.startsWith('single_r'));
+                for (var k = 0; k < keys.length - 1; k++) {
+                    var currentRound = tourneyMatches[keys[k]];
+                    var nextRound = tourneyMatches[keys[k+1]];
+                    if (currentRound && nextRound) {
+                        for (var i = 0; i < currentRound.length; i++) {
+                            var targetMatchIdx = Math.floor(i / 2);
+                            var targetSlot = (i % 2 === 0) ? 'p1' : 'p2';
+                            
+                            var m = currentRound[i];
+                            var wName = '';
+                            if (m.p2 === 'BYE') {
+                                wName = m.p1;
+                                m.winner = m.p1;
+                                m.s1 = 2; m.s2 = 0;
+                            } else if (m.p1 === 'BYE') {
+                                wName = m.p2;
+                                m.winner = m.p2;
+                                m.s1 = 0; m.s2 = 2;
+                            } else {
+                                wName = m.winner || '（未定）';
+                            }
+                            nextRound[targetMatchIdx][targetSlot] = wName;
+                        }
+                    }
+                }
+                return;
+            }
+
+            var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
+            var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
+
+            for (var i = 0; i < wbKeys.length - 1; i++) {
+                var curWb = tourneyMatches[wbKeys[i]];
+                var nextWb = tourneyMatches[wbKeys[i+1]];
+                if (curWb && nextWb) {
+                    for (var m = 0; m < curWb.length; m++) {
+                        var targetM = Math.floor(m / 2);
+                        var targetSlot = (m % 2 === 0) ? 'p1' : 'p2';
+                        var curM = curWb[m];
+                        var wName = '（未定）';
+                        if (curM.p2 === 'BYE') {
+                            wName = curM.p1;
+                            curM.winner = curM.p1;
+                            curM.loser = 'BYE';
+                            curM.s1 = 2; curM.s2 = 0;
+                        } else if (curM.p1 === 'BYE') {
+                            wName = curM.p2;
+                            curM.winner = curM.p2;
+                            curM.loser = 'BYE';
+                            curM.s1 = 0; curM.s2 = 2;
+                        } else if (curM.winner && curM.winner !== 'BYE') {
+                            wName = curM.winner;
+                        }
+                        nextWb[targetM][targetSlot] = wName;
                     }
                 }
             }
+
+            lbKeys.forEach(lk => {
+                tourneyMatches[lk].forEach(lm => {
+                    if (lm.p1 !== 'BYE' && lm.p1 !== '（未定）' && !lm.p1.startsWith('（')) {
+                        // Keep player
+                    } else {
+                        lm.p1 = '（未定）';
+                    }
+                    if (lm.p2 !== 'BYE' && lm.p2 !== '（未定）' && !lm.p2.startsWith('（')) {
+                        // Keep player
+                    } else {
+                        lm.p2 = '（未定）';
+                    }
+                });
+            });
 
             var wb1 = tourneyMatches['wb_r1'];
-            var wb2 = tourneyMatches['wb_r2'];
             var lb1 = tourneyMatches['lb_r1'];
-            var lb2 = tourneyMatches['lb_r2'];
-            var gf  = tourneyMatches['grand_final'];
-            var rf  = tourneyMatches['reset_final'];
-
-            if (wb1) {
-                if (wb2 && wb2[0]) {
-                    for (var w = 0; w < wb1.length; w++) {
-                        var targetMatch = Math.floor(w / 2);
-                        var targetSlot = (w % 2 === 0) ? 'p1' : 'p2';
-                        if (wb2[targetMatch]) {
-                            wb2[targetMatch][targetSlot] = wb1[w].winner || '（未定）';
-                        }
+            if (wb1 && lb1) {
+                var actualLosersWb1 = [];
+                wb1.forEach(m => {
+                    if (m.p2 === 'BYE') {
+                        m.loser = 'BYE';
+                    } else if (m.p1 === 'BYE') {
+                        m.loser = 'BYE';
                     }
-                }
-                if (lb1 && lb1[0]) {
-                    for (var l = 0; l < wb1.length; l++) {
-                        var lbMatch = Math.floor(l / 2);
-                        var lbSlot = (l % 2 === 0) ? 'p1' : 'p2';
-                        if (lb1[lbMatch]) {
-                            lb1[lbMatch][lbSlot] = wb1[l].loser || '（未定）';
-                        }
+                    if (m.loser && m.loser !== 'BYE' && m.loser !== '（未定）') {
+                        actualLosersWb1.push(m.loser);
+                    }
+                });
+
+                for (var l = 0; l < actualLosersWb1.length; l += 2) {
+                    var targetLbIdx = Math.floor(l / 2);
+                    if (lb1[targetLbIdx]) {
+                        lb1[targetLbIdx].p1 = actualLosersWb1[l] || '（未定）';
+                        lb1[targetLbIdx].p2 = (l + 1 < actualLosersWb1.length) ? actualLosersWb1[l+1] : '（未定）';
                     }
                 }
             }
 
-            if (lb2 && lb2[0]) {
-                if (lb1 && lb1[0] && lb1[0].winner) lb2[0].p1 = lb1[0].winner; else lb2[0].p1 = '（未定）';
-                if (wb2 && wb2[0] && wb2[0].winner) lb2[0].p2 = wb2[0].winner; else lb2[0].p2 = '（未定）';
+            for (var lkIdx = 0; lkIdx < lbKeys.length - 1; lkIdx++) {
+                var curLb = tourneyMatches[lbKeys[lkIdx]];
+                var nextLb = tourneyMatches[lbKeys[lkIdx+1]];
+
+                if (curLb && nextLb) {
+                    curLb.forEach((cm, cmIdx) => {
+                        var w = (cm.winner && cm.winner !== 'BYE') ? cm.winner : '';
+                        if (w) {
+                            var targetNextM = Math.floor(cmIdx / 2);
+                            var slot = (cmIdx % 2 === 0) ? 'p1' : 'p2';
+                            if (nextLb[targetNextM]) {
+                                nextLb[targetNextM][slot] = w;
+                            }
+                        }
+                    });
+                }
             }
+
+            for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
+                var curWb = tourneyMatches['wb_r' + rIdx];
+                if (curWb) {
+                    var losers = [];
+                    curWb.forEach(m => {
+                        if (m.loser && m.loser !== 'BYE' && m.loser !== '（未定）') {
+                            losers.push(m.loser);
+                        }
+                    });
+
+                    var targetLbKey = lbKeys[(rIdx - 2) * 2 + 1] || lbKeys[lbKeys.length - 1];
+                    var targetLbMatches = tourneyMatches[targetLbKey];
+                    if (targetLbMatches) {
+                        losers.forEach((losName, lIdx) => {
+                            if (losName && targetLbMatches[lIdx]) {
+                                targetLbMatches[lIdx].p2 = losName;
+                            }
+                        });
+                    }
+                }
+            }
+
+            var gf = tourneyMatches['grand_final'];
+            var lastWb = tourneyMatches[wbKeys[wbKeys.length - 1]];
+            var lastLb = tourneyMatches[lbKeys[lbKeys.length - 1]];
 
             if (gf && gf[0]) {
-                if (wb2 && wb2[0] && wb2[0].winner) gf[0].p1 = wb2[0].winner; else gf[0].p1 = '（勝者組1位）';
-                if (lb2 && lb2[0] && lb2[0].winner) gf[0].p2 = lb2[0].winner; else gf[0].p2 = '（敗者組1位）';
-
-                if (rf && rf[0]) {
-                    if (gf[0].winner === gf[0].p2 && gf[0].p2 !== '（敗者組1位）') {
-                        rf[0].p1 = gf[0].p1;
-                        rf[0].p2 = gf[0].p2;
-                    } else {
-                        rf[0].p1 = '（未定）';
-                        rf[0].p2 = '（未定）';
-                        rf[0].s1 = 0;
-                        rf[0].s2 = 0;
-                        rf[0].winner = '';
-                    }
+                if (gf[0].p1 === '（勝者組1位）' || gf[0].p1.startsWith('（')) {
+                    gf[0].p1 = (lastWb && lastWb[0] && lastWb[0].winner && lastWb[0].winner !== 'BYE') ? lastWb[0].winner : '（勝者組1位）';
+                }
+                if (gf[0].p2 === '（敗者組1位）' || gf[0].p2.startsWith('（')) {
+                    gf[0].p2 = (lastLb && lastLb[0] && lastLb[0].winner && lastLb[0].winner !== 'BYE') ? lastLb[0].winner : '（敗者組1位）';
                 }
             }
         }
