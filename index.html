@@ -22,7 +22,6 @@
             box-sizing: border-box;
         }
 
-        /* 左側：サイドバー（個別スクロール対応） */
         .sidebar {
             width: 240px;
             background-color: #141724;
@@ -92,7 +91,6 @@
             box-shadow: 0 0 10px rgba(145, 70, 255, 0.6);
         }
 
-        /* 右側：メインコンテンツ（個別スクロール対応） */
         .main-content {
             flex: 1;
             height: 100vh;
@@ -190,7 +188,6 @@
             font-size: 1.3rem;
         }
 
-        /* チーム対抗戦用詳細スタイル */
         .team-match-box {
             background: #141724;
             border: 1px solid #3f466b;
@@ -254,7 +251,6 @@
             max-width: 180px;
         }
 
-        /* チームタブ一覧バー */
         .team-tabs-bar {
             display: flex;
             gap: 10px;
@@ -306,7 +302,6 @@
         }
         .delete-team-btn:hover { background-color: #3f1f25; }
 
-        /* トーナメントスタイル */
         .tournament-wrapper {
             display: flex;
             gap: 40px;
@@ -390,7 +385,6 @@
             font-size: 0.85rem;
         }
 
-        /* 共通ボタン・テーブル */
         .tournament-entry-table {
             width: 100%;
             border-collapse: collapse;
@@ -450,7 +444,6 @@
             border-radius: 4px;
         }
 
-        /* メンバー管理用 */
         .member-form-box {
             display: flex;
             gap: 12px;
@@ -586,7 +579,6 @@
             font-size: 0.9rem;
         }
 
-        /* 運営管理用 */
         .admin-section {
             margin-bottom: 20px;
             padding-bottom: 15px;
@@ -683,7 +675,6 @@
         }
         .save-admin-btn:hover { background-color: #00cca3; }
 
-        /* アーカイブコントロールバー */
         .archive-bar {
             background: #141724;
             border: 1px solid #3f466b;
@@ -696,12 +687,9 @@
             flex-wrap: wrap;
         }
 
-        /* ==========================================
-           カプコンカップ風 配信オーバーレイ画面スタイル
-           ========================================== */
         .stream-view-container {
             display: flex;
-            gap: 40px; /* 左右の余白（間隔）を広げて右側パネルを少し右へ移動 */
+            gap: 40px;
             background: transparent;
             border: none;
             padding: 0;
@@ -713,14 +701,13 @@
             align-items: flex-start;
         }
 
-        /* 左側：ゲーム画面上に重ねるオーバーレイステージ */
         .stream-main-stage {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             background: transparent;
-            padding: 15px 10px; /* 左右のパディングを調整して左側の重なりを解消 */
+            padding: 15px 10px;
             position: relative;
             box-sizing: border-box;
             min-height: 720px;
@@ -731,7 +718,7 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            margin-left: 15px; /* 全体を少し右にオフセットして左端のアクセントバーとの被りを確実に防止 */
+            margin-left: 15px;
         }
 
         .stream-stage-header {
@@ -752,7 +739,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 122%; /* 横幅の長さを微調整して右側パネルへの干渉を防止 */
+            width: 122%;
             max-width: 980px;
             gap: 15px;
             margin-top: 4px;
@@ -806,7 +793,6 @@
             line-height: 1;
         }
 
-        /* VSのすぐ下に移動したスコア表示 */
         .stream-score-display {
             display: flex;
             justify-content: center;
@@ -831,7 +817,6 @@
             height: 120px;
         }
 
-        /* 右側：対戦カードリストパネル（少し右へ移動＆干渉防止） */
         .stream-side-panel {
             width: 265px;
             background: rgba(20, 23, 36, 0.92);
@@ -844,7 +829,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             max-height: 720px;
             flex-shrink: 0;
-            margin-right: 10px; /* 右側に余裕を持たせる */
+            margin-right: 10px;
         }
 
         .stream-side-header {
@@ -1022,7 +1007,6 @@
                 <div class="card">
                     <h2>② 裸リーグ（個人戦）管理</h2>
 
-                    <!-- 過去ログ選択・保存バー -->
                     <div class="archive-bar">
                         <label style="color: #00ffcc; font-weight: bold;">📂 過去の大会履歴:</label>
                         <select id="solo-archive-select" onchange="loadSoloArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;">
@@ -1039,13 +1023,13 @@
                     </div>
 
                     <h3>1. 当日エントリー（参加者手動追加）</h3>
-                    <div class="solo-entry-box">
-                        <input type="text" id="solo-new-name" class="member-input" placeholder="参加者名を入力" style="flex: 2;">
+                    <div class="solo-entry-box" style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="text" id="solo-new-name" class="member-input" placeholder="参加者名を入力" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
                         <button type="button" class="action-btn" onclick="addSoloParticipant()">＋ 参加者を追加</button>
                     </div>
 
                     <p style="font-size: 0.85rem; color: #a0a6cc; margin-bottom: 5px;">※ ⑤メンバー管理からチェックを入れてエントリー：</p>
-                    <table class="solo-entry-table">
+                    <table class="tournament-entry-table">
                         <thead>
                             <tr>
                                 <th style="width: 50px; text-align: center;">選択</th>
@@ -1111,7 +1095,6 @@
                 <div class="card">
                     <h2>③ 裸でトーナメント管理</h2>
 
-                    <!-- 過去ログ選択・保存バー -->
                     <div class="archive-bar">
                         <label style="color: #00ffcc; font-weight: bold;">📂 過去の大会履歴:</label>
                         <select id="tourney-archive-select" onchange="loadTourneyArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;">
@@ -1155,7 +1138,6 @@
                     <button type="button" class="add-btn" style="width: 100%; padding: 14px; font-size: 1.1rem;" onclick="generateTourneyBrackets()">🔀 トーナメント表を作成（ランダムシャッフル）</button>
                 </div>
 
-                <!-- 視覚的トーナメント表カード -->
                 <div class="card" id="tourney-display-card" style="display: none; max-width: 1200px;">
                     <h2 id="tourney-display-title">トーナメント表</h2>
                     <p style="font-size: 0.85rem; color: #ffcc00;">※ 通常試合は2本先取、グランドファイナル（GF）およびリセットマッチは3本先取です。勝者は自動で次ラウンドへ進出し、敗者も敗者組へ正しく振り分けられます。</p>
@@ -1175,7 +1157,6 @@
 
                     <input type="text" id="current-team-name" class="input-title" placeholder="チーム名を入力 (例: どすこいファイターズ)" oninput="updateCurrentTeamName(this.value)">
 
-                    <!-- 先鋒 -->
                     <div class="member-row">
                         <span class="member-role" id="label-role-senho">先鋒 (1pt)</span>
                         <select class="member-select team-member-select" id="team-senho" onchange="updateTeamRow('senho')">
@@ -1186,7 +1167,6 @@
                             <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
                         </div>
                     </div>
-                    <!-- 次鋒 -->
                     <div class="member-row">
                         <span class="member-role" id="label-role-jiho">次鋒 (1pt)</span>
                         <select class="member-select team-member-select" id="team-jiho" onchange="updateTeamRow('jiho')">
@@ -1197,7 +1177,6 @@
                             <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
                         </div>
                     </div>
-                    <!-- 副将 -->
                     <div class="member-row">
                         <span class="member-role" id="label-role-fukusho">副将 (1pt)</span>
                         <select class="member-select team-member-select" id="team-fukusho" onchange="updateTeamRow('fukusho')">
@@ -1208,7 +1187,6 @@
                             <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
                         </div>
                     </div>
-                    <!-- 大将 -->
                     <div class="member-row">
                         <span class="member-role" id="label-role-taisho">大将 (2pt)</span>
                         <select class="member-select team-member-select" id="team-taisho" onchange="updateTeamRow('taisho')">
@@ -1248,8 +1226,8 @@
                     </div>
 
                     <div class="member-form-box">
-                        <input type="text" id="new-player-name" class="member-input" placeholder="なまえを入力 (例: リュウ)" style="flex: 2;">
-                        <select id="new-player-rank" class="rank-select" style="flex: 1;">
+                        <input type="text" id="new-player-name" class="member-input" placeholder="なまえを入力 (例: リュウ)" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
+                        <select id="new-player-rank" class="rank-select" style="flex: 1; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
                             <option value="レジェンド">レジェンド (コスト8)</option>
                             <option value="アルティメットマスター">アルティメットマスター (コスト6)</option>
                             <option value="グランドマスター">グランドマスター (コスト4)</option>
@@ -1291,7 +1269,6 @@
                         <button type="button" id="admin-logout-btn" class="delete-btn" style="display: none;" onclick="adminLogout()">ログアウト</button>
                     </div>
 
-                    <!-- 1. 大会制限コスト設定 -->
                     <div class="admin-section">
                         <h3>1. 大会制限コスト設定</h3>
                         <div class="admin-input-row">
@@ -1300,7 +1277,6 @@
                         </div>
                     </div>
 
-                    <!-- 2. ランク別コスト設定 -->
                     <div class="admin-section">
                         <h3>2. ランク別コスト設定</h3>
                         <div class="admin-input-row">
@@ -1333,7 +1309,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. ポジション別勝利ポイント設定 -->
                     <div class="admin-section">
                         <h3>3. ポジション別勝利ポイント設定（チーム戦連動）</h3>
                         <div class="admin-input-row">
@@ -1354,7 +1329,6 @@
                         </div>
                     </div>
 
-                    <!-- 4. チーム戦コスト差補正ルール設定 -->
                     <div class="admin-section">
                         <h3>4. コスト差補正ルール設定</h3>
                         <div style="background: #10121b; padding: 12px; border-radius: 4px; border: 1px solid #3f466b;">
@@ -1371,7 +1345,6 @@
                         </div>
                     </div>
 
-                    <!-- 5. チーム戦勝利ポイント設定 -->
                     <div class="admin-section">
                         <h3>5. チーム戦勝利ポイント設定</h3>
                         <div class="admin-input-row">
@@ -1393,7 +1366,6 @@
                     </p>
 
                     <div class="stream-view-container">
-                        <!-- 左側：ゲーム画面上に重ねるオーバーレイステージ -->
                         <div class="stream-main-stage">
                             <div class="stream-stage-top-box">
                                 <div class="stream-stage-header" id="stream-stage-title">HADAKA LEAGUE - FEATURED MATCH</div>
@@ -1404,7 +1376,6 @@
                                         <div class="stream-player-detail" id="stream-p1-detail">ランク: -</div>
                                     </div>
                                     
-                                    <!-- VS とスコアをすぐ下に一体化 -->
                                     <div class="stream-vs-badge">
                                         <div class="stream-vs-text">VS</div>
                                         <div class="stream-score-display">
@@ -1424,7 +1395,6 @@
                             <div class="stream-stage-bottom-space"></div>
                         </div>
 
-                        <!-- 右側：対戦カードリストパネル（右へ移動して被りを解消） -->
                         <div class="stream-side-panel">
                             <div class="stream-side-header">
                                 <span>対戦カード一覧</span>
@@ -1434,9 +1404,7 @@
                                     <option value="solo">② 個人戦スケジュール</option>
                                 </select>
                             </div>
-                            <div class="stream-card-list" id="stream-card-list-container">
-                                <!-- 動的にカードが生成されます -->
-                            </div>
+                            <div class="stream-card-list" id="stream-card-list-container"></div>
                         </div>
                     </div>
                 </div>
@@ -1446,7 +1414,6 @@
     </div>
 
     <script>
-        // --- 永続化データ管理 ---
         var members = [];
         var soloParticipants = [];
         var soloMatches = [];
@@ -1457,14 +1424,12 @@
         var teamMatches = [];
         var currentTeamIndex = 0;
 
-        // 配信画面で選択されているアクティブな対戦情報
         var activeStreamMatch = {
-            mode: 'team', // 'team' | 'tourney' | 'solo'
+            mode: 'team',
             matchIndex: 0,
-            subIndex: 0 // チーム戦の場合のポジション(senho/jiho等)
+            subIndex: 0
         };
 
-        // 過去ログ用アーカイブ
         var teamArchives = [];
         var soloArchives = [];
         var tourneyArchives = [];
@@ -1624,7 +1589,6 @@
             }
         }
 
-        // --- アーカイブ（過去ログ保存・切替）機能 ---
         function updateArchiveSelects() {
             var teamSel = document.getElementById('team-archive-select');
             if (teamSel) {
@@ -2232,6 +2196,7 @@
             updateTeamRankingTable();
         }
 
+        // --- 修正箇所：チームランキング集計ロジック ---
         function updateTeamRankingTable() {
             var getPts = function(id) {
                 var elem = document.getElementById(id);
@@ -2246,7 +2211,17 @@
             };
 
             var stats = {};
-            teamParticipants.forEach(tName => stats[tName] = { name: tName, totalPts: 0, rawPts: 0, bonusPts: 0, wins: 0 });
+            
+            // エントリー済みチームまたは対戦カードに存在する全チームを初期化
+            var allTeams = new Set([...teamParticipants]);
+            teamMatches.forEach(m => {
+                if (m.t1Name) allTeams.add(m.t1Name);
+                if (m.t2Name) allTeams.add(m.t2Name);
+            });
+
+            allTeams.forEach(tName => {
+                stats[tName] = { name: tName, totalPts: 0, rawPts: 0, bonusPts: 0, wins: 0 };
+            });
 
             teamMatches.forEach(m => {
                 var t1Name = m.t1Name;
@@ -2279,6 +2254,12 @@
             var tbody = document.getElementById('team-ranking-tbody');
             if (!tbody) return;
             tbody.innerHTML = '';
+
+            if (ranked.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#a0a6cc;">(集計可能なチームがありません)</td></tr>';
+                return;
+            }
+
             ranked.forEach((t, idx) => {
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -2712,7 +2693,7 @@
             }
         }
 
-        // --- ② 個人戦ロジック ---
+        // --- ② 個人戦 ---
         function renderSoloRegistry() {
             var tbody = document.getElementById('solo-registry-tbody');
             if (!tbody) return;
@@ -3010,7 +2991,7 @@
             });
         }
 
-        // --- チーム管理ロジック ---
+        // --- チーム管理 ---
         function updateTeamSelectOptions() {
             var bar = document.getElementById('team-tabs-bar');
             if (!bar) return;
@@ -3148,7 +3129,7 @@
             switchTab('tab-team-mgmt', document.querySelectorAll('.sidebar .tab-btn')[3]);
         }
 
-        // --- 配信画面（カプコンカップ風オーバーレイ）ロジック ---
+        // --- 配信画面 ---
         function renderStreamCardList() {
             var modeSel = document.getElementById('stream-mode-select');
             if (!modeSel) return;
@@ -3333,7 +3314,7 @@
             s2Elem.textContent = s2;
         }
 
-        // --- スプレッドシートインポート ---
+        // --- インポート ---
         function importFromPaste() {
             var textarea = document.getElementById('sheet-paste-area');
             if (!textarea) return;
@@ -3445,6 +3426,8 @@
             
             if (teamMatches.length > 0) {
                 renderTeamLeagueUI();
+            } else {
+                updateTeamRankingTable();
             }
             if (soloMatches.length > 0) {
                 renderSoloTournamentUI();
