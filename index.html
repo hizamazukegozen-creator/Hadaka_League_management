@@ -2809,7 +2809,7 @@
                 }
             }
 
-            // 各勝者組マッチの勝者・敗者を自動判定して保持
+            // 各勝者組マッチの勝者・敗者を判定
             wbKeys.forEach(wk => {
                 tourneyMatches[wk].forEach(m => {
                     if (m.s1 === 2 && m.s2 < 2) {
@@ -2828,7 +2828,7 @@
                 });
             });
 
-            // 敗者組のプレイヤー欄を一旦リセット（（未定）に戻す）
+            // 敗者組のプレイヤー欄をリセット
             lbKeys.forEach(lk => {
                 tourneyMatches[lk].forEach(lm => {
                     lm.p1 = '（未定）';
@@ -2855,14 +2855,13 @@
                 }
             }
 
-            // --- 敗者組の内部ラウンド進行 (LB勝ち上がりの伝搬) ---
+            // --- 敗者組の内部ラウンド進行 ---
             for (var lkIdx = 0; lkIdx < lbKeys.length - 1; lkIdx++) {
                 var curLb = tourneyMatches[lbKeys[lkIdx]];
                 var nextLb = tourneyMatches[lbKeys[lkIdx+1]];
 
                 if (curLb && nextLb) {
                     curLb.forEach((cm, cmIdx) => {
-                        // 敗者組マッチの勝敗判定
                         if (cm.s1 === 2 && cm.s2 < 2) {
                             cm.winner = cm.p1;
                             cm.loser = cm.p2;
@@ -2883,7 +2882,6 @@
                 }
             }
 
-            // 最最後のLBマッチの勝敗判定も更新
             var lastLbMatches = tourneyMatches[lbKeys[lbKeys.length - 1]];
             if (lastLbMatches) {
                 lastLbMatches.forEach(cm => {
@@ -2897,8 +2895,7 @@
                 });
             }
 
-            // --- 敗者組 2回戦以降への「勝者組敗者」のドロップ割り当てを正確に修正 ---
-            // 敗者組の奇数ラウンド（lb_r1, lb_r3 など）には「勝者組の各ラウンド敗者」が合流する構造になります
+            // --- 勝者組 2回戦以降の敗者のドロップ処理（正確なマッピング） ---
             for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
                 var curWb = tourneyMatches['wb_r' + rIdx];
                 if (curWb) {
@@ -2909,9 +2906,8 @@
                         }
                     });
 
-                    // どの敗者組ラウンドにドロップするかを正確にマッピング (wb_r2敗者は lb_r2 or lb_3等)
-                    // 一般的な2Nトーナメントの配置ルールに合わせ、対応するlbラウンドへ配分
-                    var targetLbKeyIndex = (rIdx - 2) * 2 + 1; 
+                    // 敗者組におけるドロップ先ラウンドのインデックス計算
+                    var targetLbKeyIndex = (rIdx - 2) * 2 + 1;
                     if (targetLbKeyIndex >= lbKeys.length) targetLbKeyIndex = lbKeys.length - 1;
                     var targetLbKey = lbKeys[targetLbKeyIndex];
                     var targetLbMatches = tourneyMatches[targetLbKey];
@@ -2919,7 +2915,6 @@
                     if (targetLbMatches) {
                         losers.forEach((losName, lIdx) => {
                             if (losName && targetLbMatches[lIdx]) {
-                                // 既に進出しているLB勝者がp1にいる場合、敗者組敗者はp2に入る
                                 targetLbMatches[lIdx].p2 = losName;
                             }
                         });
@@ -2927,9 +2922,24 @@
                 }
             }
 
+            // --- 勝者組 決勝（WB Final）の敗者を「敗者組 決勝（LB Final）」へドロップする処理を追加 ---
+            var wbFinalKey = wbKeys[wbKeys.length - 1];
+            var lbFinalKey = lbKeys[lbKeys.length - 1];
+            if (tourneyMatches[wbFinalKey] && tourneyMatches[lbFinalKey]) {
+                var wbFinalMatch = tourneyMatches[wbFinalKey][0];
+                if (wbFinalMatch && wbFinalMatch.loser && wbFinalMatch.loser !== 'BYE' && wbFinalMatch.loser !== '（未定）') {
+                    // 敗者組決勝マッチ（通常1試合のみ）のp1またはp2にセットする
+                    var lbFinalMatch = tourneyMatches[lbFinalKey][0];
+                    if (lbFinalMatch) {
+                        // 敗者組を勝ち上がってきた選手がp1にいる場合、勝者組決勝敗者はp2に入る
+                        lbFinalMatch.p2 = wbFinalMatch.loser;
+                    }
+                }
+            }
+
             var gf = tourneyMatches['grand_final'];
-            var lastWb = tourneyMatches[wbKeys[wbKeys.length - 1]];
-            var lastLb = tourneyMatches[lbKeys[lbKeys.length - 1]];
+            var lastWb = tourneyMatches[wbFinalKey];
+            var lastLb = tourneyMatches[lbFinalKey];
 
             if (gf && gf[0]) {
                 var wbWinner = (lastWb && lastWb[0] && lastWb[0].winner && lastWb[0].winner !== 'BYE') ? lastWb[0].winner : '';
