@@ -2643,7 +2643,7 @@
                     var p1WinnerClass = (m.winner && m.winner === m.p1) ? ' winner' : '';
                     var p2WinnerClass = (m.winner && m.winner === m.p2) ? ' winner' : '';
 
-                    var isByeMatch = (m.p1 === 'BYE' || m.p2 === 'BYE' || m.p1 === '（未定）' || m.p2 === '（未定）' || m.p1.startsWith('（') || m.p2.startsWith('（'));
+                    var isByeMatch = (m.p1 === 'BYE' || m.p2 === 'BYE' || m.p1 === '（未定）' || m.p2 === '（未定）' || m.p1.startsWith('（') || m.p2.startsWith('（') || (roundKey === 'grand_final' && m.p1 === m.p2));
                     var inputDisabled = isByeMatch ? 'disabled style="background:#222; color:#555;"' : '';
 
                     matchBox.innerHTML = `
@@ -2699,7 +2699,10 @@
             var match = tourneyMatches[roundKey][matchIdx];
             match[field] = num;
 
-            if (match.p2 === "BYE") {
+            if (match.p1 === match.p2) {
+                match.winner = '';
+                match.loser = '';
+            } else if (match.p2 === "BYE") {
                 match.winner = match.p1;
                 match.loser = "BYE";
                 match.s1 = maxScore;
@@ -2890,11 +2893,24 @@
             var lastLb = tourneyMatches[lbKeys[lbKeys.length - 1]];
 
             if (gf && gf[0]) {
-                if (gf[0].p1 === '（勝者組1位）' || gf[0].p1.startsWith('（')) {
-                    gf[0].p1 = (lastWb && lastWb[0] && lastWb[0].winner && lastWb[0].winner !== 'BYE') ? lastWb[0].winner : '（勝者組1位）';
+                var wbWinner = (lastWb && lastWb[0] && lastWb[0].winner && lastWb[0].winner !== 'BYE') ? lastWb[0].winner : '';
+                var lbWinner = (lastLb && lastLb[0] && lastLb[0].winner && lastLb[0].winner !== 'BYE') ? lastLb[0].winner : '';
+
+                if (wbWinner) {
+                    gf[0].p1 = wbWinner;
+                } else if (gf[0].p1.startsWith('（')) {
+                    gf[0].p1 = '（勝者組1位）';
                 }
-                if (gf[0].p2 === '（敗者組1位）' || gf[0].p2.startsWith('（')) {
-                    gf[0].p2 = (lastLb && lastLb[0] && lastLb[0].winner && lastLb[0].winner !== 'BYE') ? lastLb[0].winner : '（敗者組1位）';
+
+                // --- 修正：WB勝者とLB勝者が同一人物になってしまうのを防止 ---
+                if (lbWinner) {
+                    if (lbWinner === gf[0].p1) {
+                        gf[0].p2 = '（敗者組1位）'; // 同一人物ならLB勝者を未定に戻す
+                    } else {
+                        gf[0].p2 = lbWinner;
+                    }
+                } else if (gf[0].p2.startsWith('（')) {
+                    gf[0].p2 = '（敗者組1位）';
                 }
             }
         }
