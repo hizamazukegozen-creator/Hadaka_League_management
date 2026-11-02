@@ -2782,6 +2782,7 @@
             var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
             var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
 
+            // 1. 勝者組内の進行
             for (var i = 0; i < wbKeys.length - 1; i++) {
                 var curWb = tourneyMatches[wbKeys[i]];
                 var nextWb = tourneyMatches[wbKeys[i+1]];
@@ -2809,7 +2810,7 @@
                 }
             }
 
-            // 各勝者組マッチの勝者・敗者を判定
+            // 2. 勝者組各マッチの勝者・敗者を決定
             wbKeys.forEach(wk => {
                 tourneyMatches[wk].forEach(m => {
                     if (m.s1 === 2 && m.s2 < 2) {
@@ -2828,15 +2829,27 @@
                 });
             });
 
-            // 敗者組のプレイヤー欄をリセット
+            // 3. 敗者組各マッチの勝者を決定
             lbKeys.forEach(lk => {
-                tourneyMatches[lk].forEach(lm => {
-                    lm.p1 = '（未定）';
-                    lm.p2 = '（未定）';
+                tourneyMatches[lk].forEach(cm => {
+                    if (cm.p1 === '（未定）' || cm.p2 === '（未定）' || cm.p1 === 'BYE' || cm.p2 === 'BYE') {
+                        if (cm.p2 === 'BYE') { cm.winner = cm.p1; cm.loser = 'BYE'; }
+                        else if (cm.p1 === 'BYE') { cm.winner = cm.p2; cm.loser = 'BYE'; }
+                        else { cm.winner = ''; cm.loser = ''; }
+                    } else if (cm.s1 === 2 && cm.s2 < 2) {
+                        cm.winner = cm.p1;
+                        cm.loser = cm.p2;
+                    } else if (cm.s2 === 2 && cm.s1 < 2) {
+                        cm.winner = cm.p2;
+                        cm.loser = cm.p1;
+                    } else {
+                        cm.winner = '';
+                        cm.loser = '';
+                    }
                 });
             });
 
-            // --- 敗者組 1回戦へのドロップ処理 ---
+            // 4. 勝者組1回戦（wb_r1）の敗者を敗者組1回戦（lb_r1）へ配置
             var wb1 = tourneyMatches['wb_r1'];
             var lb1 = tourneyMatches['lb_r1'];
             if (wb1 && lb1) {
@@ -2855,21 +2868,50 @@
                 }
             }
 
-            // --- 敗者組の内部ラウンド進行 ---
-            for (var lkIdx = 0; lkIdx < lbKeys.length - 1; lkIdx++) {
-                var curLb = tourneyMatches[lbKeys[lkIdx]];
-                var nextLb = tourneyMatches[lbKeys[lkIdx+1]];
+            // 5. 【修正箇所】敗者組1回戦（lb_r1）の勝者を敗者組2回戦（lb_r2）の各上側（p1）へ1対1で直結
+            var lb2 = tourneyMatches['lb_r2'];
+            if (lb1 && lb2) {
+                for (var idx1 = 0; idx1 < lb1.length; idx1++) {
+                    var m1 = lb1[idx1];
+                    var w1 = (m1.winner && m1.winner !== 'BYE') ? m1.winner : '（未定）';
+                    if (lb2[idx1]) {
+                        lb2[idx1].p1 = w1; // 1試合目勝者 -> 2回戦第1試合p1, 2試合目勝者 -> 2回戦第2試合p1
+                    }
+                }
+            }
 
+            // 6. 勝者組2回戦以降の敗者ドロップ（lb_r2, lb_r4等の下側p2へ流し込み）
+            for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
+                var curWb = tourneyMatches['wb_r' + rIdx];
+                if (curWb) {
+                    var losers = [];
+                    curWb.forEach(m => {
+                        if (m.loser && m.loser !== 'BYE' && m.loser !== '（未定）') {
+                            losers.push(m.loser);
+                        }
+                    });
+
+                    var targetLbKeyIndex = (rIdx - 1) * 2 - 1;
+                    if (targetLbKeyIndex < lbKeys.length) {
+                        var targetLbKey = lbKeys[targetLbKeyIndex];
+                        var targetLbMatches = tourneyMatches[targetLbKey];
+                        if (targetLbMatches) {
+                            losers.forEach((losName, lIdx) => {
+                                if (losName && targetLbMatches[lIdx]) {
+                                    targetLbMatches[lIdx].p2 = losName;
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            // 7. 敗者組内部の進行（lb_r2以降の勝者を次の敗者組ラウンドへ送信）
+            for (var lkIdx = 1; lkIdx < lbKeys.length - 1; lkIdx++) {
+                var curLb = tourneyMatches[lbKeys[lkIdx]];
+                var nextLb = tourneyMatches[lbKeys[lkIdx + 1]];
                 if (curLb && nextLb) {
                     curLb.forEach((cm, cmIdx) => {
-                        if (cm.s1 === 2 && cm.s2 < 2) {
-                            cm.winner = cm.p1;
-                            cm.loser = cm.p2;
-                        } else if (cm.s2 === 2 && cm.s1 < 2) {
-                            cm.winner = cm.p2;
-                            cm.loser = cm.p1;
-                        }
-
                         var w = (cm.winner && cm.winner !== 'BYE') ? cm.winner : '';
                         if (w) {
                             var targetNextM = Math.floor(cmIdx / 2);
@@ -2882,61 +2924,20 @@
                 }
             }
 
-            var lastLbMatches = tourneyMatches[lbKeys[lbKeys.length - 1]];
-            if (lastLbMatches) {
-                lastLbMatches.forEach(cm => {
-                    if (cm.s1 === 2 && cm.s2 < 2) {
-                        cm.winner = cm.p1;
-                        cm.loser = cm.p2;
-                    } else if (cm.s2 === 2 && cm.s1 < 2) {
-                        cm.winner = cm.p2;
-                        cm.loser = cm.p1;
-                    }
-                });
-            }
-
-            // --- 勝者組 2回戦以降の敗者のドロップ処理（正確なマッピング） ---
-            for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
-                var curWb = tourneyMatches['wb_r' + rIdx];
-                if (curWb) {
-                    var losers = [];
-                    curWb.forEach(m => {
-                        if (m.loser && m.loser !== 'BYE' && m.loser !== '（未定）') {
-                            losers.push(m.loser);
-                        }
-                    });
-
-                    // 敗者組におけるドロップ先ラウンドのインデックス計算
-                    var targetLbKeyIndex = (rIdx - 2) * 2 + 1;
-                    if (targetLbKeyIndex >= lbKeys.length) targetLbKeyIndex = lbKeys.length - 1;
-                    var targetLbKey = lbKeys[targetLbKeyIndex];
-                    var targetLbMatches = tourneyMatches[targetLbKey];
-
-                    if (targetLbMatches) {
-                        losers.forEach((losName, lIdx) => {
-                            if (losName && targetLbMatches[lIdx]) {
-                                targetLbMatches[lIdx].p2 = losName;
-                            }
-                        });
-                    }
-                }
-            }
-
-            // --- 勝者組 決勝（WB Final）の敗者を「敗者組 決勝（LB Final）」へドロップする処理を追加 ---
+            // 8. 勝者組決勝（WB Final）の敗者を敗者組決勝（LB Final）へ送る
             var wbFinalKey = wbKeys[wbKeys.length - 1];
             var lbFinalKey = lbKeys[lbKeys.length - 1];
             if (tourneyMatches[wbFinalKey] && tourneyMatches[lbFinalKey]) {
                 var wbFinalMatch = tourneyMatches[wbFinalKey][0];
                 if (wbFinalMatch && wbFinalMatch.loser && wbFinalMatch.loser !== 'BYE' && wbFinalMatch.loser !== '（未定）') {
-                    // 敗者組決勝マッチ（通常1試合のみ）のp1またはp2にセットする
                     var lbFinalMatch = tourneyMatches[lbFinalKey][0];
                     if (lbFinalMatch) {
-                        // 敗者組を勝ち上がってきた選手がp1にいる場合、勝者組決勝敗者はp2に入る
                         lbFinalMatch.p2 = wbFinalMatch.loser;
                     }
                 }
             }
 
+            // 9. グランドファイナル（GF）への反映
             var gf = tourneyMatches['grand_final'];
             var lastWb = tourneyMatches[wbFinalKey];
             var lastLb = tourneyMatches[lbFinalKey];
