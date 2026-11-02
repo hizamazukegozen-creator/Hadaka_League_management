@@ -308,111 +308,29 @@
             accent-color: #9146FF;
         }
 
-        /* アイキャッチ演出用全画面オーバーレイ */
-        .eyecatch-fullscreen-overlay {
+        /* アイキャッチ用iframeコンテナ（最前面に配置） */
+        .github-eyecatch-layer {
             position: fixed;
             top: 0;
             left: 0;
             width: 1920px;
             height: 1080px;
-            background: rgba(5, 6, 10, 0.96);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            opacity: 0;
+            border: none;
+            background: transparent;
+            z-index: 999999;
             pointer-events: none;
-            transition: opacity 0.3s ease;
-            overflow: hidden;
+            display: none;
         }
-
-        .eyecatch-fullscreen-overlay.active-eyecatch {
-            opacity: 1;
+        .github-eyecatch-layer.active {
+            display: block;
             pointer-events: auto;
-        }
-
-        .flash-layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,30,56,0.4), rgba(0,243,255,0.4));
-            opacity: 0;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .logo-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 5;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .logo-hdk {
-            font-size: 8rem;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            color: #ff1e38;
-            text-shadow: 0 0 10px #ff1e38, 0 0 30px #ff1e38, 3px 3px 0px #000;
-            transform: skewX(-10deg);
-            opacity: 0;
-        }
-
-        .logo-league {
-            font-size: 8rem;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            color: #00f3ff;
-            text-shadow: 0 0 10px #00f3ff, 0 0 30px #00f3ff, 3px 3px 0px #000;
-            transform: skewX(-10deg);
-            opacity: 0;
-        }
-
-        .play-anim .logo-hdk { animation: hdkMotion 2.2s cubic-bezier(0.15, 1, 0.3, 1) forwards; }
-        .play-anim .logo-league { animation: leagueMotion 2.2s cubic-bezier(0.15, 1, 0.3, 1) forwards; }
-        .play-anim .flash-layer { animation: sharpFlash 2.2s ease-out forwards; }
-
-        @keyframes hdkMotion {
-            0% { transform: translateX(-900px) skewX(-10deg) scale(1.5); opacity: 0; }
-            25% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
-            65% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
-            100% { transform: translateX(1000px) skewX(-10deg) scale(1.2); opacity: 0; }
-        }
-
-        @keyframes leagueMotion {
-            0% { transform: translateX(900px) skewX(-10deg) scale(1.5); opacity: 0; }
-            25% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
-            65% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
-            100% { transform: translateX(-1000px) skewX(-10deg) scale(1.2); opacity: 0; }
-        }
-
-        @keyframes sharpFlash {
-            0% { opacity: 0; }
-            24% { opacity: 0; }
-            25% { opacity: 0.9; background: #fff; }
-            27% { opacity: 0.2; }
-            28% { opacity: 0.7; background: #00f3ff; }
-            30% { opacity: 0; }
-            63% { opacity: 0; }
-            65% { opacity: 1; background: #ff1e38; }
-            70% { opacity: 0.3; }
-            100% { opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="eyecatch-fullscreen-overlay" id="eyecatchOverlay">
-        <div class="flash-layer"></div>
-        <div class="logo-container">
-            <div class="logo-hdk">HDK</div>
-            <div class="logo-league">LEAGUE</div>
-        </div>
-    </div>
+    <!-- GitHubのeyecatch.htmlを読み込むiframe -->
+    <iframe id="eyecatchIframe" class="github-eyecatch-layer"></iframe>
 
     <div class="stream-view-container">
         <div class="stream-main-stage">
@@ -450,7 +368,7 @@
             <div class="stream-side-header">
                 <div class="header-left-group">
                     <span>対戦カード一覧</span>
-                    <button type="button" class="stream-eyecatch-btn" onclick="triggerEyecatchAll()">⚡ アイキャッチ</button>
+                    <button type="button" class="stream-eyecatch-btn" onclick="triggerEyecatch()">⚡ アイキャッチ</button>
                 </div>
                 <select id="stream-mode-select" class="stream-mode-selector" onchange="renderStreamCardList()">
                     <option value="team">① チーム戦カード</option>
@@ -463,6 +381,9 @@
     </div>
 
     <script>
+        // GitHubにアップロードしたeyecatch.htmlの直リンク
+        var EYECATCH_HTML_URL = "https://raw.githubusercontent.com/hizamazukegozen-creator/Hadaka_League_management/refs/heads/main/eyecatch.html";
+
         var members = [];
         var teamMatches = [];
         var soloMatches = [];
@@ -671,42 +592,17 @@
             s2Elem.textContent = s2;
         }
 
-        function playEyecatchSound() {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const bufferSize = audioCtx.sampleRate * 1.5;
-            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
+        // ⚡ アイキャッチボタンを押したときの処理
+        function triggerEyecatch() {
+            var iframe = document.getElementById('eyecatchIframe');
+            iframe.src = EYECATCH_HTML_URL;
+            iframe.classList.add('active');
 
-            const whiteNoise = audioCtx.createBufferSource();
-            whiteNoise.buffer = noiseBuffer;
-
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-            filter.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.6);
-
-            const fireGain = audioCtx.createGain();
-            fireGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-            fireGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.3);
-            fireGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 1.5);
-
-            whiteNoise.connect(filter);
-            filter.connect(fireGain);
-            fireGain.connect(audioCtx.destination);
-            whiteNoise.start();
-        }
-
-        function triggerEyecatchAll() {
-            var overlay = document.getElementById('eyecatchOverlay');
-            overlay.classList.remove('play-anim');
-            overlay.classList.add('active-eyecatch');
-            setTimeout(function() { overlay.classList.add('play-anim'); }, 50);
-            playEyecatchSound();
+            // 演出が終わる約2.5秒後にiframeを非表示＆リセット
             setTimeout(function() {
-                overlay.classList.remove('active-eyecatch');
-                overlay.classList.remove('play-anim');
-            }, 2300);
+                iframe.classList.remove('active');
+                iframe.src = "";
+            }, 2500);
         }
 
         window.addEventListener('storage', function(e) {
