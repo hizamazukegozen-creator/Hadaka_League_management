@@ -729,7 +729,6 @@
             min-height: 720px;
             box-sizing: border-box;
             align-items: flex-start;
-            /* ここを基準(relative)にすることで、直下の絶対配置オーバーレイがこのエリア内だけに収まるようにする */
             position: relative;
         }
 
@@ -1011,7 +1010,7 @@
             accent-color: #9146FF;
         }
 
-        /* --- EVO風アイキャッチ演出用オーバーレイ（配信ビューエリア内に綺麗に収める） --- */
+        /* --- EVO風アイキャッチ演出用オーバーレイ --- */
         .eyecatch-fullscreen-overlay {
             position: absolute;
             top: 0;
@@ -1592,7 +1591,7 @@
 
                     <div class="stream-view-container">
                         
-                        <!-- EVO風アイキャッチ演出用オーバーレイ（緑色のプレビューエリア内に正確に配置） -->
+                        <!-- EVO風アイキャッチ演出用オーバーレイ -->
                         <div class="eyecatch-fullscreen-overlay" id="eyecatchOverlay">
                             <div class="flash-layer"></div>
                             <div class="logo-container">
@@ -3772,7 +3771,7 @@
             if (activeStreamMatch.mode === 'team') {
                 var m = teamMatches[activeStreamMatch.matchIndex];
                 if (m) {
-                    stageTitle = `${m.t1Name} vs ${m.t2Name} (${activeStreamMatch.subIndex.toUpperCase()})`;
+                    stageTitle = `${m.t1Name} vs ${m.t2Name} (${String(activeStreamMatch.subIndex).toUpperCase()})`;
                     var idx1 = m.order1 ? m.order1[activeStreamMatch.subIndex] : "";
                     var idx2 = m.order2 ? m.order2[activeStreamMatch.subIndex] : "";
                     var rData = (m.results && m.results[activeStreamMatch.subIndex]) ? m.results[activeStreamMatch.subIndex] : { s1: 0, s2: 0 };
