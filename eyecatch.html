@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アイキャッチ演出素材</title>
+    <style>
+        html, body {
+            background-color: rgba(0, 0, 0, 0) !important;
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .eyecatch-fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1920px;
+            height: 1080px;
+            background: rgba(5, 6, 10, 0.96);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .eyecatch-fullscreen-overlay.active-eyecatch {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .flash-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,30,56,0.4), rgba(0,243,255,0.4));
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .logo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 5;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .logo-hdk {
+            font-size: 8rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #ff1e38;
+            text-shadow: 0 0 10px #ff1e38, 0 0 30px #ff1e38, 3px 3px 0px #000;
+            transform: skewX(-10deg);
+            opacity: 0;
+        }
+
+        .logo-league {
+            font-size: 8rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #00f3ff;
+            text-shadow: 0 0 10px #00f3ff, 0 0 30px #00f3ff, 3px 3px 0px #000;
+            transform: skewX(-10deg);
+            opacity: 0;
+        }
+
+        .play-anim .logo-hdk { animation: hdkMotion 2.2s cubic-bezier(0.15, 1, 0.3, 1) forwards; }
+        .play-anim .logo-league { animation: leagueMotion 2.2s cubic-bezier(0.15, 1, 0.3, 1) forwards; }
+        .play-anim .flash-layer { animation: sharpFlash 2.2s ease-out forwards; }
+
+        @keyframes hdkMotion {
+            0% { transform: translateX(-900px) skewX(-10deg) scale(1.5); opacity: 0; }
+            25% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            65% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            100% { transform: translateX(1000px) skewX(-10deg) scale(1.2); opacity: 0; }
+        }
+
+        @keyframes leagueMotion {
+            0% { transform: translateX(900px) skewX(-10deg) scale(1.5); opacity: 0; }
+            25% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            65% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            100% { transform: translateX(-1000px) skewX(-10deg) scale(1.2); opacity: 0; }
+        }
+
+        @keyframes sharpFlash {
+            0% { opacity: 0; }
+            24% { opacity: 0; }
+            25% { opacity: 0.9; background: #fff; }
+            27% { opacity: 0.2; }
+            28% { opacity: 0.7; background: #00f3ff; }
+            30% { opacity: 0; }
+            63% { opacity: 0; }
+            65% { opacity: 1; background: #ff1e38; }
+            70% { opacity: 0.3; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="playEyecatch()">
+
+    <div class="eyecatch-fullscreen-overlay active-eyecatch play-anim" id="eyecatchOverlay">
+        <div class="flash-layer"></div>
+        <div class="logo-container">
+            <div class="logo-hdk">HDK</div>
+            <div class="logo-league">LEAGUE</div>
+        </div>
+    </div>
+
+    <script>
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playEyecatchSound() {
+            try {
+                initAudio();
+                const bufferSize = audioCtx.sampleRate * 1.5;
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
+
+                const whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+                filter.frequency.linearRampToValueAtTime(1200, audioCtx.currentTime + 0.6);
+
+                const fireGain = audioCtx.createGain();
+                fireGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+                fireGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.3);
+                fireGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 1.5);
+
+                whiteNoise.connect(filter);
+                filter.connect(fireGain);
+                fireGain.connect(audioCtx.destination);
+                whiteNoise.start();
+            } catch(e) {
+                console.error("音声再生エラー:", e);
+            }
+        }
+
+        function playEyecatch() {
+            var overlay = document.getElementById('eyecatchOverlay');
+            overlay.classList.remove('play-anim');
+            void overlay.offsetWidth; // リフロー強制
+            overlay.classList.add('active-eyecatch');
+            overlay.classList.add('play-anim');
+            
+            playEyecatchSound();
+            
+            setTimeout(function() {
+                overlay.classList.remove('active-eyecatch');
+                overlay.classList.remove('play-anim');
+            }, 2300);
+        }
+
+        // ページ読み込み時に再生を試みる
+        window.onload = function() {
+            playEyecatch();
+        };
+
+        // 外部（overlay.htmlや親ウィンドウ）からのメッセージ受信でも再生
+        window.addEventListener('message', function(event) {
+            if (event.data === 'trigger_eyecatch') {
+                playEyecatch();
+            }
+        });
+    </script>
+</body>
+</html>
