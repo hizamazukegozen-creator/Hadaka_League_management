@@ -748,7 +748,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px; /* 上部要素間の縦の隙間を縮小 */
+            gap: 6px;
             margin-left: 15px;
         }
 
@@ -765,7 +765,7 @@
         }
 
         .stream-main-logo {
-            font-size: 1.6rem; /* フォントサイズを大幅にコンパクト化 */
+            font-size: 1.6rem;
             font-weight: 900;
             font-style: italic;
             text-transform: uppercase;
@@ -785,7 +785,7 @@
         }
 
         .stream-sub-logo {
-            font-size: 0.7rem; /* サブタイトルも縮小 */
+            font-size: 0.7rem;
             font-weight: 800;
             font-style: italic;
             text-transform: uppercase;
@@ -837,7 +837,7 @@
             background: rgba(15, 17, 26, 0.88);
             border: 2px solid #3f466b;
             border-radius: 6px;
-            padding: 6px 12px; /* 上下パディングを狭めてスリム化 */
+            padding: 6px 12px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             backdrop-filter: blur(4px);
@@ -847,7 +847,7 @@
         .stream-player-card.p2-card { border-right: 6px solid #ff4655; }
 
         .stream-player-name {
-            font-size: 1.15rem; /* プレイヤーネームの文字サイズをコンパクト化 */
+            font-size: 1.15rem;
             font-weight: bold;
             color: #fff;
             margin-bottom: 1px;
@@ -858,7 +858,7 @@
         }
 
         .stream-player-detail {
-            font-size: 0.72rem; /* 詳細情報（ランク・コスト）も縮小 */
+            font-size: 0.72rem;
             color: #a0a6cc;
             font-weight: 500;
         }
@@ -1503,8 +1503,8 @@
                                 <span>対戦カード一覧</span>
                                 <select id="stream-mode-select" class="stream-mode-selector" onchange="renderStreamCardList()">
                                     <option value="team">① チーム戦カード</option>
-                                    <option value="tourney">③ トーナメント</option>
                                     <option value="solo">② 個人戦スケジュール</option>
+                                    <option value="tourney">③ トーナメント</option>
                                 </select>
                             </div>
                             <div class="stream-card-list" id="stream-card-list-container"></div>
@@ -3551,6 +3551,28 @@
                         container.appendChild(item);
                     });
                 });
+            } else if (mode === 'solo') {
+                if (soloMatches.length === 0) {
+                    container.innerHTML = '<div style="color:#a0a6cc; text-align:center; padding:15px; font-size:0.75rem;">個人戦スケジュールがありません</div>';
+                    return;
+                }
+                soloMatches.forEach(function(sm, smIdx) {
+                    var isChecked = (activeStreamMatch.matchIndex === smIdx && activeStreamMatch.mode === 'solo');
+
+                    var item = document.createElement('div');
+                    item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
+                    item.innerHTML = `
+                        <div class="stream-card-info" onclick="selectStreamMatch('solo', ${smIdx}, 0)">
+                            <div class="stream-card-teams">第${smIdx+1}試合: ${sm.p1} vs ${sm.p2}</div>
+                            <div class="stream-card-sub">個人戦リーグ</div>
+                        </div>
+                        <label class="stream-checkbox-label">
+                            <input type="checkbox" ${isChecked ? 'checked':''} onchange="selectStreamMatch('solo', ${smIdx}, 0)">
+                            <span>配信に表示</span>
+                        </label>
+                    `;
+                    container.appendChild(item);
+                });
             } else if (mode === 'tourney') {
                 var keys = Object.keys(tourneyMatches);
                 var hasMatches = false;
@@ -3579,28 +3601,6 @@
                 if (!hasMatches) {
                     container.innerHTML = '<div style="color:#a0a6cc; text-align:center; padding:15px; font-size:0.75rem;">有効なトーナメント対戦がありません</div>';
                 }
-            } else if (mode === 'solo') {
-                if (soloMatches.length === 0) {
-                    container.innerHTML = '<div style="color:#a0a6cc; text-align:center; padding:15px; font-size:0.75rem;">個人戦スケジュールがありません</div>';
-                    return;
-                }
-                soloMatches.forEach(function(sm, smIdx) {
-                    var isChecked = (activeStreamMatch.matchIndex === smIdx && activeStreamMatch.mode === 'solo');
-
-                    var item = document.createElement('div');
-                    item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
-                    item.innerHTML = `
-                        <div class="stream-card-info" onclick="selectStreamMatch('solo', ${smIdx}, 0)">
-                            <div class="stream-card-teams">第${smIdx+1}試合: ${sm.p1} vs ${sm.p2}</div>
-                            <div class="stream-card-sub">個人戦リーグ</div>
-                        </div>
-                        <label class="stream-checkbox-label">
-                            <input type="checkbox" ${isChecked ? 'checked':''} onchange="selectStreamMatch('solo', ${smIdx}, 0)">
-                            <span>配信に表示</span>
-                        </label>
-                    `;
-                    container.appendChild(item);
-                });
             }
         }
 
@@ -3654,6 +3654,20 @@
                         p2Detail = isPatternC ? `ランク: ${mem2.rankName}` : `ランク: ${mem2.rankName} (コスト ${mem2.cost})`;
                     }
                 }
+            } else if (activeStreamMatch.mode === 'solo') {
+                var sm = soloMatches[activeStreamMatch.matchIndex];
+                if (sm) {
+                    stageTitle = `INDIVIDUAL LEAGUE (第${activeStreamMatch.matchIndex+1}試合)`;
+                    p1Name = sm.p1;
+                    p2Name = sm.p2;
+                    s1 = sm.s1;
+                    s2 = sm.s2;
+
+                    var m1Obj = members.find(x => x.name === sm.p1);
+                    var m2Obj = members.find(x => x.name === sm.p2);
+                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : (isPatternC ? "" : "個人戦プレイヤー");
+                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : (isPatternC ? "" : "個人戦プレイヤー");
+                }
             } else if (activeStreamMatch.mode === 'tourney') {
                 var roundMatches = tourneyMatches[activeStreamMatch.matchIndex];
                 if (roundMatches && roundMatches[activeStreamMatch.subIndex]) {
@@ -3668,20 +3682,6 @@
                     var m2Obj = members.find(x => x.name === tm.p2);
                     p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : (isPatternC ? "" : "トーナメント選手");
                     p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : (isPatternC ? "" : "トーナメント選手");
-                }
-            } else if (activeStreamMatch.mode === 'solo') {
-                var sm = soloMatches[activeStreamMatch.matchIndex];
-                if (sm) {
-                    stageTitle = `INDIVIDUAL LEAGUE (第${activeStreamMatch.matchIndex+1}試合)`;
-                    p1Name = sm.p1;
-                    p2Name = sm.p2;
-                    s1 = sm.s1;
-                    s2 = sm.s2;
-
-                    var m1Obj = members.find(x => x.name === sm.p1);
-                    var m2Obj = members.find(x => x.name === sm.p2);
-                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : (isPatternC ? "" : "個人戦プレイヤー");
-                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : (isPatternC ? "" : "個人戦プレイヤー");
                 }
             }
 
