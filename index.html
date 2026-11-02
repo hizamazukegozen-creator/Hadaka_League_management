@@ -136,7 +136,7 @@
         }
 
         .tab-content.active {
-            display: block;
+            display: block !important;
         }
 
         .card {
@@ -1148,7 +1148,7 @@
         <!-- 右側：メインコンテンツ -->
         <div class="main-content">
             <!-- ① チームリーグ -->
-            <div id="tab-league-team" class="tab-content active">
+            <div id="tab-league-team" class="tab-content active" style="display: block;">
                 <div class="card">
                     <h2>① 裸リーグ（チーム）対抗戦</h2>
                     
@@ -1209,7 +1209,7 @@
             </div>
 
             <!-- ② 個人戦 -->
-            <div id="tab-league-solo" class="tab-content">
+            <div id="tab-league-solo" class="tab-content" style="display: none;">
                 <div class="card">
                     <h2>② 裸リーグ（個人戦）管理</h2>
 
@@ -1301,7 +1301,7 @@
             </div>
 
             <!-- ③ トーナメント -->
-            <div id="tab-tournament" class="tab-content">
+            <div id="tab-tournament" class="tab-content" style="display: none;">
                 <div class="card">
                     <h2>③ 裸でトーナメント管理</h2>
 
@@ -1357,7 +1357,7 @@
             </div>
 
             <!-- ④ チーム管理 -->
-            <div id="tab-team-mgmt" class="tab-content">
+            <div id="tab-team-mgmt" class="tab-content" style="display: none;">
                 <div class="card">
                     <h2>チーム編成・コスト管理</h2>
 
@@ -1418,7 +1418,7 @@
             </div>
 
             <!-- ⑤ メンバー管理 -->
-            <div id="tab-member-mgmt" class="tab-content">
+            <div id="tab-member-mgmt" class="tab-content" style="display: none;">
                 <div class="card" style="max-width: 900px;">
                     <h2>⑤ メンバー管理</h2>
                     <p style="color: #7a82b0; font-size: 0.9rem;">大会に参加するプレイヤーを一覧管理・登録します。表の中から直接ランクを変更することも可能です。</p>
@@ -1466,7 +1466,7 @@
             </div>
 
             <!-- ⑥ 運営管理 -->
-            <div id="tab-admin-mgmt" class="tab-content">
+            <div id="tab-admin-mgmt" class="tab-content" style="display: none;">
                 <div class="card" style="max-width: 700px;">
                     <h2>⑥ 運営管理画面</h2>
                     
@@ -1573,7 +1573,7 @@
             </div>
 
             <!-- 📺 配信オーバーレイ画面タブ -->
-            <div id="tab-stream-overlay" class="tab-content">
+            <div id="tab-stream-overlay" class="tab-content" style="display: none;">
                 <div class="card" style="max-width: 1380px; background: rgba(15, 17, 26, 0.7); border: 2px dashed #9146FF; position: relative;">
                     
                     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
@@ -1809,14 +1809,22 @@
 
         function switchTab(tabId, btnElement) {
             const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(function(c) { c.classList.remove('active'); });
+            contents.forEach(function(c) { 
+                c.classList.remove('active');
+                c.style.display = 'none';
+            });
 
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(function(b) { b.classList.remove('active'); });
 
             const target = document.getElementById(tabId);
-            if (target) target.classList.add('active');
-            if (btnElement) btnElement.classList.add('active');
+            if (target) {
+                target.classList.add('active');
+                target.style.display = 'block';
+            }
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
 
             var mainContentArea = document.querySelector('.main-content');
             if (mainContentArea) mainContentArea.scrollTop = 0;
