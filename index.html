@@ -33,7 +33,6 @@
             overflow-y: auto;
         }
 
-        /* サイドバーロゴデザイン */
         .sidebar-logo-container {
             text-align: center;
             margin-bottom: 25px;
@@ -730,6 +729,8 @@
             min-height: 720px;
             box-sizing: border-box;
             align-items: flex-start;
+            /* ここを基準(relative)にすることで、直下の絶対配置オーバーレイがこのエリア内だけに収まるようにする */
+            position: relative;
         }
 
         .stream-main-stage {
@@ -750,9 +751,10 @@
             align-items: center;
             gap: 6px;
             margin-left: 15px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* 配信画面用：デザインロゴコンテナ（高さを縮小） */
         .stream-stage-logo-box {
             text-align: center;
             position: relative;
@@ -917,6 +919,8 @@
             max-height: 720px;
             flex-shrink: 0;
             margin-right: 10px;
+            position: relative;
+            z-index: 2;
         }
 
         .stream-side-header {
@@ -1005,6 +1009,120 @@
             width: 13px;
             height: 13px;
             accent-color: #9146FF;
+        }
+
+        /* --- EVO風アイキャッチ演出用オーバーレイ（配信ビューエリア内に綺麗に収める） --- */
+        .eyecatch-fullscreen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 6, 10, 0.96);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+
+        .eyecatch-fullscreen-overlay.active-eyecatch {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .flash-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,30,56,0.4), rgba(0,243,255,0.4));
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .logo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 5;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .logo-hdk {
+            font-size: 7rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #ff1e38;
+            text-shadow: 
+                0 0 10px #ff1e38,
+                0 0 30px #ff1e38,
+                0 0 60px rgba(255, 30, 56, 0.8),
+                3px 3px 0px #000;
+            transform: skewX(-10deg);
+            opacity: 0;
+        }
+
+        .logo-league {
+            font-size: 7rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #00f3ff;
+            text-shadow: 
+                0 0 10px #00f3ff,
+                0 0 30px #00f3ff,
+                0 0 60px rgba(0, 243, 255, 0.8),
+                3px 3px 0px #000;
+            transform: skewX(-10deg);
+            opacity: 0;
+        }
+
+        .play-anim .logo-hdk {
+            animation: hdkMotion 2.2s cubic-bezier(0.15, 1, 0.3, 1) forwards;
+        }
+
+        .play-anim .logo-league {
+            animation: leagueMotion 2.2s cubic-bezier(0.15, 1, 0.3, 1) forwards;
+        }
+
+        .play-anim .flash-layer {
+            animation: sharpFlash 2.2s ease-out forwards;
+        }
+
+        @keyframes hdkMotion {
+            0% { transform: translateX(-900px) skewX(-10deg) scale(1.5); opacity: 0; }
+            25% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            35% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            65% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            100% { transform: translateX(1000px) skewX(-10deg) scale(1.2); opacity: 0; }
+        }
+
+        @keyframes leagueMotion {
+            0% { transform: translateX(900px) skewX(-10deg) scale(1.5); opacity: 0; }
+            25% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            35% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            65% { transform: translateX(0px) skewX(-10deg) scale(1); opacity: 1; }
+            100% { transform: translateX(-1000px) skewX(-10deg) scale(1.2); opacity: 0; }
+        }
+
+        @keyframes sharpFlash {
+            0% { opacity: 0; }
+            24% { opacity: 0; }
+            25% { opacity: 0.9; background: #fff; }
+            27% { opacity: 0.2; }
+            28% { opacity: 0.7; background: #00f3ff; }
+            30% { opacity: 0; }
+            63% { opacity: 0; }
+            65% { opacity: 1; background: #ff1e38; }
+            70% { opacity: 0.3; }
+            100% { opacity: 0; }
         }
     </style>
 </head>
@@ -1457,16 +1575,34 @@
 
             <!-- 📺 配信オーバーレイ画面タブ -->
             <div id="tab-stream-overlay" class="tab-content">
-                <div class="card" style="max-width: 1380px; background: rgba(15, 17, 26, 0.7); border: 2px dashed #9146FF;">
-                    <h2 style="color: #9146FF;">📺 配信用レイアウトプレビュー (OBSブラウザソース用)</h2>
-                    <p style="color: #a0a6cc; font-size: 0.9rem; margin-bottom: 20px;">
-                        ※この画面は背景が透明（透過）になっています。OBSの「ブラウザソース」でこのページを読み込み、**背面に「ゲームキャプチャ」ソースを配置する**と、ゲーム画面の上部に対抗戦カードが綺麗に重なります！
-                    </p>
+                <div class="card" style="max-width: 1380px; background: rgba(15, 17, 26, 0.7); border: 2px dashed #9146FF; position: relative;">
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <h2 style="color: #9146FF; margin: 0 0 5px 0;">📺 配信用レイアウトプレビュー (OBSブラウザソース用)</h2>
+                            <p style="color: #a0a6cc; font-size: 0.85rem; margin: 0;">
+                                ※背景透過。右のボタンでEVO風アイキャッチ演出を再生できます。
+                            </p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(20, 23, 36, 0.9); padding: 8px 15px; border-radius: 6px; border: 1px solid #3f466b;">
+                            <span style="color: #00f3ff; font-weight: bold; font-size: 0.85rem;">⚡ アイキャッチ演出</span>
+                            <button type="button" class="action-btn" style="padding: 6px 18px; font-size: 0.9rem; background: #ff4655; color: #fff;" onclick="triggerEyecatchAll()">▶ 再生する</button>
+                        </div>
+                    </div>
 
                     <div class="stream-view-container">
+                        
+                        <!-- EVO風アイキャッチ演出用オーバーレイ（緑色のプレビューエリア内に正確に配置） -->
+                        <div class="eyecatch-fullscreen-overlay" id="eyecatchOverlay">
+                            <div class="flash-layer"></div>
+                            <div class="logo-container">
+                                <div class="logo-hdk">HDK</div>
+                                <div class="logo-league">LEAGUE</div>
+                            </div>
+                        </div>
+
                         <div class="stream-main-stage">
                             <div class="stream-stage-top-box">
-                                <!-- 大会メインデザインロゴ -->
                                 <div class="stream-stage-logo-box">
                                     <h1 class="stream-main-logo">裸 LEAGUE</h1>
                                     <div class="stream-sub-logo">ANGER MANAGEMENT</div>
@@ -3692,6 +3828,73 @@
             p2DetailElem.textContent = p2Detail;
             s1Elem.textContent = s1;
             s2Elem.textContent = s2;
+        }
+
+        // --- Web Audio API 音声生成 ＆ アニメーション実行 ---
+        function playEyecatchSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = audioCtx.sampleRate * 1.5;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+            filter.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.6);
+            filter.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 1.5);
+
+            const fireGain = audioCtx.createGain();
+            fireGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            fireGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.3);
+            fireGain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 1.2);
+            fireGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 1.5);
+
+            whiteNoise.connect(filter);
+            filter.connect(fireGain);
+            fireGain.connect(audioCtx.destination);
+            whiteNoise.start();
+
+            setTimeout(() => {
+                const thunderNode = audioCtx.createBufferSource();
+                thunderNode.buffer = noiseBuffer;
+
+                const thunderFilter = audioCtx.createBiquadFilter();
+                thunderFilter.type = 'bandpass';
+                thunderFilter.frequency.setValueAtTime(2500, audioCtx.currentTime);
+                thunderFilter.Q.setValueAtTime(3, audioCtx.currentTime);
+
+                const thunderGain = audioCtx.createGain();
+                thunderGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+                thunderGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+                thunderNode.connect(thunderFilter);
+                thunderFilter.connect(thunderGain);
+                thunderGain.connect(audioCtx.destination);
+                thunderNode.start();
+            }, 550);
+        }
+
+        function triggerEyecatchAll() {
+            var overlay = document.getElementById('eyecatchOverlay');
+            overlay.classList.remove('play-anim');
+            overlay.classList.add('active-eyecatch');
+            
+            setTimeout(function() {
+                overlay.classList.add('play-anim');
+            }, 50);
+
+            playEyecatchSound();
+
+            setTimeout(function() {
+                overlay.classList.remove('active-eyecatch');
+                overlay.classList.remove('play-anim');
+            }, 2300);
         }
 
         // --- インポート ---
