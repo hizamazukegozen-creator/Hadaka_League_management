@@ -1893,9 +1893,10 @@
 
         function calcTeamTotalCostByOrder(orderObj) {
             var total = 0;
+            if (!orderObj) return total;
             ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => {
                 var mIdx = orderObj[role];
-                if (mIdx !== "" && members[mIdx]) {
+                if (mIdx !== "" && mIdx !== undefined && members[mIdx]) {
                     total += members[mIdx].cost;
                 }
             });
@@ -1907,8 +1908,12 @@
         }
 
         function calculateMatchPoints(m, pts) {
-            var cost1 = calcTeamTotalCostByOrder(m.order1);
-            var cost2 = calcTeamTotalCostByOrder(m.order2);
+            var order1 = m.order1 || { senho: "", jiho: "", fukusho: "", taisho: "" };
+            var order2 = m.order2 || { senho: "", jiho: "", fukusho: "", taisho: "" };
+            var results = m.results || {};
+
+            var cost1 = calcTeamTotalCostByOrder(order1);
+            var cost2 = calcTeamTotalCostByOrder(order2);
 
             var raw1 = 0, raw2 = 0;
             var bonus1 = 0, bonus2 = 0;
@@ -1920,11 +1925,11 @@
 
             if (bonusMode === 'exact_diff') {
                 roles.forEach(r => {
-                    var res = m.results[r];
-                    var idx1 = m.order1[r];
-                    var idx2 = m.order2[r];
-                    var c1 = (idx1 !== "" && members[idx1]) ? members[idx1].cost : 0;
-                    var c2 = (idx2 !== "" && members[idx2]) ? members[idx2].cost : 0;
+                    var res = results[r];
+                    var idx1 = order1[r];
+                    var idx2 = order2[r];
+                    var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
+                    var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
 
                     if (res && res.winner === 1) {
                         raw1 += pts[r];
@@ -1943,31 +1948,31 @@
                 if (cost1 < cost2 && diff > 0) {
                     var lowerCount1 = 0;
                     roles.forEach(r => {
-                        var idx1 = m.order1[r];
-                        var idx2 = m.order2[r];
-                        var c1 = (idx1 !== "" && members[idx1]) ? members[idx1].cost : 0;
-                        var c2 = (idx2 !== "" && members[idx2]) ? members[idx2].cost : 0;
-                        if (idx1 !== "" && idx2 !== "" && c1 < c2) lowerCount1++;
+                        var idx1 = order1[r];
+                        var idx2 = order2[r];
+                        var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
+                        var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
+                        if (idx1 !== "" && idx1 !== undefined && idx2 !== "" && idx2 !== undefined && c1 < c2) lowerCount1++;
                     });
                     if (lowerCount1 > 0) subBonus1 = diff / lowerCount1;
                 } else if (cost2 < cost1 && diff > 0) {
                     var lowerCount2 = 0;
                     roles.forEach(r => {
-                        var idx1 = m.order1[r];
-                        var idx2 = m.order2[r];
-                        var c1 = (idx1 !== "" && members[idx1]) ? members[idx1].cost : 0;
-                        var c2 = (idx2 !== "" && members[idx2]) ? members[idx2].cost : 0;
-                        if (idx1 !== "" && idx2 !== "" && c2 < c1) lowerCount2++;
+                        var idx1 = order1[r];
+                        var idx2 = order2[r];
+                        var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
+                        var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
+                        if (idx1 !== "" && idx1 !== undefined && idx2 !== "" && idx2 !== undefined && c2 < c1) lowerCount2++;
                     });
                     if (lowerCount2 > 0) subBonus2 = diff / lowerCount2;
                 }
 
                 roles.forEach(r => {
-                    var res = m.results[r];
-                    var idx1 = m.order1[r];
-                    var idx2 = m.order2[r];
-                    var c1 = (idx1 !== "" && members[idx1]) ? members[idx1].cost : 0;
-                    var c2 = (idx2 !== "" && members[idx2]) ? members[idx2].cost : 0;
+                    var res = results[r];
+                    var idx1 = order1[r];
+                    var idx2 = order2[r];
+                    var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
+                    var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
 
                     if (res && res.winner === 1) {
                         raw1 += pts[r];
@@ -1984,8 +1989,8 @@
             var final2 = raw2 + bonus2;
 
             return {
-                t1: { raw: raw1, bonus: Number(bonus1.toFixed(2)), final: Number(final1.toFixed(2)), cost: cost1 },
-                t2: { raw: raw2, bonus: Number(bonus2.toFixed(2)), final: Number(final2.toFixed(2)), cost: cost2 }
+                t1: { raw: raw1, bonus: Number((bonus1 || 0).toFixed(2)), final: Number((final1 || 0).toFixed(2)), cost: cost1 },
+                t2: { raw: raw2, bonus: Number((bonus2 || 0).toFixed(2)), final: Number((final2 || 0).toFixed(2)), cost: cost2 }
             };
         }
 
@@ -2017,6 +2022,14 @@
                 if (!m.order2) {
                     var found2 = teams.find(t => t.name === m.t2Name);
                     m.order2 = found2 ? JSON.parse(JSON.stringify(found2.members)) : { senho: "", jiho: "", fukusho: "", taisho: "" };
+                }
+                if (!m.results) {
+                    m.results = {
+                        senho: { s1: 0, s2: 0, winner: 0 },
+                        jiho: { s1: 0, s2: 0, winner: 0 },
+                        fukusho: { s1: 0, s2: 0, winner: 0 },
+                        taisho: { s1: 0, s2: 0, winner: 0 }
+                    };
                 }
 
                 var resCalc = calculateMatchPoints(m, pts);
@@ -2196,7 +2209,6 @@
             updateTeamRankingTable();
         }
 
-        // --- 修正箇所：チームランキング集計ロジック ---
         function updateTeamRankingTable() {
             var getPts = function(id) {
                 var elem = document.getElementById(id);
@@ -2212,7 +2224,6 @@
 
             var stats = {};
             
-            // エントリー済みチームまたは対戦カードに存在する全チームを初期化
             var allTeams = new Set([...teamParticipants]);
             teamMatches.forEach(m => {
                 if (m.t1Name) allTeams.add(m.t1Name);
@@ -2237,14 +2248,14 @@
                 }
 
                 if (stats[t1Name]) {
-                    stats[t1Name].totalPts += c1.final;
-                    stats[t1Name].rawPts += c1.raw;
-                    stats[t1Name].bonusPts += c1.bonus;
+                    stats[t1Name].totalPts += (c1.final || 0);
+                    stats[t1Name].rawPts += (c1.raw || 0);
+                    stats[t1Name].bonusPts += (c1.bonus || 0);
                 }
                 if (stats[t2Name]) {
-                    stats[t2Name].totalPts += c2.final;
-                    stats[t2Name].rawPts += c2.raw;
-                    stats[t2Name].bonusPts += c2.bonus;
+                    stats[t2Name].totalPts += (c2.final || 0);
+                    stats[t2Name].rawPts += (c2.raw || 0);
+                    stats[t2Name].bonusPts += (c2.bonus || 0);
                 }
             });
 
@@ -2261,12 +2272,16 @@
             }
 
             ranked.forEach((t, idx) => {
+                var totalPtsVal = (t.totalPts !== undefined && !isNaN(t.totalPts)) ? t.totalPts : 0;
+                var rawPtsVal = (t.rawPts !== undefined && !isNaN(t.rawPts)) ? t.rawPts : 0;
+                var bonusPtsVal = (t.bonusPts !== undefined && !isNaN(t.bonusPts)) ? t.bonusPts : 0;
+
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight:bold; color:${idx === 0 ? '#ffcc00':'#fff'}">${idx + 1}位</td>
                     <td style="font-weight:bold;">${t.name}</td>
-                    <td style="color:#00ffcc; font-weight:bold; font-size:1.1rem;">${t.totalPts.toFixed(2)} pt</td>
-                    <td style="color:#a0a6cc; font-size:0.9rem;">通常 ${t.raw}pt ＋ 補正 ${t.bonus.toFixed(2)}pt</td>
+                    <td style="color:#00ffcc; font-weight:bold; font-size:1.1rem;">${totalPtsVal.toFixed(2)} pt</td>
+                    <td style="color:#a0a6cc; font-size:0.9rem;">通常 ${rawPtsVal}pt ＋ 補正 ${bonusPtsVal.toFixed(2)}pt</td>
                     <td>${t.wins}勝</td>
                 `;
                 tbody.appendChild(tr);
@@ -2671,7 +2686,7 @@
 
             if (lb2 && lb2[0]) {
                 if (lb1 && lb1[0] && lb1[0].winner) lb2[0].p1 = lb1[0].winner; else lb2[0].p1 = '（未定）';
-                if (wb2 && wb2[0] && wb2[0].loser) lb2[0].p2 = wb2[0].loser; else lb2[0].p2 = '（未定）';
+                if (wb2 && wb2[0] && wb2[0].winner) lb2[0].p2 = wb2[0].winner; else lb2[0].p2 = '（未定）';
             }
 
             if (gf && gf[0]) {
@@ -3152,10 +3167,10 @@
                         { key: 'taisho', label: '大将' }
                     ];
                     roles.forEach(function(r) {
-                        var idx1 = m.order1[r.key];
-                        var idx2 = m.order2[r.key];
-                        var p1Name = (idx1 !== "" && members[idx1]) ? members[idx1].name : '未定';
-                        var p2Name = (idx2 !== "" && members[idx2]) ? members[idx2].name : '未定';
+                        var idx1 = m.order1 ? m.order1[r.key] : "";
+                        var idx2 = m.order2 ? m.order2[r.key] : "";
+                        var p1Name = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].name : '未定';
+                        var p2Name = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].name : '未定';
 
                         var isChecked = (activeStreamMatch.matchIndex === mIdx && activeStreamMatch.subIndex === r.key && activeStreamMatch.mode === 'team');
 
@@ -3257,18 +3272,18 @@
                 var m = teamMatches[activeStreamMatch.matchIndex];
                 if (m) {
                     stageTitle = `${m.t1Name} vs ${m.t2Name} (${activeStreamMatch.subIndex.toUpperCase()})`;
-                    var idx1 = m.order1[activeStreamMatch.subIndex];
-                    var idx2 = m.order2[activeStreamMatch.subIndex];
-                    var rData = m.results[activeStreamMatch.subIndex] || { s1: 0, s2: 0 };
+                    var idx1 = m.order1 ? m.order1[activeStreamMatch.subIndex] : "";
+                    var idx2 = m.order2 ? m.order2[activeStreamMatch.subIndex] : "";
+                    var rData = (m.results && m.results[activeStreamMatch.subIndex]) ? m.results[activeStreamMatch.subIndex] : { s1: 0, s2: 0 };
                     s1 = rData.s1;
                     s2 = rData.s2;
 
-                    if (idx1 !== "" && members[idx1]) {
+                    if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
                         var mem1 = members[idx1];
                         p1Name = mem1.name;
                         p1Detail = `ランク: ${mem1.rankName} (コスト ${mem1.cost})`;
                     }
-                    if (idx2 !== "" && members[idx2]) {
+                    if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
                         var mem2 = members[idx2];
                         p2Name = mem2.name;
                         p2Detail = `ランク: ${mem2.rankName} (コスト ${mem2.cost})`;
