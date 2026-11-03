@@ -369,6 +369,17 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
+        // Broadcast Channelでリアルタイム同期
+        var bc = new BroadcastChannel('hadaka_league_sync_channel');
+
+        bc.onmessage = function (event) {
+            if (event.data && event.data.type === 'UPDATE') {
+                loadAppData();
+                renderStreamCardList();
+                updateStreamStageDisplay();
+            }
+        };
+
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (json) {
@@ -390,6 +401,8 @@
             var data = json ? JSON.parse(json) : {};
             data.activeStreamMatch = activeStreamMatch;
             localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+            // チャンネル経由で即座に通知
+            bc.postMessage({ type: 'UPDATE' });
         }
 
         function changeStreamMode(modeVal) {
@@ -402,7 +415,6 @@
         }
 
         function renderStreamCardList() {
-            loadAppData();
             var modeSel = document.getElementById('stream-mode-select');
             if (!modeSel) return;
             modeSel.value = activeStreamMatch.mode;
@@ -508,7 +520,6 @@
         }
 
         function updateStreamStageDisplay() {
-            loadAppData();
             var p1NameElem = document.getElementById('stream-p1-name');
             var p2NameElem = document.getElementById('stream-p2-name');
             var p1DetailElem = document.getElementById('stream-p1-detail');
@@ -588,20 +599,10 @@
             s2Elem.textContent = s2;
         }
 
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'hadaka_league_master_data') {
-                renderStreamCardList();
-                updateStreamStageDisplay();
-            }
-        });
-
         window.onload = function() {
+            loadAppData();
             renderStreamCardList();
             updateStreamStageDisplay();
-            setInterval(function() {
-                renderStreamCardList();
-                updateStreamStageDisplay();
-            }, 500);
         };
     </script>
 </body>
