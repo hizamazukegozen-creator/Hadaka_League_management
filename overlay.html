@@ -6,7 +6,7 @@
     <title>HDK LEAGUE - 配信オーバーレイ</title>
     <style>
         html, body {
-            background-color: #0b0d14 !important; /* 透過時に眩しくないよう落ち着いた黒に変更 */
+            background-color: rgba(0, 0, 0, 0) !important;
             color: #f0f0f0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
@@ -140,24 +140,24 @@
 
         .stream-player-card {
             flex: 1;
-            background: rgba(14, 18, 32, 0.95); /* プレイヤーカードをより引き締まった黒ベースに */
-            border: 2px solid #00d9ff; /* 視認性を高めるため枠線を青系に変更 */
+            background: rgba(15, 17, 26, 0.92);
+            border: 2px solid #3f466b;
             border-radius: 8px;
             padding: 12px 20px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             backdrop-filter: blur(4px);
         }
 
         .stream-player-card.p1-card { border-left: 6px solid #00d9ff; }
-        .stream-player-card.p2-card { border-right: 6px solid #ff1a40; }
+        .stream-player-card.p2-card { border-right: 6px solid #ff4655; }
 
         .stream-player-name {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #ffffff; /* プレイヤー名をくっきり白い文字に */
+            color: #fff;
             margin-bottom: 4px;
-            text-shadow: 0 2px 6px rgba(0, 217, 255, 0.4); /* 青みの光を添えて読みやすく */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -165,7 +165,7 @@
 
         .stream-player-detail {
             font-size: 0.9rem;
-            color: #b3f0ff; /* 詳細もアイスブルー系にして視認性アップ */
+            color: #a0a6cc;
             font-weight: 500;
         }
 
@@ -180,8 +180,8 @@
             font-size: 1.8rem;
             font-style: italic;
             font-weight: 900;
-            color: #ff1a40;
-            text-shadow: 0 0 10px rgba(255, 26, 64, 0.9), 0 2px 4px rgba(0,0,0,0.9);
+            color: #ff4655;
+            text-shadow: 0 0 10px rgba(255, 70, 85, 0.9), 0 2px 4px rgba(0,0,0,0.9);
             line-height: 1;
         }
 
@@ -207,7 +207,7 @@
 
         .stream-side-panel {
             width: 360px;
-            background: rgba(15, 18, 28, 0.95); /* サイドパネルも黒ベースに統一 */
+            background: rgba(20, 23, 36, 0.92);
             backdrop-filter: blur(6px);
             border: 2px solid #3f466b;
             border-radius: 8px;
@@ -219,7 +219,7 @@
         }
 
         .stream-side-header {
-            background: #121522;
+            background: #1a1d2d;
             color: #00d9ff;
             padding: 10px 12px;
             font-weight: bold;
@@ -239,7 +239,7 @@
         }
 
         .stream-mode-selector {
-            background: #0b0d14;
+            background: #10121b;
             color: #fff;
             border: 1px solid #3f466b;
             padding: 3px 6px;
@@ -258,7 +258,7 @@
         }
 
         .stream-card-item {
-            background: #141724;
+            background: #1a1d2d;
             border: 1px solid #2a2e45;
             border-radius: 5px;
             padding: 8px 10px;
@@ -270,9 +270,9 @@
         }
 
         .stream-card-item.active-stream {
-            border-color: #00d9ff;
-            background: #102633;
-            box-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
+            border-color: #9146FF;
+            background: #251c3b;
+            box-shadow: 0 0 8px rgba(145, 70, 255, 0.4);
         }
 
         .stream-card-info {
@@ -288,7 +288,7 @@
 
         .stream-card-sub {
             font-size: 0.72rem;
-            color: #b3f0ff;
+            color: #a0a6cc;
         }
 
         .stream-checkbox-label {
@@ -305,7 +305,7 @@
             cursor: pointer;
             width: 14px;
             height: 14px;
-            accent-color: #00d9ff;
+            accent-color: #9146FF;
         }
     </style>
 </head>
@@ -398,7 +398,7 @@
 
             if (mode === 'team') {
                 if (teamMatches.length === 0) {
-                    container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">チーム戦の対戦がありません</div>';
+                    container.innerHTML = '<div style="color:#a0a6cc; text-align:center; padding:15px; font-size:0.8rem;">チーム戦の対戦がありません</div>';
                     return;
                 }
                 teamMatches.forEach(function(m, mIdx) {
@@ -433,7 +433,7 @@
                 });
             } else if (mode === 'solo') {
                 if (soloMatches.length === 0) {
-                    container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">個人戦スケジュールがありません</div>';
+                    container.innerHTML = '<div style="color:#a0a6cc; text-align:center; padding:15px; font-size:0.8rem;">個人戦スケジュールがありません</div>';
                     return;
                 }
                 soloMatches.forEach(function(sm, smIdx) {
@@ -477,7 +477,7 @@
                     });
                 });
                 if (!hasMatches) {
-                    container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">有効なトーナメント対戦がありません</div>';
+                    container.innerHTML = '<div style="color:#a0a6cc; text-align:center; padding:15px; font-size:0.8rem;">有効なトーナメント対戦がありません</div>';
                 }
             }
         }
