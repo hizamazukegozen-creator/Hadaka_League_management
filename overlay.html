@@ -599,7 +599,7 @@
             if (s2Elem) s2Elem.innerText = s2;
         }
 
-        // --- ▼ 自動同期（ポーリング）用の追加スクリプト ▼ ---
+        // --- ▼ 追加した自動同期の処理（ここだけが変更点です） ▼ ---
         var lastJsonData = "";
 
         function startAutoSync() {
@@ -609,15 +609,15 @@
                     lastJsonData = currentJson;
                     refreshOverlay();
                 }
-            }, 1000); // 1秒ごとにストレージの変更を監視
+            }, 1000); // 1秒ごとにストレージの変化を監視
         }
 
-        // ページ読み込み時の初期化
+        // ページ読み込み時に実行
         window.onload = function() {
             loadAppData();
             lastJsonData = localStorage.getItem('hadaka_league_master_data');
             refreshOverlay();
-            startAutoSync(); // 自動同期スタート
+            startAutoSync();
         };
         // --- ▲ ここまで追加 ▲ ---
     </script>
