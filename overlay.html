@@ -527,29 +527,99 @@
             if (!p1NameElem) return;
 
             var p1Name = "P1 プレイヤー名";
-            var p2Name = "
+            var p2Name = "P2 プレイヤー名";
+            var p1Detail = "ランク: -";
+            var p2Detail = "ランク: -";
+            var s1 = 0;
+            var s2 = 0;
+            var stageTitle = "FEATURED MATCH";
 
+            if (activeStreamMatch.mode === 'team') {
+                var m = teamMatches[activeStreamMatch.matchIndex];
+                if (m) {
+                    stageTitle = m.t1Name + " vs " + m.t2Name;
+                    var rKey = activeStreamMatch.subIndex;
+                    var roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
+                    stageTitle += " 【" + (roleLabels[rKey] || rKey) + "】";
 
-        
-        // 直前のlocalStorageデータを保持しておく変数（無駄な再描画を防ぐため）
+                    var idx1 = m.order1 ? m.order1[rKey] : "";
+                    var idx2 = m.order2 ? m.order2[rKey] : "";
+
+                    if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
+                        p1Name = members[idx1].name || "P1";
+                        p1Detail = "ランク: " + (members[idx1].rank || "-");
+                    } else {
+                        p1Name = "（未定）";
+                    }
+
+                    if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
+                        p2Name = members[idx2].name || "P2";
+                        p2Detail = "ランク: " + (members[idx2].rank || "-");
+                    } else {
+                        p2Name = "（未定）";
+                    }
+
+                    if (m.scores && m.scores[rKey]) {
+                        s1 = m.scores[rKey].s1 || 0;
+                        s2 = m.scores[rKey].s2 || 0;
+                    }
+                }
+            } else if (activeStreamMatch.mode === 'solo') {
+                var sm = soloMatches[activeStreamMatch.matchIndex];
+                if (sm) {
+                    stageTitle = "個人戦リーグ 第" + (activeStreamMatch.matchIndex + 1) + "試合";
+                    p1Name = sm.p1 || "P1";
+                    p2Name = sm.p2 || "P2";
+                    p1Detail = "個人戦";
+                    p2Detail = "個人戦";
+                    s1 = sm.s1 || 0;
+                    s2 = sm.s2 || 0;
+                }
+            } else if (activeStreamMatch.mode === 'tourney') {
+                var rk = activeStreamMatch.matchIndex;
+                var tmIdx = activeStreamMatch.subIndex;
+                if (tourneyMatches[rk] && tourneyMatches[rk][tmIdx]) {
+                    var tm = tourneyMatches[rk][tmIdx];
+                    stageTitle = "トーナメント戦 (" + rk + ")";
+                    p1Name = tm.p1 || "P1";
+                    p2Name = tm.p2 || "P2";
+                    p1Detail = "トーナメント";
+                    p2Detail = "トーナメント";
+                    s1 = tm.s1 || 0;
+                    s2 = tm.s2 || 0;
+                }
+            }
+
+            if (stageTitleElem) stageTitleElem.innerText = stageTitle;
+            if (p1NameElem) p1NameElem.innerText = p1Name;
+            if (p2NameElem) p2NameElem.innerText = p2Name;
+            if (p1DetailElem) p1DetailElem.innerText = p1Detail;
+            if (p2DetailElem) p2DetailElem.innerText = p2Detail;
+            if (s1Elem) s1Elem.innerText = s1;
+            if (s2Elem) s2Elem.innerText = s2;
+        }
+
+        // --- ▼ 自動同期（ポーリング）用の追加スクリプト ▼ ---
         var lastJsonData = "";
 
-        // 定期的にlocalStorageをチェックして自動更新する関数（例: 1秒おき）
         function startAutoSync() {
             setInterval(function() {
                 var currentJson = localStorage.getItem('hadaka_league_master_data');
-                // データが変更されていたら自動でリフレッシュ
                 if (currentJson !== lastJsonData) {
                     lastJsonData = currentJson;
                     refreshOverlay();
                 }
-            }, 1000); // 1000ミリ秒 = 1秒ごとにチェック
+            }, 1000); // 1秒ごとにストレージの変更を監視
         }
 
-        // ページ読み込み時に初回ロードと自動同期の開始を行う
+        // ページ読み込み時の初期化
         window.onload = function() {
             loadAppData();
             lastJsonData = localStorage.getItem('hadaka_league_master_data');
             refreshOverlay();
-            startAutoSync(); // 自動ポーリング開始
+            startAutoSync(); // 自動同期スタート
         };
+        // --- ▲ ここまで追加 ▲ ---
+    </script>
+</body>
+</html>
