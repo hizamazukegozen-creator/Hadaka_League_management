@@ -369,17 +369,7 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
-        // Broadcast Channelでリアルタイム同期
-        var bc = new BroadcastChannel('hadaka_league_sync_channel');
-
-        bc.onmessage = function (event) {
-            if (event.data && event.data.type === 'UPDATE') {
-                loadAppData();
-                renderStreamCardList();
-                updateStreamStageDisplay();
-            }
-        };
-
+        // データの読み込み
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (json) {
@@ -396,22 +386,24 @@
             }
         }
 
-        function saveActiveStreamMatch() {
-            var json = localStorage.getItem('hadaka_league_master_data');
-            var data = json ? JSON.parse(json) : {};
-            data.activeStreamMatch = activeStreamMatch;
-            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
-            // チャンネル経由で即座に通知
-            bc.postMessage({ type: 'UPDATE' });
+        // 画面全体の更新処理
+        function refreshOverlay() {
+            loadAppData();
+            renderStreamCardList();
+            updateStreamStageDisplay();
         }
 
         function changeStreamMode(modeVal) {
             activeStreamMatch.mode = modeVal;
             activeStreamMatch.matchIndex = 0;
             activeStreamMatch.subIndex = (modeVal === 'team') ? 'senho' : 0;
-            saveActiveStreamMatch();
-            renderStreamCardList();
-            updateStreamStageDisplay();
+            
+            var json = localStorage.getItem('hadaka_league_master_data');
+            var data = json ? JSON.parse(json) : {};
+            data.activeStreamMatch = activeStreamMatch;
+            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+
+            refreshOverlay();
         }
 
         function renderStreamCardList() {
@@ -514,9 +506,13 @@
             activeStreamMatch.mode = mode;
             activeStreamMatch.matchIndex = mIdx;
             activeStreamMatch.subIndex = subIdx;
-            saveActiveStreamMatch();
-            renderStreamCardList();
-            updateStreamStageDisplay();
+
+            var json = localStorage.getItem('hadaka_league_master_data');
+            var data = json ? JSON.parse(json) : {};
+            data.activeStreamMatch = activeStreamMatch;
+            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+
+            refreshOverlay();
         }
 
         function updateStreamStageDisplay() {
@@ -531,79 +527,4 @@
             if (!p1NameElem) return;
 
             var p1Name = "P1 プレイヤー名";
-            var p2Name = "P2 プレイヤー名";
-            var p1Detail = "ランク: -";
-            var p2Detail = "ランク: -";
-            var s1 = 0, s2 = 0;
-            var stageTitle = "FEATURED MATCH";
-
-            if (activeStreamMatch.mode === 'team') {
-                var m = teamMatches[activeStreamMatch.matchIndex];
-                if (m) {
-                    var roleLabelMap = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
-                    var rLabel = roleLabelMap[activeStreamMatch.subIndex] || activeStreamMatch.subIndex;
-                    stageTitle = `${m.t1Name} vs ${m.t2Name} (${rLabel})`;
-                    
-                    var idx1 = m.order1 ? m.order1[activeStreamMatch.subIndex] : "";
-                    var idx2 = m.order2 ? m.order2[activeStreamMatch.subIndex] : "";
-                    var rData = (m.results && m.results[activeStreamMatch.subIndex]) ? m.results[activeStreamMatch.subIndex] : { s1: 0, s2: 0 };
-                    s1 = rData.s1;
-                    s2 = rData.s2;
-
-                    if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
-                        var mem1 = members[idx1];
-                        p1Name = mem1.name;
-                        p1Detail = `ランク: ${mem1.rankName} (コスト ${mem1.cost})`;
-                    }
-                    if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
-                        var mem2 = members[idx2];
-                        p2Name = mem2.name;
-                        p2Detail = `ランク: ${mem2.rankName} (コスト ${mem2.cost})`;
-                    }
-                }
-            } else if (activeStreamMatch.mode === 'solo') {
-                var sm = soloMatches[activeStreamMatch.matchIndex];
-                if (sm) {
-                    stageTitle = `個人戦リーグ (第${activeStreamMatch.matchIndex+1}試合)`;
-                    p1Name = sm.p1;
-                    p2Name = sm.p2;
-                    s1 = sm.s1;
-                    s2 = sm.s2;
-                    var m1Obj = members.find(x => x.name === sm.p1);
-                    var m2Obj = members.find(x => x.name === sm.p2);
-                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : "";
-                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : "";
-                }
-            } else if (activeStreamMatch.mode === 'tourney') {
-                var roundMatches = tourneyMatches[activeStreamMatch.matchIndex];
-                if (roundMatches && roundMatches[activeStreamMatch.subIndex]) {
-                    var tm = roundMatches[activeStreamMatch.subIndex];
-                    stageTitle = `トーナメント戦`;
-                    p1Name = tm.p1;
-                    p2Name = tm.p2;
-                    s1 = tm.s1;
-                    s2 = tm.s2;
-                    var m1Obj = members.find(x => x.name === tm.p1);
-                    var m2Obj = members.find(x => x.name === tm.p2);
-                    p1Detail = m1Obj ? `ランク: ${m1Obj.rankName}` : "";
-                    p2Detail = m2Obj ? `ランク: ${m2Obj.rankName}` : "";
-                }
-            }
-
-            stageTitleElem.textContent = stageTitle;
-            p1NameElem.textContent = p1Name;
-            p2NameElem.textContent = p2Name;
-            p1DetailElem.textContent = p1Detail;
-            p2DetailElem.textContent = p2Detail;
-            s1Elem.textContent = s1;
-            s2Elem.textContent = s2;
-        }
-
-        window.onload = function() {
-            loadAppData();
-            renderStreamCardList();
-            updateStreamStageDisplay();
-        };
-    </script>
-</body>
-</html>
+            var p2Name = "
