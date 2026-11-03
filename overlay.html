@@ -82,7 +82,6 @@
             gap: 0.25em;
         }
 
-        /* 「HDK」：赤（ネオンレッド） */
         .logo-hdk {
             color: #ff1a40;
             text-shadow: 
@@ -91,7 +90,6 @@
                 2px 2px 2px rgba(0, 0, 0, 0.9);
         }
 
-        /* 「LEAGUE」：青寄りの純粋な深いシアン */
         .logo-league {
             color: #00d9ff;
             text-shadow: 
@@ -100,7 +98,6 @@
                 2px 2px 2px rgba(0, 0, 0, 0.9);
         }
 
-        /* 「ANGER MANAGEMENT」：候補B（アイスブルー／白みがかった明るい水色） */
         .stream-sub-logo {
             font-size: 0.85rem;
             font-weight: 800;
@@ -314,7 +311,6 @@
     <div class="stream-view-container">
         <div class="stream-main-stage">
             <div class="stream-stage-top-box">
-                <!-- ロゴ表示エリア -->
                 <div class="stream-stage-logo-box">
                     <h1 class="stream-main-logo">
                         <span class="logo-hdk">HDK</span>
@@ -369,6 +365,9 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
+        // BroadcastChannel の設定（ブラウザ間で直接通信する専用の通路）
+        var leagueChannel = new BroadcastChannel('hadaka_league_sync_channel');
+
         // データの読み込み
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
@@ -398,11 +397,26 @@
             activeStreamMatch.matchIndex = 0;
             activeStreamMatch.subIndex = (modeVal === 'team') ? 'senho' : 0;
             
+            saveAndBroadcast();
+        }
+
+        function selectStreamMatch(mode, mIdx, subIdx) {
+            activeStreamMatch.mode = mode;
+            activeStreamMatch.matchIndex = mIdx;
+            activeStreamMatch.subIndex = subIdx;
+
+            saveAndBroadcast();
+        }
+
+        // データを保存して、開いているOBS側へ「更新されたよ！」と直接合図を送る関数
+        function saveAndBroadcast() {
             var json = localStorage.getItem('hadaka_league_master_data');
             var data = json ? JSON.parse(json) : {};
             data.activeStreamMatch = activeStreamMatch;
             localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
 
+            // 通信チャンネルを通じて即座に通知
+            leagueChannel.postMessage('update');
             refreshOverlay();
         }
 
@@ -502,19 +516,6 @@
             }
         }
 
-        function selectStreamMatch(mode, mIdx, subIdx) {
-            activeStreamMatch.mode = mode;
-            activeStreamMatch.matchIndex = mIdx;
-            activeStreamMatch.subIndex = subIdx;
-
-            var json = localStorage.getItem('hadaka_league_master_data');
-            var data = json ? JSON.parse(json) : {};
-            data.activeStreamMatch = activeStreamMatch;
-            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
-
-            refreshOverlay();
-        }
-
         function updateStreamStageDisplay() {
             var p1NameElem = document.getElementById('stream-p1-name');
             var p2NameElem = document.getElementById('stream-p2-name');
@@ -599,27 +600,17 @@
             if (s2Elem) s2Elem.innerText = s2;
         }
 
-        // --- ▼ 追加した自動同期の処理（ここだけが変更点です） ▼ ---
-        var lastJsonData = "";
-
-        function startAutoSync() {
-            setInterval(function() {
-                var currentJson = localStorage.getItem('hadaka_league_master_data');
-                if (currentJson !== lastJsonData) {
-                    lastJsonData = currentJson;
-                    refreshOverlay();
-                }
-            }, 1000); // 1秒ごとにストレージの変化を監視
-        }
-
-        // ページ読み込み時に実行
-        window.onload = function() {
-            loadAppData();
-            lastJsonData = localStorage.getItem('hadaka_league_master_data');
-            refreshOverlay();
-            startAutoSync();
+        // メッセージを受信したら即座に画面を更新するリスナー
+        leagueChannel.onmessage = function(event) {
+            if (event.data === 'update') {
+                refreshOverlay();
+            }
         };
-        // --- ▲ ここまで追加 ▲ ---
+
+        // ページ読み込み時の初期化
+        window.onload = function() {
+            refreshOverlay();
+        };
     </script>
 </body>
 </html>
