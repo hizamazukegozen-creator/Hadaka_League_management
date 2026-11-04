@@ -593,17 +593,10 @@
         window.onload = function() {
             refreshOverlay();
             
-            // 別ウィンドウ・別タブでのlocalStorage変更を即座に検知
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'hadaka_league_master_data') {
-                    refreshOverlay();
-                }
-            });
-
-            // OBSブラウザソースのキャッシュや遅延対策（200ms周期のリアルタイム同期待ち）
+            // ローカルストレージの変更を常時ポーリングで確実に検知（OBS内での確実なリアルタイム同期用）
             setInterval(function() {
                 refreshOverlay();
-            }, 200);
+            }, 300);
         };
     </script>
 </body>
