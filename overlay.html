@@ -363,17 +363,6 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
-        // URLパラメータ（?state=...）から現在の選択状態を読み込む
-        function loadUrlParams() {
-            var params = new URLSearchParams(window.location.search);
-            var stateParam = params.get('state');
-            if (stateParam) {
-                try {
-                    activeStreamMatch = JSON.parse(decodeURIComponent(stateParam));
-                } catch(e) {}
-            }
-        }
-
         // データの読み込み
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
@@ -384,8 +373,7 @@
                     teamMatches = data.teamMatches || [];
                     soloMatches = data.soloMatches || [];
                     tourneyMatches = data.tourneyMatches || {};
-                    // URLパラメータにデータがあればそちらを優先
-                    if (!new URLSearchParams(window.location.search).get('state') && data.activeStreamMatch) {
+                    if (data.activeStreamMatch) {
                         activeStreamMatch = data.activeStreamMatch;
                     }
                 } catch(e) {}
@@ -394,7 +382,6 @@
 
         // 画面全体の更新処理
         function refreshOverlay() {
-            loadUrlParams();
             loadAppData();
             renderStreamCardList();
             updateStreamStageDisplay();
@@ -414,24 +401,13 @@
             saveAndReflect();
         }
 
-        // 状態が変わったとき、ローカルストレージ保存 ＋ OBSのURL自体を書き換えて強制連動させる
+        // 状態が変わったとき、localStorageへ直接保存
         function saveAndReflect() {
             var json = localStorage.getItem('hadaka_league_master_data');
             var data = json ? JSON.parse(json) : {};
             data.activeStreamMatch = activeStreamMatch;
             localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
-
-            // ★ここがポイント：親ウィンドウや同じページを開いている場合、URLパラメータを付与して自身をリロード・更新させる
-            var stateStr = encodeURIComponent(JSON.stringify(activeStreamMatch));
-            var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?state=' + stateStr;
-            
-            // 履歴を書き換えて自身の画面を更新
-            window.history.replaceState({}, '', newUrl);
             refreshOverlay();
-
-            // もしこの画面が「管理画面（ブラウザ）」であれば、同じURLのOBS側へ強制的にリロード信号を送ることはできないため、
-            // OBS側のURLを「今のURL（?state=...付き）」に設定し直してもらう形になる。
-            // ※あるいは、OBS側のブラウザソースのURL末尾にこの ?state=... が反映されるようにする。
         }
 
         function renderStreamCardList() {
@@ -562,21 +538,21 @@
 
                     if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
                         p1Name = members[idx1].name || "P1";
-                        p1Detail = "ランク: " + (members[idx1].rank || "-");
+                        p1Detail = "ランク: " + (members[idx1].rankName || "-");
                     } else {
                         p1Name = "（未定）";
                     }
 
                     if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
                         p2Name = members[idx2].name || "P2";
-                        p2Detail = "ランク: " + (members[idx2].rank || "-");
+                        p2Detail = "ランク: " + (members[idx2].rankName || "-");
                     } else {
                         p2Name = "（未定）";
                     }
 
-                    if (m.scores && m.scores[rKey]) {
-                        s1 = m.scores[rKey].s1 || 0;
-                        s2 = m.scores[rKey].s2 || 0;
+                    if (m.results && m.results[rKey]) {
+                        s1 = m.results[rKey].s1 || 0;
+                        s2 = m.results[rKey].s2 || 0;
                     }
                 }
             } else if (activeStreamMatch.mode === 'solo') {
@@ -595,7 +571,7 @@
                 var tmIdx = activeStreamMatch.subIndex;
                 if (tourneyMatches[rk] && tourneyMatches[rk][tmIdx]) {
                     var tm = tourneyMatches[rk][tmIdx];
-                    stageTitle = "トーナメント戦 (" + rk + ")";
+                    stageTitle = "トーナメント戦";
                     p1Name = tm.p1 || "P1";
                     p2Name = tm.p2 || "P2";
                     p1Detail = "トーナメント";
@@ -616,10 +592,18 @@
 
         window.onload = function() {
             refreshOverlay();
-            // 定期的にURLパラメータやストレージの変化をチェックして自動反映
+            
+            // 別ウィンドウ・別タブでのlocalStorage変更を即座に検知
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'hadaka_league_master_data') {
+                    refreshOverlay();
+                }
+            });
+
+            // OBSブラウザソースのキャッシュや遅延対策（200ms周期のリアルタイム同期待ち）
             setInterval(function() {
                 refreshOverlay();
-            }, 1000);
+            }, 200);
         };
     </script>
 </body>
