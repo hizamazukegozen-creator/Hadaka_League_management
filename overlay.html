@@ -17,10 +17,6 @@
             position: relative;
         }
 
-        .top-action-bar {
-            display: none !important;
-        }
-
         .stream-view-container {
             display: flex;
             gap: 40px;
@@ -226,13 +222,6 @@
             gap: 6px;
         }
 
-        .header-left-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
         .stream-mode-selector {
             background: #0b0d14;
             color: #fff;
@@ -343,9 +332,7 @@
 
         <div class="stream-side-panel">
             <div class="stream-side-header">
-                <div class="header-left-group">
-                    <span>対戦カード一覧</span>
-                </div>
+                <span>対戦カード一覧</span>
                 <select id="stream-mode-select" class="stream-mode-selector" onchange="changeStreamMode(this.value)">
                     <option value="team">① チーム戦カード</option>
                     <option value="solo">② 個人戦スケジュール</option>
@@ -363,7 +350,6 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
-        // データの読み込み
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (json) {
@@ -380,7 +366,6 @@
             }
         }
 
-        // 画面全体の更新処理
         function refreshOverlay() {
             loadAppData();
             renderStreamCardList();
@@ -401,7 +386,6 @@
             saveAndReflect();
         }
 
-        // 状態が変わったとき、localStorageへ直接保存
         function saveAndReflect() {
             var json = localStorage.getItem('hadaka_league_master_data');
             var data = json ? JSON.parse(json) : {};
@@ -592,11 +576,10 @@
 
         window.onload = function() {
             refreshOverlay();
-            
-            // ローカルストレージの変更を常時ポーリングで確実に検知（OBS内での確実なリアルタイム同期用）
+            // 200ミリ秒ごとにストレージを監視し、管理ツール側の更新（スコアやカード選択）を即時反映する
             setInterval(function() {
                 refreshOverlay();
-            }, 300);
+            }, 200);
         };
     </script>
 </body>
