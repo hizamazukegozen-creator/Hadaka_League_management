@@ -38,12 +38,6 @@
         .team-tab-btn.active { background-color: #00ffcc; color: #0f111a; border-color: #00ffcc; }
         .add-team-btn { background-color: #ff4655; color: #fff; border: none; padding: 8px 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-left: auto; }
         .delete-team-btn { background-color: #2a2e45; color: #ff808b; border: 1px solid #ff4655; padding: 6px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
-        .tournament-wrapper { display: flex; gap: 25px; overflow-x: auto; padding: 20px 10px; align-items: flex-start; }
-        .bracket-column { display: flex; flex-direction: column; gap: 15px; min-width: 220px; }
-        .bracket-column h4 { color: #00ffcc; text-align: center; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #3f466b; padding-bottom: 6px; font-size: 0.95rem; }
-        .bracket-match { background: #141724; border: 1px solid #3f466b; border-radius: 6px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
-        .bracket-player { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #0f111a; border-radius: 4px; margin-bottom: 4px; font-size: 0.9rem; }
-        .bracket-player.winner { color: #00ffcc; font-weight: bold; border: 1px solid #00ffcc; background: #102624; }
         .tournament-entry-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
         .tournament-entry-table th, .tournament-entry-table td { border: 1px solid #2a2e45; padding: 8px 12px; text-align: left; }
         .tournament-entry-table th { background-color: #10121b; color: #a0a6cc; }
@@ -443,6 +437,7 @@
             });
             html += '<button type="button" class="add-team-btn" onclick="addTeam()">＋ チーム追加</button>';
             bar.innerHTML = html;
+            populateTeamMemberSelects();
             loadCurrentTeamData();
         }
 
@@ -647,6 +642,7 @@
 
         window.onload = function() {
             renderMemberList();
+            populateTeamMemberSelects();
             setTimeout(saveAppData, 200);
         };
     </script>
