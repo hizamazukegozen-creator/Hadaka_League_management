@@ -439,6 +439,7 @@
             bar.innerHTML = html;
             populateTeamMemberSelects();
             loadCurrentTeamData();
+            renderTeamRegistry();
         }
 
         function switchTeam(idx) {
@@ -479,6 +480,7 @@
                 }
             }
             calcTotalTeamCost();
+            renderTeamRegistry();
             saveAppData();
         }
 
@@ -510,7 +512,16 @@
             if (!tbody) return;
             tbody.innerHTML = '';
             teams.forEach(t => {
-                tbody.innerHTML += `<tr><td style="text-align:center;"><input type="checkbox" class="team-check" value="${t.name}"></td><td>${t.name}</td><td>-</td></tr>`;
+                var membersSummary = [];
+                ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => {
+                    var mIdx = t.members[role];
+                    if (mIdx !== "" && members[mIdx]) {
+                        membersSummary.push(`${members[mIdx].name} (${members[mIdx].rankName})`);
+                    } else {
+                        membersSummary.push('(未定)');
+                    }
+                });
+                tbody.innerHTML += `<tr><td style="text-align:center;"><input type="checkbox" class="team-check" value="${t.name}"></td><td>${t.name}</td><td>${membersSummary.join(' / ')}</td></tr>`;
             });
         }
 
@@ -643,6 +654,7 @@
         window.onload = function() {
             renderMemberList();
             populateTeamMemberSelects();
+            renderTeamRegistry();
             setTimeout(saveAppData, 200);
         };
     </script>
