@@ -212,44 +212,38 @@
     <script>
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
 
-        // BroadcastChannel経由で飛んできたリアルタイムのデータオブジェクトを直接画面に反映する
-        function renderData(data) {
-            if (!data) return;
+        function updateOverlay(d) {
+            if (!d) return;
 
-            try {
-                // 送信されてくるデータ構造に合わせて各要素を更新
-                if (data.stageTitle !== undefined) {
-                    document.getElementById('stream-stage-title').textContent = data.stageTitle;
-                }
-                if (data.p1Name !== undefined) {
-                    document.getElementById('stream-p1-name').textContent = data.p1Name;
-                }
-                if (data.p2Name !== undefined) {
-                    document.getElementById('stream-p2-name').textContent = data.p2Name;
-                }
-                if (data.p1Detail !== undefined) {
-                    document.getElementById('stream-p1-detail').textContent = data.p1Detail;
-                }
-                if (data.p2Detail !== undefined) {
-                    document.getElementById('stream-p2-detail').textContent = data.p2Detail;
-                }
-                if (data.s1 !== undefined) {
-                    document.getElementById('stream-s1').textContent = data.s1;
-                }
-                if (data.s2 !== undefined) {
-                    document.getElementById('stream-s2').textContent = data.s2;
-                }
-            } catch (err) {
-                console.error("描画エラー:", err);
+            // 各項目がデータに含まれている場合のみ画面を書き換える
+            if (d.stageTitle !== undefined) {
+                document.getElementById('stream-stage-title').textContent = d.stageTitle;
+            }
+            if (d.p1Name !== undefined) {
+                document.getElementById('stream-p1-name').textContent = d.p1Name;
+            }
+            if (d.p2Name !== undefined) {
+                document.getElementById('stream-p2-name').textContent = d.p2Name;
+            }
+            if (d.p1Detail !== undefined) {
+                document.getElementById('stream-p1-detail').textContent = d.p1Detail;
+            }
+            if (d.p2Detail !== undefined) {
+                document.getElementById('stream-p2-detail').textContent = d.p2Detail;
+            }
+            if (d.s1 !== undefined) {
+                document.getElementById('stream-s1').textContent = d.s1;
+            }
+            if (d.s2 !== undefined) {
+                document.getElementById('stream-s2').textContent = d.s2;
             }
         }
 
-        // メッセージ受信時
         bc.onmessage = function(e) {
             if (e.data) {
-                // データが直接入っている場合と、{ type: 'UPDATE_OVERLAY', payload: ... } などの形式の両方に対応
-                const payload = e.data.payload || e.data.data || e.data;
-                renderData(payload);
+                // 送信形式（直接オブジェクト、あるいは payload や data プロパティ内）のいずれにも対応
+                const data = e.data.payload || e.data.data || e.data;
+                updateOverlay(data);
             }
         };
     </script>
