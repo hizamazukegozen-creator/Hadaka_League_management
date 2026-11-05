@@ -8,17 +8,16 @@
         body { background-color: #0f111a; color: #f0f0f0; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; height: 100vh; box-sizing: border-box; overflow: hidden; }
         .app-container { display: flex; height: 100vh; box-sizing: border-box; }
         .sidebar { width: 240px; background-color: #141724; border-right: 1px solid #2a2e45; padding: 20px 15px; box-sizing: border-box; flex-shrink: 0; height: 100vh; overflow-y: auto; }
-        .sidebar-logo-container { text-align: center; margin-bottom: 25px; padding: 5px 0; filter: drop-shadow(0 0 15px rgba(255, 26, 64, 0.4)); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .sidebar-logo-container { text-align: center; margin-bottom: 25px; padding: 5px 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .sidebar-main-logo { font-size: 1.45rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: 2px; margin: 0; line-height: 1.05; transform: skewX(-7deg); display: flex; gap: 0.25em; }
-        .logo-hdk { color: #ff1a40; text-shadow: 0 0 8px rgba(255, 26, 64, 0.9), 0 0 20px rgba(255, 26, 64, 0.7), 2px 2px 2px rgba(0, 0, 0, 0.9); }
-        .logo-league { color: #00d9ff; text-shadow: 0 0 8px rgba(0, 217, 255, 0.9), 0 0 20px rgba(0, 217, 255, 0.7), 2px 2px 2px rgba(0, 0, 0, 0.9); }
-        .sidebar-sub-logo { font-size: 0.72rem; font-weight: 800; font-style: italic; text-transform: uppercase; letter-spacing: 3px; color: #b3f0ff; margin-top: 4px; text-shadow: 0 0 8px rgba(179, 240, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.9); transform: skewX(-7deg); }
+        .logo-hdk { color: #ff1a40; text-shadow: 0 0 8px rgba(255, 26, 64, 0.9); }
+        .logo-league { color: #00d9ff; text-shadow: 0 0 8px rgba(0, 217, 255, 0.9); }
+        .sidebar-sub-logo { font-size: 0.72rem; font-weight: 800; font-style: italic; letter-spacing: 3px; color: #b3f0ff; margin-top: 4px; transform: skewX(-7deg); }
         .tab-menu { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
-        .tab-btn { background-color: #1a1d2d; border: 1px solid #3f466b; color: #a0a6cc; padding: 12px 15px; font-size: 0.95rem; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.2s ease; width: 100%; box-sizing: border-box; text-decoration: none; display: block; }
+        .tab-btn { background-color: #1a1d2d; border: 1px solid #3f466b; color: #a0a6cc; padding: 12px 15px; font-size: 0.95rem; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; width: 100%; box-sizing: border-box; display: block; }
         .tab-btn:hover { border-color: #ff4655; color: #fff; background-color: #22263d; }
-        .tab-btn.active { background-color: #ff4655; border-color: #ff4655; color: #fff; box-shadow: 0 0 10px rgba(255, 70, 85, 0.5); }
+        .tab-btn.active { background-color: #ff4655; border-color: #ff4655; color: #fff; }
         .tab-btn.stream-btn { background-color: #9146FF; border-color: #9146FF; color: #fff; text-align: center; }
-        .tab-btn.stream-btn:hover { background-color: #772ce8; }
         .main-content { flex: 1; height: 100vh; padding: 30px; box-sizing: border-box; overflow-y: auto; }
         .tab-content { display: none; width: 100%; padding-bottom: 40px; }
         .tab-content.active { display: block !important; }
@@ -45,17 +44,12 @@
         .team-tab-btn { background-color: #1a1d2d; border: 1px solid #3f466b; color: #a0a6cc; padding: 8px 14px; font-weight: bold; border-radius: 4px; cursor: pointer; }
         .team-tab-btn.active { background-color: #00ffcc; color: #0f111a; border-color: #00ffcc; }
         .add-team-btn { background-color: #ff4655; color: #fff; border: none; padding: 8px 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-left: auto; }
-        .add-team-btn:hover { background-color: #cc3744; }
         .delete-team-btn { background-color: #2a2e45; color: #ff808b; border: 1px solid #ff4655; padding: 6px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
-        .delete-team-btn:hover { background-color: #3f1f25; }
         .tournament-wrapper { display: flex; gap: 25px; overflow-x: auto; padding: 20px 10px; align-items: flex-start; }
         .bracket-column { display: flex; flex-direction: column; gap: 15px; min-width: 220px; }
         .bracket-column h4 { color: #00ffcc; text-align: center; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #3f466b; padding-bottom: 6px; font-size: 0.95rem; }
         .bracket-match { background: #141724; border: 1px solid #3f466b; border-radius: 6px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
-        .bracket-match.grand-final { border-color: #ffcc00; background: #242010; box-shadow: 0 0 12px rgba(255, 204, 0, 0.4); }
-        .bracket-match.reset-match { border-color: #ff4655; background: #2b1418; box-shadow: 0 0 12px rgba(255, 70, 85, 0.4); }
         .bracket-player { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #0f111a; border-radius: 4px; margin-bottom: 4px; font-size: 0.9rem; }
-        .bracket-player:last-child { margin-bottom: 0; }
         .bracket-player.winner { color: #00ffcc; font-weight: bold; border: 1px solid #00ffcc; background: #102624; }
         .bracket-player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px; }
         .bracket-score-input { width: 36px; text-align: center; background: #1a1d2d; border: 1px solid #3f466b; color: #fff; padding: 3px 4px; border-radius: 4px; font-size: 0.85rem; }
@@ -63,30 +57,24 @@
         .tournament-entry-table th, .tournament-entry-table td { border: 1px solid #2a2e45; padding: 8px 12px; text-align: left; }
         .tournament-entry-table th { background-color: #10121b; color: #a0a6cc; }
         .action-btn { background-color: #00ffcc; color: #0f111a; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .action-btn:hover { background-color: #00cca3; }
         .matrix-table, .schedule-table, .ranking-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
         .matrix-table th, .matrix-table td, .schedule-table th, .schedule-table td, .ranking-table th, .ranking-table td { border: 1px solid #2a2e45; padding: 8px; text-align: center; }
         .matrix-table th, .schedule-table th, .ranking-table th { background-color: #10121b; color: #a0a6cc; }
         .score-input { width: 40px; text-align: center; background: #10121b; border: 1px solid #3f466b; color: #fff; padding: 4px; border-radius: 4px; }
         .member-form-box { display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
         .tool-bar { background: #141724; border: 1px solid #3f466b; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .tool-bar textarea { width: 100%; height: 80px; background: #10121b; border: 1px solid #3f466b; color: #fff; padding: 8px; border-radius: 4px; box-sizing: border-box; font-family: monospace; font-size: 0.85rem; }
-        .tool-bar-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+        .tool-bar textarea { width: 100%; height: 80px; background: #10121b; border: 1px solid #3f466b; color: #fff; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
+        .tool-bar-actions { display: flex; gap: 15px; align-items: center; justify-content: space-between; }
         .add-btn { background-color: #00ffcc; color: #0f111a; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .add-btn:hover { background-color: #00cca3; }
         .import-btn { background-color: #ff4655; color: #fff; border: none; padding: 8px 18px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .import-btn:hover { background-color: #cc3744; }
         .file-label { background-color: #2a2e45; color: #00ffcc; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; display: inline-block; border: 1px solid #00ffcc; }
-        .file-label:hover { background-color: #323854; }
         .member-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .member-table th, .member-table td { border: 1px solid #2a2e45; padding: 12px; text-align: left; }
         .member-table th { background-color: #10121b; color: #a0a6cc; }
         .member-table td { background-color: #1a1d2d; }
         .action-btn-group { display: flex; gap: 8px; align-items: center; }
         .team-go-btn { background-color: #00ffcc; color: #0f111a; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
-        .team-go-btn:hover { background-color: #00cca3; }
         .delete-btn { background-color: #ff4655; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
-        .delete-btn:hover { background-color: #cc3744; }
         .table-rank-select { background: #10121b; border: 1px solid #3f466b; color: #fff; padding: 6px; border-radius: 4px; font-size: 0.9rem; }
         .admin-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #2a2e45; }
         .admin-section h3 { margin-top: 0; color: #00ffcc; font-size: 1.1rem; }
@@ -98,22 +86,15 @@
         .login-box { display: flex; gap: 10px; align-items: center; }
         .login-input { padding: 6px; background: #10121b; border: 1px solid #3f466b; color: #fff; border-radius: 4px; width: 140px; }
         .login-btn { background-color: #ff4655; color: #fff; border: none; padding: 6px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .login-btn:hover { background-color: #cc3744; }
         .save-admin-btn { background-color: #00ffcc; color: #0f111a; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; display: none; }
-        .save-admin-btn:hover { background-color: #00cca3; }
         .archive-bar { background: #141724; border: 1px solid #3f466b; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
     </style>
 </head>
 <body>
-
     <div class="app-container">
-        <!-- 左側：サイドバー -->
         <div class="sidebar">
             <div class="sidebar-logo-container">
-                <h1 class="sidebar-main-logo">
-                    <span class="logo-hdk">HDK</span>
-                    <span class="logo-league">LEAGUE</span>
-                </h1>
+                <h1 class="sidebar-main-logo"><span class="logo-hdk">HDK</span> <span class="logo-league">LEAGUE</span></h1>
                 <div class="sidebar-sub-logo">ANGER MANAGEMENT</div>
             </div>
             <div class="tab-menu">
@@ -128,64 +109,37 @@
             </div>
         </div>
 
-        <!-- 右側：メインコンテンツ -->
         <div class="main-content">
-            <!-- ① チームリーグ -->
+            <!-- ① チーム対抗戦 -->
             <div id="tab-league-team" class="tab-content active" style="display: block;">
                 <div class="card">
                     <h2>① 裸リーグ（チーム）対抗戦</h2>
-                    
                     <div class="archive-bar">
-                        <label style="color: #00ffcc; font-weight: bold;">📂 過去の大会履歴:</label>
-                        <select id="team-archive-select" onchange="loadTeamArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;">
-                            <option value="">-- 現在の編集中 / 新規 --</option>
-                        </select>
-                        <button type="button" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="saveTeamArchive()">💾 この大会を履歴に保存</button>
-                        <button type="button" class="delete-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="deleteTeamArchive()">🗑️ 履歴削除</button>
+                        <label style="color: #00ffcc; font-weight: bold;">📂 大会履歴:</label>
+                        <select id="team-archive-select" onchange="loadTeamArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;"><option value="">-- 新規 / 編集中 --</option></select>
+                        <button type="button" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="saveTeamArchive()">💾 保存</button>
+                        <button type="button" class="delete-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="deleteTeamArchive()">🗑️ 削除</button>
                     </div>
-
                     <div class="header-inputs">
                         <input type="text" id="team-league-title" value="裸リーグ チーム対抗戦" placeholder="大会名称" style="flex: 2;" oninput="saveAppData()">
-                        <input type="text" id="team-league-date" placeholder="開催日 (例: 2026.11.01)" style="flex: 1;" oninput="saveAppData()">
+                        <input type="text" id="team-league-date" placeholder="開催日" style="flex: 1;" oninput="saveAppData()">
                     </div>
-
-                    <h3>1. 参加チーム選択（④チーム管理からチェック）</h3>
+                    <h3>1. 参加チーム選択</h3>
                     <table class="tournament-entry-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px; text-align: center;">選択</th>
-                                <th>チーム名</th>
-                                <th>構成メンバー / 合計コスト</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th style="width: 50px; text-align: center;">選択</th><th>チーム名</th><th>構成メンバー / コスト</th></tr></thead>
                         <tbody id="team-registry-tbody"></tbody>
                     </table>
-
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button type="button" class="action-btn" onclick="importTeamCheckedMembers()">☑ チェックしたチームをエントリー</button>
-                        <button type="button" class="delete-btn" onclick="clearTeamParticipants()">エントリーを全クリア</button>
+                        <button type="button" class="delete-btn" onclick="clearTeamParticipants()">クリア</button>
                     </div>
-
-                    <h3>2. エントリー済みチーム一覧</h3>
-                    <div id="team-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; min-height: 40px; color: #00ffcc;">
-                        (まだ参加チームがいません)
-                    </div>
-
-                    <button type="button" class="add-btn" style="width: 100%; padding: 12px; font-size: 1rem; margin-bottom: 20px;" onclick="generateTeamLeagueMatches()">🔀 エントリーチームから対戦表・リーグ表を生成</button>
-                    
+                    <h3>2. エントリー済みチーム</h3>
+                    <div id="team-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; color: #00ffcc;">(まだチームがいません)</div>
+                    <button type="button" class="add-btn" style="width: 100%; padding: 12px; margin-bottom: 20px;" onclick="generateTeamLeagueMatches()">🔀 対戦表・リーグ表を生成</button>
                     <div id="team-matches-container"></div>
-
-                    <h3>チーム順位・獲得ポイントランキング</h3>
+                    <h3>チーム順位ランキング</h3>
                     <table class="ranking-table">
-                        <thead>
-                            <tr>
-                                <th>順位</th>
-                                <th>チーム名</th>
-                                <th>総合獲得pt</th>
-                                <th>内訳 (通常勝敗pt ＋ コスト差補正pt)</th>
-                                <th>対戦勝数</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>順位</th><th>チーム名</th><th>総合獲得pt</th><th>内訳</th><th>勝数</th></tr></thead>
                         <tbody id="team-ranking-tbody"></tbody>
                     </table>
                 </div>
@@ -195,89 +149,46 @@
             <div id="tab-league-solo" class="tab-content" style="display: none;">
                 <div class="card">
                     <h2>② 裸リーグ（個人戦）管理</h2>
-
                     <div class="archive-bar">
-                        <label style="color: #00ffcc; font-weight: bold;">📂 過去の大会履歴:</label>
-                        <select id="solo-archive-select" onchange="loadSoloArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;">
-                            <option value="">-- 現在の編集中 / 新規 --</option>
-                        </select>
-                        <button type="button" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="saveSoloArchive()">💾 この大会を履歴に保存</button>
-                        <button type="button" class="delete-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="deleteSoloArchive()">🗑️ 履歴削除</button>
+                        <label style="color: #00ffcc; font-weight: bold;">📂 大会履歴:</label>
+                        <select id="solo-archive-select" onchange="loadSoloArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;"><option value="">-- 新規 / 編集中 --</option></select>
+                        <button type="button" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="saveSoloArchive()">💾 保存</button>
+                        <button type="button" class="delete-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="deleteSoloArchive()">🗑️ 削除</button>
                     </div>
-
                     <div class="header-inputs">
-                        <input type="text" id="solo-title" value="裸リーグ 個人戦" placeholder="大会名称" style="flex: 2;" oninput="saveAppData()">
-                        <input type="text" id="solo-date" placeholder="開催日 (例: 2026.11.01)" style="flex: 1;" oninput="saveAppData()">
+                        <input type="text" id="solo-title" value="裸リーグ 個人戦" placeholder="大会名" style="flex: 2;" oninput="saveAppData()">
+                        <input type="text" id="solo-date" placeholder="開催日" style="flex: 1;" oninput="saveAppData()">
                         <input type="text" id="solo-season" value="シーズン 1" placeholder="シーズン" style="flex: 1;" oninput="saveAppData()">
                     </div>
-
-                    <h3>1. 当日エントリー（参加者手動追加）</h3>
-                    <div class="solo-entry-box" style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="text" id="solo-new-name" class="member-input" placeholder="参加者名を入力" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
-                        <button type="button" class="action-btn" onclick="addSoloParticipant()">＋ 参加者を追加</button>
+                    <h3>1. 参加者追加</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="text" id="solo-new-name" placeholder="名前" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
+                        <button type="button" class="action-btn" onclick="addSoloParticipant()">＋ 追加</button>
                     </div>
-
-                    <p style="font-size: 0.85rem; color: #a0a6cc; margin-bottom: 5px;">※ ⑤メンバー管理からチェックを入れてエントリー：</p>
                     <table class="tournament-entry-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px; text-align: center;">選択</th>
-                                <th>メンバー名</th>
-                                <th>ランク</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th style="width: 50px; text-align: center;">選択</th><th>メンバー名</th><th>ランク</th></tr></thead>
                         <tbody id="solo-registry-tbody"></tbody>
                     </table>
-
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button type="button" class="action-btn" onclick="importCheckedMembers()">☑ チェックしたメンバーをエントリー</button>
-                        <button type="button" class="delete-btn" onclick="clearSoloParticipants()">エントリーを全クリア</button>
+                        <button type="button" class="delete-btn" onclick="clearSoloParticipants()">クリア</button>
                     </div>
-
-                    <h3 style="margin-top: 30px;">2. エントリー済みプレイヤー一覧</h3>
-                    <div id="solo-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; min-height: 40px; color: #00ffcc;">
-                        (まだ参加者がいません)
-                    </div>
-                    <button type="button" class="import-btn" onclick="generateSoloTournament()">🔀 シャッフルして対戦表を生成 / 更新する</button>
+                    <h3>2. エントリー済みプレイヤー</h3>
+                    <div id="solo-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; color: #00ffcc;">(まだ参加者がいません)</div>
+                    <button type="button" class="import-btn" onclick="generateSoloTournament()">🔀 対戦表生成</button>
                 </div>
-
                 <div class="card" id="solo-tournament-card" style="display: none;">
-                    <h2 id="display-tournament-title">裸リーグ 個人戦 - リーグ表 & 対戦スケジュール</h2>
-                    <p style="font-size: 0.85rem; color: #ffcc00;">※ 2ラウンド先取を2回とった方（セットカウント制）のスコアを入力してください。</p>
-
-                    <h3>3. 対戦スケジュール（ランダムシャッフル＆連戦防止・1P/2P分散）</h3>
-                    <div style="overflow-x: auto;">
-                        <table class="schedule-table">
-                            <thead>
-                                <tr>
-                                    <th>第○試合</th>
-                                    <th>1P側</th>
-                                    <th>スコア</th>
-                                    <th>2P側</th>
-                                    <th>勝者</th>
-                                </tr>
-                            </thead>
-                            <tbody id="schedule-tbody"></tbody>
-                        </table>
-                    </div>
-
+                    <h2 id="display-tournament-title">個人戦スケジュール & リーグ表</h2>
+                    <h3>3. スケジュール</h3>
+                    <table class="schedule-table">
+                        <thead><tr><th>試合</th><th>1P</th><th>スコア</th><th>2P</th><th>勝者</th></tr></thead>
+                        <tbody id="schedule-tbody"></tbody>
+                    </table>
                     <h3 style="margin-top: 30px;">4. リーグ表</h3>
-                    <div style="overflow-x: auto;">
-                        <table class="matrix-table" id="matrix-table"></table>
-                    </div>
-
-                    <h3 style="margin-top: 30px;">5. 最終順位ランキング (勝利数 ＞ セット勝率 ＞ 直接対決)</h3>
+                    <table class="matrix-table" id="matrix-table"></table>
+                    <h3 style="margin-top: 30px;">5. ランキング</h3>
                     <table class="ranking-table">
-                        <thead>
-                            <tr>
-                                <th>順位</th>
-                                <th>プレイヤー名</th>
-                                <th>勝利数</th>
-                                <th>敗北数</th>
-                                <th>セット勝率</th>
-                                <th>ゲーム得失点差</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>順位</th><th>名前</th><th>勝利</th><th>敗北</th><th>勝率</th><th>得失点</th></tr></thead>
                         <tbody id="ranking-tbody"></tbody>
                     </table>
                 </div>
@@ -287,54 +198,35 @@
             <div id="tab-tournament" class="tab-content" style="display: none;">
                 <div class="card">
                     <h2>③ 裸でトーナメント管理</h2>
-
                     <div class="archive-bar">
-                        <label style="color: #00ffcc; font-weight: bold;">📂 過去の大会履歴:</label>
-                        <select id="tourney-archive-select" onchange="loadTourneyArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;">
-                            <option value="">-- 現在の編集中 / 新規 --</option>
-                        </select>
-                        <button type="button" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="saveTourneyArchive()">💾 この大会を履歴に保存</button>
-                        <button type="button" class="delete-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="deleteTourneyArchive()">🗑️ 履歴削除</button>
+                        <label style="color: #00ffcc; font-weight: bold;">📂 大会履歴:</label>
+                        <select id="tourney-archive-select" onchange="loadTourneyArchive(this.value)" style="flex: 2; padding: 6px; background: #10121b; color: #fff; border: 1px solid #3f466b; border-radius: 4px;"><option value="">-- 新規 / 編集中 --</option></select>
+                        <button type="button" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="saveTourneyArchive()">💾 保存</button>
+                        <button type="button" class="delete-btn" style="padding: 6px 12px; font-size: 0.9rem;" onclick="deleteTourneyArchive()">🗑️ 削除</button>
                     </div>
-
                     <div class="header-inputs">
-                        <input type="text" id="tourney-title" value="裸でトーナメント" placeholder="大会名称" style="flex: 2;" oninput="saveAppData()">
+                        <input type="text" id="tourney-title" value="裸でトーナメント" placeholder="大会名" style="flex: 2;" oninput="saveAppData()">
                         <div style="flex: 2; display: flex; align-items: center; gap: 20px; background: #10121b; padding: 0 15px; border: 1px solid #3f466b; border-radius: 4px;">
                             <label style="color: #00ffcc; font-weight: bold;">方式:</label>
                             <label><input type="radio" name="tourney-type" value="single" checked onchange="saveAppData()"> シングル</label>
                             <label><input type="radio" name="tourney-type" value="double" onchange="saveAppData()"> ダブル</label>
                         </div>
                     </div>
-
-                    <h3>1. 参加メンバー選択（メンバー管理からチェック）</h3>
+                    <h3>1. 参加メンバー選択</h3>
                     <table class="tournament-entry-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px; text-align: center;">選択</th>
-                                <th>メンバー名</th>
-                                <th>ランク</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th style="width: 50px; text-align: center;">選択</th><th>メンバー名</th><th>ランク</th></tr></thead>
                         <tbody id="tourney-registry-tbody"></tbody>
                     </table>
-
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button type="button" class="action-btn" onclick="importTourneyCheckedMembers()">☑ チェックしたメンバーをエントリー</button>
-                        <button type="button" class="delete-btn" onclick="clearTourneyParticipants()">エントリーを全クリア</button>
+                        <button type="button" class="delete-btn" onclick="clearTourneyParticipants()">クリア</button>
                     </div>
-
                     <h3>2. エントリー済みプレイヤー</h3>
-                    <div id="tourney-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; min-height: 40px; color: #00ffcc;">
-                        (まだ参加者がいません)
-                    </div>
-
-                    <button type="button" class="add-btn" style="width: 100%; padding: 14px; font-size: 1.1rem;" onclick="generateTourneyBrackets()">🔀 トーナメント表を作成（ランダムシャッフル）</button>
+                    <div id="tourney-participant-list" style="background: #10121b; padding: 10px; border-radius: 4px; margin-bottom: 20px; color: #00ffcc;">(まだ参加者がいません)</div>
+                    <button type="button" class="add-btn" style="width: 100%; padding: 14px;" onclick="generateTourneyBrackets()">🔀 トーナメント表作成</button>
                 </div>
-
                 <div class="card" id="tourney-display-card" style="display: none; max-width: 1200px;">
                     <h2 id="tourney-display-title">トーナメント表</h2>
-                    <p style="font-size: 0.85rem; color: #ffcc00;">※ すべての対戦は2本先取（2先）、シングル決勝戦・グランドファイナル（GF）およびリセットマッチのみ3本先取（3先）です。スコア入力で勝者と敗者が自動進行します。</p>
-
                     <div class="tournament-wrapper" id="tourney-brackets-container"></div>
                 </div>
             </div>
@@ -343,60 +235,16 @@
             <div id="tab-team-mgmt" class="tab-content" style="display: none;">
                 <div class="card">
                     <h2>チーム編成・コスト管理</h2>
-
                     <div class="team-tabs-bar" id="team-tabs-bar">
-                        <button type="button" class="add-team-btn" onclick="addTeam()">＋ 新規チームを追加</button>
+                        <button type="button" class="add-team-btn" onclick="addTeam()">＋ チーム追加</button>
                     </div>
-
-                    <input type="text" id="current-team-name" class="input-title" placeholder="チーム名を入力 (例: どすこいファイターズ)" oninput="updateCurrentTeamName(this.value)">
-
-                    <div class="member-row">
-                        <span class="member-role" id="label-role-senho">先鋒 (1pt)</span>
-                        <select class="member-select team-member-select" id="team-senho" onchange="updateTeamRow('senho')">
-                            <option value="">-- なまえを選択 --</option>
-                        </select>
-                        <div class="rank-display" id="display-senho">
-                            <span>ランク: -</span>
-                            <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
-                        </div>
-                    </div>
-                    <div class="member-row">
-                        <span class="member-role" id="label-role-jiho">次鋒 (1pt)</span>
-                        <select class="member-select team-member-select" id="team-jiho" onchange="updateTeamRow('jiho')">
-                            <option value="">-- なまえを選択 --</option>
-                        </select>
-                        <div class="rank-display" id="display-jiho">
-                            <span>ランク: -</span>
-                            <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
-                        </div>
-                    </div>
-                    <div class="member-row">
-                        <span class="member-role" id="label-role-fukusho">副将 (1pt)</span>
-                        <select class="member-select team-member-select" id="team-fukusho" onchange="updateTeamRow('fukusho')">
-                            <option value="">-- なまえを選択 --</option>
-                        </select>
-                        <div class="rank-display" id="display-fukusho">
-                            <span>ランク: -</span>
-                            <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
-                        </div>
-                    </div>
-                    <div class="member-row">
-                        <span class="member-role" id="label-role-taisho">大将 (2pt)</span>
-                        <select class="member-select team-member-select" id="team-taisho" onchange="updateTeamRow('taisho')">
-                            <option value="">-- なまえを選択 --</option>
-                        </select>
-                        <div class="rank-display" id="display-taisho">
-                            <span>ランク: -</span>
-                            <span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>
-                        </div>
-                    </div>
-
-                    <div class="cost-summary">
-                        <span>チーム合計コスト:</span>
-                        <span class="cost-num" id="team-total-cost">0 / MAX 20</span>
-                    </div>
-
-                    <button type="button" class="delete-team-btn" onclick="deleteCurrentTeam()">🗑️ このチームを削除する</button>
+                    <input type="text" id="current-team-name" class="input-title" placeholder="チーム名" oninput="updateCurrentTeamName(this.value)">
+                    <div class="member-row"><span class="member-role" id="label-role-senho">先鋒 (1pt)</span><select class="member-select team-member-select" id="team-senho" onchange="updateTeamRow('senho')"><option value="">-- 選択 --</option></select><div class="rank-display" id="display-senho"><span>ランク: -</span><span>コスト: 0</span></div></div>
+                    <div class="member-row"><span class="member-role" id="label-role-jiho">次鋒 (1pt)</span><select class="member-select team-member-select" id="team-jiho" onchange="updateTeamRow('jiho')"><option value="">-- 選択 --</option></select><div class="rank-display" id="display-jiho"><span>ランク: -</span><span>コスト: 0</span></div></div>
+                    <div class="member-row"><span class="member-role" id="label-role-fukusho">副将 (1pt)</span><select class="member-select team-member-select" id="team-fukusho" onchange="updateTeamRow('fukusho')"><option value="">-- 選択 --</option></select><div class="rank-display" id="display-fukusho"><span>ランク: -</span><span>コスト: 0</span></div></div>
+                    <div class="member-row"><span class="member-role" id="label-role-taisho">大将 (2pt)</span><select class="member-select team-member-select" id="team-taisho" onchange="updateTeamRow('taisho')"><option value="">-- 選択 --</option></select><div class="rank-display" id="display-taisho"><span>ランク: -</span><span>コスト: 0</span></div></div>
+                    <div class="cost-summary"><span>合計コスト:</span><span class="cost-num" id="team-total-cost">0 / MAX 20</span></div>
+                    <button type="button" class="delete-team-btn" onclick="deleteCurrentTeam()">🗑️ チーム削除</button>
                 </div>
             </div>
 
@@ -404,45 +252,23 @@
             <div id="tab-member-mgmt" class="tab-content" style="display: none;">
                 <div class="card" style="max-width: 900px;">
                     <h2>⑤ メンバー管理</h2>
-                    <p style="color: #7a82b0; font-size: 0.9rem;">大会に参加するプレイヤーを一覧管理・登録します。表の中から直接ランクを変更することも可能です。</p>
-
                     <div class="tool-bar">
-                        <label style="font-size: 0.9rem; color: #00ffcc; font-weight: bold;">📋 スプレッドシートから貼り付け（B列: なまえ, C列: ランク）</label>
-                        <textarea id="sheet-paste-area" placeholder="スプレッドシートの「リーグ登録名」と「最大RANK」の2列をコピーして、ここにそのまま貼り付け（Ctrl+V）してください..."></textarea>
+                        <label style="font-size: 0.9rem; color: #00ffcc; font-weight: bold;">📋 スプレッドシートから貼り付け</label>
+                        <textarea id="sheet-paste-area" placeholder="名前とランクを貼り付け..."></textarea>
                         <div class="tool-bar-actions">
-                            <button type="button" class="import-btn" onclick="importFromPaste()">📥 貼り付けデータを取り込む</button>
-                            <div>
-                                <label class="file-label" for="csv-file-input">📂 CSVファイル読込</label>
-                                <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="importCSV(event)">
-                            </div>
+                            <button type="button" class="import-btn" onclick="importFromPaste()">📥 取り込む</button>
+                            <div><label class="file-label" for="csv-file-input">📂 CSV読込</label><input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="importCSV(event)"></div>
                         </div>
                     </div>
-
                     <div class="member-form-box">
-                        <input type="text" id="new-player-name" class="member-input" placeholder="なまえを入力 (例: リュウ)" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
-                        <select id="new-player-rank" class="rank-select" style="flex: 1; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
-                            <option value="レジェンド">レジェンド (コスト8)</option>
-                            <option value="アルティメットマスター">アルティメットマスター (コスト6)</option>
-                            <option value="グランドマスター">グランドマスター (コスト4)</option>
-                            <option value="ハイマスター">ハイマスター (コスト3)</option>
-                            <option value="マスター">マスター (コスト3)</option>
-                            <option value="ダイヤモンド">ダイヤモンド (コスト2)</option>
-                            <option value="プラチナ">プラチナ (コスト1)</option>
+                        <input type="text" id="new-player-name" placeholder="名前" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
+                        <select id="new-player-rank" style="flex: 1; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
+                            <option value="レジェンド">レジェンド</option><option value="アルティメットマスター">アルティメットマスター</option><option value="グランドマスター">グランドマスター</option><option value="ハイマスター">ハイマスター</option><option value="マスター">マスター</option><option value="ダイヤモンド">ダイヤモンド</option><option value="プラチナ">プラチナ</option>
                         </select>
-                        <button type="button" class="add-btn" onclick="addMember()">＋ メンバー追加</button>
+                        <button type="button" class="add-btn" onclick="addMember()">＋ 追加</button>
                     </div>
-
-                    <h3>登録済みプレイヤー一覧</h3>
                     <table class="member-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>なまえ</th>
-                                <th>ランク変更</th>
-                                <th>コスト</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>#</th><th>名前</th><th>ランク変更</th><th>コスト</th><th>操作</th></tr></thead>
                         <tbody id="member-table-body"></tbody>
                     </table>
                 </div>
@@ -452,237 +278,73 @@
             <div id="tab-admin-mgmt" class="tab-content" style="display: none;">
                 <div class="card" style="max-width: 700px;">
                     <h2>⑥ 運営管理画面</h2>
-                    
                     <div id="admin-banner" class="lock-notice">
-                        <span id="admin-status-text">🔒 閲覧モード（設定確認のみ可能）</span>
+                        <span id="admin-status-text">🔒 閲覧モード</span>
                         <div id="admin-login-area" class="login-box">
                             <input type="password" id="admin-pin-input" class="login-input" placeholder="パスワード">
                             <button type="button" class="login-btn" onclick="adminLogin()">ログイン</button>
                         </div>
                         <button type="button" id="admin-logout-btn" class="delete-btn" style="display: none;" onclick="adminLogout()">ログアウト</button>
                     </div>
-
                     <div class="admin-section">
-                        <h3>1. 大会制限コスト設定</h3>
-                        <div class="admin-input-row">
-                            <label>MAXチームコスト上限:</label>
-                            <input type="number" id="setting-max-cost" value="20" min="1" max="50" disabled onchange="saveAppData(); updateTeamCost(); renderTeamLeagueUI();">
-                        </div>
+                        <h3>1. コスト設定</h3>
+                        <div class="admin-input-row"><label>MAXコスト:</label><input type="number" id="setting-max-cost" value="20" disabled onchange="saveAppData()"></div>
+                        <div class="admin-input-row"><label>プラチナ:</label><input type="number" id="cost-platinum" value="1" disabled onchange="recalculateAllMemberCosts()"></div>
+                        <div class="admin-input-row"><label>ダイヤモンド:</label><input type="number" id="cost-diamond" value="2" disabled onchange="recalculateAllMemberCosts()"></div>
+                        <div class="admin-input-row"><label>マスター:</label><input type="number" id="cost-master" value="3" disabled onchange="recalculateAllMemberCosts()"></div>
+                        <div class="admin-input-row"><label>ハイマスター:</label><input type="number" id="cost-highmaster" value="3" disabled onchange="recalculateAllMemberCosts()"></div>
+                        <div class="admin-input-row"><label>グランドマスター:</label><input type="number" id="cost-grandmaster" value="4" disabled onchange="recalculateAllMemberCosts()"></div>
+                        <div class="admin-input-row"><label>アルティメットマスター:</label><input type="number" id="cost-ultimate" value="6" disabled onchange="recalculateAllMemberCosts()"></div>
+                        <div class="admin-input-row"><label>レジェンド:</label><input type="number" id="cost-legend" value="8" disabled onchange="recalculateAllMemberCosts()"></div>
                     </div>
-
-                    <div class="admin-section">
-                        <h3>2. ランク別コスト設定</h3>
-                        <div class="admin-input-row">
-                            <label>プラチナ:</label>
-                            <input type="number" id="cost-platinum" value="1" min="1" max="10" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>ダイヤモンド:</label>
-                            <input type="number" id="cost-diamond" value="2" min="1" max="10" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>マスター:</label>
-                            <input type="number" id="cost-master" value="3" min="1" max="10" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>ハイマスター:</label>
-                            <input type="number" id="cost-highmaster" value="3" min="1" max="10" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>グランドマスター:</label>
-                            <input type="number" id="cost-grandmaster" value="4" min="1" max="10" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>アルティメットマスター:</label>
-                            <input type="number" id="cost-ultimate" value="6" min="1" max="15" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>レジェンド:</label>
-                            <input type="number" id="cost-legend" value="8" min="1" max="20" disabled onchange="recalculateAllMemberCosts()">
-                        </div>
-                    </div>
-
-                    <div class="admin-section">
-                        <h3>3. ポジション別勝利ポイント設定（チーム戦連動）</h3>
-                        <div class="admin-input-row">
-                            <label>先鋒 勝利ポイント:</label>
-                            <input type="number" id="pts-senho" value="1" min="1" max="10" disabled onchange="saveAppData(); updateRoleLabels(); renderTeamLeagueUI();">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>次鋒 勝利ポイント:</label>
-                            <input type="number" id="pts-jiho" value="1" min="1" max="10" disabled onchange="saveAppData(); updateRoleLabels(); renderTeamLeagueUI();">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>副将 勝利ポイント:</label>
-                            <input type="number" id="pts-fukusho" value="1" min="1" max="10" disabled onchange="saveAppData(); updateRoleLabels(); renderTeamLeagueUI();">
-                        </div>
-                        <div class="admin-input-row">
-                            <label>大将 勝利ポイント:</label>
-                            <input type="number" id="pts-taisho" value="2" min="1" max="10" disabled onchange="saveAppData(); updateRoleLabels(); renderTeamLeagueUI();">
-                        </div>
-                    </div>
-
-                    <div class="admin-section">
-                        <h3>4. コスト差補正ルール設定</h3>
-                        <div style="background: #10121b; padding: 12px; border-radius: 4px; border: 1px solid #3f466b;">
-                            <label style="display: block; margin-bottom: 12px; cursor: pointer; line-height: 1.4;">
-                                <input type="radio" name="cost-bonus-mode" value="normal" checked disabled onchange="saveAppData(); renderTeamLeagueUI();"> 
-                                <b style="color: #00ffcc;">パターンA（チームコスト差を「格下の対戦数」で割る方式）</b><br>
-                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">チーム全体のコスト差を、その対戦カードで「格下」だった総人数で割り、格下側が勝った試合ごとにボーナス点として加算します。</span>
-                            </label>
-                            <label style="display: block; margin-bottom: 12px; cursor: pointer; line-height: 1.4;">
-                                <input type="radio" name="cost-bonus-mode" value="exact_diff" disabled onchange="saveAppData(); renderTeamLeagueUI();"> 
-                                <b style="color: #ffcc00;">パターンB（個別の対戦コスト差をそのまま加算する方式）</b><br>
-                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">個別の対戦カードにおける「2人のコストの差」を、格下のメンバーが勝った試合ごとにそのままボーナス点として加算します。</span>
-                            </label>
-                            <label style="display: block; cursor: pointer; line-height: 1.4;">
-                                <input type="radio" name="cost-bonus-mode" value="none" disabled onchange="saveAppData(); renderTeamLeagueUI();"> 
-                                <b style="color: #ff808b;">パターンC（ノーマル・コスト差補正なし）</b><br>
-                                <span style="font-size: 0.85rem; color: #a0a6cc; padding-left: 20px; display: block;">コスト差による補正ボーナスを一切計算せず、取得した勝利ポイントのみで順位を競います。</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="admin-section">
-                        <h3>5. チーム戦勝利ポイント設定</h3>
-                        <div class="admin-input-row">
-                            <label>チーム戦勝利時のボーナスポイント:</label>
-                            <input type="number" id="pts-team-win" value="0" min="0" max="20" disabled onchange="saveAppData(); renderTeamLeagueUI();">
-                        </div>
-                    </div>
-
                     <button type="button" id="save-admin-btn" class="save-admin-btn" onclick="saveAdminSettings()">設定を保存する</button>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
-
-        var members = [];
-        var soloParticipants = [];
-        var soloMatches = [];
-        var tourneyParticipants = [];
-        var tourneyMatches = {};
+        var members = [
+            { name: "裸のラリーさん", rankName: "マスター", cost: 3 },
+            { name: "enushi35", rankName: "プラチナ", cost: 1 }
+        ];
+        var soloParticipants = [], soloMatches = [];
+        var tourneyParticipants = [], tourneyMatches = {};
         var teams = [{ name: "チーム 1", members: { senho: "", jiho: "", fukusho: "", taisho: "" } }];
-        var teamParticipants = [];
-        var teamMatches = [];
-        var currentTeamIndex = 0;
-
-        var teamArchives = [];
-        var soloArchives = [];
-        var tourneyArchives = [];
-
+        var teamParticipants = [], teamMatches = [];
+        var currentTeamIndex = 0, teamArchives = [], soloArchives = [], tourneyArchives = [];
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
-        function getTodayFormatted() {
-            var d = new Date();
-            var yyyy = d.getFullYear();
-            var mm = String(d.getMonth() + 1).padStart(2, '0');
-            var dd = String(d.getDate()).padStart(2, '0');
-            return yyyy + '.' + mm + '.' + dd;
-        }
-
-        function openMainOverlay() {
-            window.open('overlay_main_2.html', '_blank', 'width=1920,height=1080');
-        }
-
-        function openListOverlay() {
-            window.open('overlay_list_2.html', '_blank', 'width=450,height=900');
-        }
+        function openMainOverlay() { window.open('overlay_main.html', '_blank', 'width=1920,height=1080'); }
+        function openListOverlay() { window.open('overlay_list.html', '_blank', 'width=450,height=900'); }
 
         function getActiveStreamPayload() {
             var payload = { stageTitle: "--- vs ---", p1Name: "---", p2Name: "---", p1Detail: "ランク: -", p2Detail: "ランク: -", s1: 0, s2: 0 };
-
-            if (activeStreamMatch.mode === 'team') {
-                if (teamMatches[activeStreamMatch.matchIndex]) {
-                    var m = teamMatches[activeStreamMatch.matchIndex];
-                    var rKey = activeStreamMatch.subIndex;
-                    payload.stageTitle = `${m.t1Name} vs ${m.t2Name} 【${rKey === 'senho'?'先鋒':rKey === 'jiho'?'次鋒':rKey === 'fukusho'?'副将':'大将'}】`;
-                    
-                    var idx1 = m.order1 ? m.order1[rKey] : "";
-                    var idx2 = m.order2 ? m.order2[rKey] : "";
-                    var m1 = (idx1 !== "" && members[idx1]) ? members[idx1] : null;
-                    var m2 = (idx2 !== "" && members[idx2]) ? members[idx2] : null;
-
-                    payload.p1Name = m1 ? m1.name : "（未定）";
-                    payload.p2Name = m2 ? m2.name : "（未定）";
-                    payload.p1Detail = m1 ? `ランク: ${m1.rankName} (コスト:${m1.cost})` : "ランク: -";
-                    payload.p2Detail = m2 ? `ランク: ${m2.rankName} (コスト:${m2.cost})` : "ランク: -";
-
-                    if (m.results && m.results[rKey]) {
-                        payload.s1 = m.results[rKey].s1 || 0;
-                        payload.s2 = m.results[rKey].s2 || 0;
-                    }
-                }
-            } else if (activeStreamMatch.mode === 'solo') {
-                if (soloMatches[activeStreamMatch.matchIndex]) {
-                    var m = soloMatches[activeStreamMatch.matchIndex];
-                    payload.stageTitle = `個人戦 第 ${activeStreamMatch.matchIndex + 1} 試合`;
-                    payload.p1Name = m.p1;
-                    payload.p2Name = m.p2;
-                    payload.p1Detail = "個人戦プレイヤー";
-                    payload.p2Detail = "個人戦プレイヤー";
-                    payload.s1 = m.s1 || 0;
-                    payload.s2 = m.s2 || 0;
-                }
-            } else if (activeStreamMatch.mode === 'tourney') {
-                var roundKey = activeStreamMatch.subIndex;
-                if (tourneyMatches[roundKey] && tourneyMatches[roundKey][activeStreamMatch.matchIndex]) {
-                    var m = tourneyMatches[roundKey][activeStreamMatch.matchIndex];
-                    payload.stageTitle = `[${roundKey}] 第 ${activeStreamMatch.matchIndex + 1} 試合`;
-                    payload.p1Name = m.p1;
-                    payload.p2Name = m.p2;
-                    payload.p1Detail = "トーナメント";
-                    payload.p2Detail = "トーナメント";
-                    payload.s1 = m.s1 || 0;
-                    payload.s2 = m.s2 || 0;
-                }
+            if (activeStreamMatch.mode === 'team' && teamMatches[activeStreamMatch.matchIndex]) {
+                var m = teamMatches[activeStreamMatch.matchIndex], rKey = activeStreamMatch.subIndex;
+                payload.stageTitle = `${m.t1Name} vs ${m.t2Name} 【${rKey === 'senho'?'先鋒':rKey === 'jiho'?'次鋒':rKey === 'fukusho'?'副将':'大将'}】`;
+                var idx1 = m.order1 ? m.order1[rKey] : "", idx2 = m.order2 ? m.order2[rKey] : "";
+                var m1 = (idx1 !== "" && members[idx1]) ? members[idx1] : null;
+                var m2 = (idx2 !== "" && members[idx2]) ? members[idx2] : null;
+                payload.p1Name = m1 ? m1.name : "（未定）"; payload.p2Name = m2 ? m2.name : "（未定）";
+                if (m.results && m.results[rKey]) { payload.s1 = m.results[rKey].s1 || 0; payload.s2 = m.results[rKey].s2 || 0; }
+            } else if (activeStreamMatch.mode === 'solo' && soloMatches[activeStreamMatch.matchIndex]) {
+                var m = soloMatches[activeStreamMatch.matchIndex];
+                payload.stageTitle = `個人戦 第 ${activeStreamMatch.matchIndex + 1} 試合`;
+                payload.p1Name = m.p1; payload.p2Name = m.p2; payload.s1 = m.s1 || 0; payload.s2 = m.s2 || 0;
+            } else if (activeStreamMatch.mode === 'tourney' && tourneyMatches[activeStreamMatch.subIndex]) {
+                var m = tourneyMatches[activeStreamMatch.subIndex][activeStreamMatch.matchIndex];
+                if (m) { payload.stageTitle = `[${activeStreamMatch.subIndex}] 試合`; payload.p1Name = m.p1; payload.p2Name = m.p2; payload.s1 = m.s1 || 0; payload.s2 = m.s2 || 0; }
             }
             return payload;
         }
 
         function saveAppData() {
-            var tourneyTypeElem = document.querySelector('input[name="tourney-type"]:checked');
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var data = {
-                members: members,
-                soloParticipants: soloParticipants,
-                soloMatches: soloMatches,
-                tourneyParticipants: tourneyParticipants,
-                tourneyMatches: tourneyMatches,
-                teams: teams,
-                teamParticipants: teamParticipants,
-                teamMatches: teamMatches,
-                currentTeamIndex: currentTeamIndex,
-                teamArchives: teamArchives,
-                soloArchives: soloArchives,
-                tourneyArchives: tourneyArchives,
-                activeStreamMatch: activeStreamMatch,
-                payload: getActiveStreamPayload(),
-                soloTitle: document.getElementById('solo-title') ? document.getElementById('solo-title').value : '',
-                soloDate: document.getElementById('solo-date') ? document.getElementById('solo-date').value : '',
-                soloSeason: document.getElementById('solo-season') ? document.getElementById('solo-season').value : '',
-                tourneyTitle: document.getElementById('tourney-title') ? document.getElementById('tourney-title').value : '',
-                tourneyType: tourneyTypeElem ? tourneyTypeElem.value : 'single',
-                costBonusMode: bonusModeElem ? bonusModeElem.value : 'normal',
-                maxCost: document.getElementById('setting-max-cost') ? document.getElementById('setting-max-cost').value : 20,
-                costP: document.getElementById('cost-platinum') ? document.getElementById('cost-platinum').value : 1,
-                costD: document.getElementById('cost-diamond') ? document.getElementById('cost-diamond').value : 2,
-                costM: document.getElementById('cost-master') ? document.getElementById('cost-master').value : 3,
-                costHM: document.getElementById('cost-highmaster') ? document.getElementById('cost-highmaster').value : 3,
-                costGM: document.getElementById('cost-grandmaster') ? document.getElementById('cost-grandmaster').value : 4,
-                costU: document.getElementById('cost-ultimate') ? document.getElementById('cost-ultimate').value : 6,
-                costL: document.getElementById('cost-legend') ? document.getElementById('cost-legend').value : 8,
-                ptsSenho: document.getElementById('pts-senho') ? document.getElementById('pts-senho').value : 1,
-                ptsJiho: document.getElementById('pts-jiho') ? document.getElementById('pts-jiho').value : 1,
-                ptsFukusho: document.getElementById('pts-fukusho') ? document.getElementById('pts-fukusho').value : 1,
-                ptsTaisho: document.getElementById('pts-taisho') ? document.getElementById('pts-taisho').value : 2,
-                ptsTeamWin: document.getElementById('pts-team-win') ? document.getElementById('pts-team-win').value : 0
-            };
-            bc.postMessage(data);
+            bc.postMessage({
+                members, soloParticipants, soloMatches, tourneyParticipants, tourneyMatches,
+                teams, teamParticipants, teamMatches, activeStreamMatch, payload: getActiveStreamPayload()
+            });
         }
 
         bc.onmessage = function(e) {
@@ -694,2035 +356,232 @@
                 saveAppData();
             } else if (e.data.type === 'UPDATE_SCORE_FROM_OVERLAY') {
                 var d = e.data;
-                if (d.mode === 'team') {
-                    var m = teamMatches[d.matchIndex];
-                    if (m && m.results && m.results[d.subIndex]) {
-                        m.results[d.subIndex][d.field] = d.val;
-                        if (m.results[d.subIndex].s1 === 2 && m.results[d.subIndex].s2 < 2) m.results[d.subIndex].winner = 1;
-                        else if (m.results[d.subIndex].s2 === 2 && m.results[d.subIndex].s1 < 2) m.results[d.subIndex].winner = 2;
-                        else m.results[d.subIndex].winner = 0;
-                    }
-                } else if (d.mode === 'solo') {
-                    if (soloMatches[d.matchIndex]) {
-                        soloMatches[d.matchIndex][d.field] = d.val;
-                    }
-                } else if (d.mode === 'tourney') {
-                    if (tourneyMatches[d.roundKey] && tourneyMatches[d.roundKey][d.matchIndex]) {
-                        tourneyMatches[d.roundKey][d.matchIndex][d.field] = d.val;
-                    }
+                if (d.mode === 'team' && teamMatches[d.matchIndex] && teamMatches[d.matchIndex].results[d.subIndex]) {
+                    teamMatches[d.matchIndex].results[d.subIndex][d.field] = d.val;
+                } else if (d.mode === 'solo' && soloMatches[d.matchIndex]) {
+                    soloMatches[d.matchIndex][d.field] = d.val;
+                } else if (d.mode === 'tourney' && tourneyMatches[d.roundKey] && tourneyMatches[d.roundKey][d.matchIndex]) {
+                    tourneyMatches[d.roundKey][d.matchIndex][d.field] = d.val;
                 }
                 saveAppData();
-                if (typeof renderTeamLeagueUI === 'function') renderTeamLeagueUI();
-                if (typeof renderSoloTournamentUI === 'function') renderSoloTournamentUI();
-                if (typeof renderTourneyUI === 'function') renderTourneyUI();
             }
         };
 
-        function loadAppData() {
-            members = [
-                { name: "裸のラリーさん", rankName: "マスター", cost: 3 },
-                { name: "enushi35", rankName: "プラチナ", cost: 1 },
-                { name: "ウメハラ", rankName: "レジェンド", cost: 8 },
-                { name: "ときど", rankName: "アルティメットマスター", cost: 6 }
-            ];
-            if (document.getElementById('team-league-date')) document.getElementById('team-league-date').value = getTodayFormatted();
-            if (document.getElementById('solo-date')) document.getElementById('solo-date').value = getTodayFormatted();
-
-            updateRoleLabels();
-            updateArchiveSelects();
-        }
-
-        function updateRoleLabels() {
-            var getPts = function(id, defVal) {
-                var elem = document.getElementById(id);
-                return elem ? elem.value : defVal;
-            };
-            var s = getPts('pts-senho', 1);
-            var j = getPts('pts-jiho', 1);
-            var f = getPts('pts-fukusho', 1);
-            var t = getPts('pts-taisho', 2);
-
-            if (document.getElementById('label-role-senho')) document.getElementById('label-role-senho').textContent = `先鋒 (${s}pt)`;
-            if (document.getElementById('label-role-jiho')) document.getElementById('label-role-jiho').textContent = `次鋒 (${j}pt)`;
-            if (document.getElementById('label-role-fukusho')) document.getElementById('label-role-fukusho').textContent = `副将 (${f}pt)`;
-            if (document.getElementById('label-role-taisho')) document.getElementById('label-role-taisho').textContent = `大将 (${t}pt)`;
-        }
-
         function switchTab(tabId, btnElement) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(function(c) { 
-                c.classList.remove('active');
-                c.style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(c => { c.classList.remove('active'); c.style.display = 'none'; });
+            document.querySelectorAll('.sidebar .tab-btn:not(.stream-btn)').forEach(b => b.classList.remove('active'));
+            var target = document.getElementById(tabId);
+            if (target) { target.classList.add('active'); target.style.display = 'block'; }
+            if (btnElement) btnElement.classList.add('active');
+        }
+
+        function calcCostFromRank(rankStr) {
+            if (!rankStr) return 1;
+            var r = rankStr.toUpperCase();
+            if (r.includes('レジェンド')) return 8;
+            if (r.includes('アルティメット')) return 6;
+            if (r.includes('グランドマスター')) return 4;
+            if (r.includes('ハイマスター') || r.includes('マスター')) return 3;
+            if (r.includes('ダイヤモンド')) return 2;
+            return 1;
+        }
+
+        function recalculateAllMemberCosts() {
+            members.forEach(m => m.cost = calcCostFromRank(m.rankName));
+            saveAppData();
+        }
+
+        function renderMemberList() {
+            var tbody = document.getElementById('member-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            members.forEach((m, idx) => {
+                var tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx + 1}</td><td>${m.name}</td><td>${m.rankName}</td><td>${m.cost}</td><td><button class="delete-btn" onclick="deleteMember(${idx})">削除</button></td>`;
+                tbody.appendChild(tr);
             });
-
-            const buttons = document.querySelectorAll('.sidebar .tab-btn:not(.stream-btn)');
-            buttons.forEach(function(b) { b.classList.remove('active'); });
-
-            const target = document.getElementById(tabId);
-            if (target) {
-                target.classList.add('active');
-                target.style.display = 'block';
-            }
-            if (btnElement) {
-                btnElement.classList.add('active');
-            }
-
-            var mainContentArea = document.querySelector('.main-content');
-            if (mainContentArea) mainContentArea.scrollTop = 0;
+            renderSoloRegistry(); renderTourneyRegistry(); renderTeamRegistry(); updateTeamSelectOptions();
         }
 
-        function updateArchiveSelects() {
-            var teamSel = document.getElementById('team-archive-select');
-            if (teamSel) {
-                var curVal = teamSel.value;
-                var html = '<option value="">-- 現在の編集中 / 新規 --</option>';
-                teamArchives.forEach(function(arc, idx) {
-                    html += `<option value="${idx}">${arc.title} (${arc.date})</option>`;
-                });
-                teamSel.innerHTML = html;
-                teamSel.value = curVal;
-            }
-
-            var soloSel = document.getElementById('solo-archive-select');
-            if (soloSel) {
-                var curVal = soloSel.value;
-                var html = '<option value="">-- 現在の編集中 / 新規 --</option>';
-                soloArchives.forEach(function(arc, idx) {
-                    html += `<option value="${idx}">${arc.title} (${arc.date} - ${arc.season})</option>`;
-                });
-                soloSel.innerHTML = html;
-                soloSel.value = curVal;
-            }
-
-            var tourneySel = document.getElementById('tourney-archive-select');
-            if (tourneySel) {
-                var curVal = tourneySel.value;
-                var html = '<option value="">-- 現在の編集中 / 新規 --</option>';
-                tourneyArchives.forEach(function(arc, idx) {
-                    html += `<option value="${idx}">${arc.title} (${arc.type === 'single' ? 'シングル':'ダブル'})</option>`;
-                });
-                tourneySel.innerHTML = html;
-                tourneySel.value = curVal;
-            }
+        function addMember() {
+            var name = document.getElementById('new-player-name').value.trim();
+            var rank = document.getElementById('new-player-rank').value;
+            if (!name) return;
+            members.push({ name, rankName: rank, cost: calcCostFromRank(rank) });
+            document.getElementById('new-player-name').value = '';
+            renderMemberList(); saveAppData();
         }
 
-        function saveTeamArchive() {
-            var titleElem = document.getElementById('team-league-title');
-            var dateElem = document.getElementById('team-league-date');
-            var title = titleElem ? titleElem.value : '裸リーグ チーム対抗戦';
-            var date = dateElem ? dateElem.value : getTodayFormatted();
+        function deleteMember(idx) {
+            members.splice(idx, 1);
+            renderMemberList(); saveAppData();
+        }
 
-            var archiveData = {
-                title: title,
-                date: date,
-                teamParticipants: [...teamParticipants],
-                teamMatches: JSON.parse(JSON.stringify(teamMatches)),
-                teams: JSON.parse(JSON.stringify(teams))
-            };
+        function addTeam() {
+            teams.push({ name: "チーム " + (teams.length + 1), members: { senho: "", jiho: "", fukusho: "", taisho: "" } });
+            currentTeamIndex = teams.length - 1;
+            updateTeamSelectOptions(); saveAppData();
+        }
 
-            teamArchives.push(archiveData);
-            updateArchiveSelects();
+        function updateTeamSelectOptions() {
+            var bar = document.getElementById('team-tabs-bar');
+            if (!bar) return;
+            var html = '';
+            teams.forEach((t, idx) => {
+                html += `<button type="button" class="team-tab-btn ${idx === currentTeamIndex ? 'active' : ''}" onclick="switchTeam(${idx})">${t.name}</button>`;
+            });
+            html += '<button type="button" class="add-team-btn" onclick="addTeam()">＋ チーム追加</button>';
+            bar.innerHTML = html;
+        }
+
+        function switchTeam(idx) { currentTeamIndex = idx; updateTeamSelectOptions(); }
+
+        function updateCurrentTeamName(val) {
+            if (teams[currentTeamIndex]) { teams[currentTeamIndex].name = val; updateTeamSelectOptions(); saveAppData(); }
+        }
+
+        function updateTeamRow(role) {
+            var sel = document.getElementById('team-' + role);
+            if (sel) teams[currentTeamIndex].members[role] = sel.value;
             saveAppData();
-            alert('チーム対抗戦の大会履歴を保存しました！');
-        }
-
-        function loadTeamArchive(idxStr) {
-            if (idxStr === "") {
-                if (document.getElementById('team-league-date')) document.getElementById('team-league-date').value = getTodayFormatted();
-                return;
-            }
-            var idx = parseInt(idxStr, 10);
-            var arc = teamArchives[idx];
-            if (!arc) return;
-
-            if (document.getElementById('team-league-title')) document.getElementById('team-league-title').value = arc.title;
-            if (document.getElementById('team-league-date')) document.getElementById('team-league-date').value = arc.date;
-            teamParticipants = [...arc.teamParticipants];
-            teamMatches = JSON.parse(JSON.stringify(arc.teamMatches));
-            if (arc.teams) teams = JSON.parse(JSON.stringify(arc.teams));
-
-            updateTeamParticipantDisplay();
-            renderTeamLeagueUI();
-            saveAppData();
-            alert(`過去の大会「${arc.title}」を呼び出しました。`);
-        }
-
-        function deleteTeamArchive() {
-            var teamSel = document.getElementById('team-archive-select');
-            if (!teamSel || teamSel.value === "") {
-                alert('削除する履歴を選択してください。');
-                return;
-            }
-            if (confirm('選択したチーム対抗戦の履歴を削除しますか？')) {
-                var idx = parseInt(teamSel.value, 10);
-                teamArchives.splice(idx, 1);
-                updateArchiveSelects();
-                saveAppData();
-                alert('履歴を削除しました。');
-            }
-        }
-
-        function saveSoloArchive() {
-            var titleElem = document.getElementById('solo-title');
-            var dateElem = document.getElementById('solo-date');
-            var seasonElem = document.getElementById('solo-season');
-            var title = titleElem ? titleElem.value : '裸リーグ 個人戦';
-            var date = dateElem ? dateElem.value : getTodayFormatted();
-            var season = seasonElem ? seasonElem.value : 'シーズン1';
-
-            var archiveData = {
-                title: title,
-                date: date,
-                season: season,
-                soloParticipants: [...soloParticipants],
-                soloMatches: JSON.parse(JSON.stringify(soloMatches))
-            };
-
-            soloArchives.push(archiveData);
-            updateArchiveSelects();
-            saveAppData();
-            alert('個人戦の大会履歴を保存しました！');
-        }
-
-        function loadSoloArchive(idxStr) {
-            if (idxStr === "") {
-                if (document.getElementById('solo-date')) document.getElementById('solo-date').value = getTodayFormatted();
-                return;
-            }
-            var idx = parseInt(idxStr, 10);
-            var arc = soloArchives[idx];
-            if (!arc) return;
-
-            if (document.getElementById('solo-title')) document.getElementById('solo-title').value = arc.title;
-            if (document.getElementById('solo-date')) document.getElementById('solo-date').value = arc.date;
-            if (document.getElementById('solo-season')) document.getElementById('solo-season').value = arc.season;
-            soloParticipants = [...arc.soloParticipants];
-            soloMatches = JSON.parse(JSON.stringify(arc.soloMatches));
-
-            updateSoloParticipantDisplay();
-            renderSoloTournamentUI();
-            document.getElementById('solo-tournament-card').style.display = 'block';
-            saveAppData();
-            alert(`過去の個人戦「${arc.title}」を呼び出しました。`);
-        }
-
-        function deleteSoloArchive() {
-            var soloSel = document.getElementById('solo-archive-select');
-            if (!soloSel || soloSel.value === "") {
-                alert('削除する履歴を選択してください。');
-                return;
-            }
-            if (confirm('選択した個人戦の履歴を削除しますか？')) {
-                var idx = parseInt(soloSel.value, 10);
-                soloArchives.splice(idx, 1);
-                updateArchiveSelects();
-                saveAppData();
-                alert('履歴を削除しました。');
-            }
-        }
-
-        function saveTourneyArchive() {
-            var titleElem = document.getElementById('tourney-title');
-            var typeElem = document.querySelector('input[name="tourney-type"]:checked');
-            var title = titleElem ? titleElem.value : '裸でトーナメント';
-            var type = typeElem ? typeElem.value : 'single';
-
-            var archiveData = {
-                title: title,
-                type: type,
-                tourneyParticipants: [...tourneyParticipants],
-                tourneyMatches: JSON.parse(JSON.stringify(tourneyMatches))
-            };
-
-            tourneyArchives.push(archiveData);
-            updateArchiveSelects();
-            saveAppData();
-            alert('トーナメントの大会履歴を保存しました！');
-        }
-
-        function loadTourneyArchive(idxStr) {
-            if (idxStr === "") return;
-            var idx = parseInt(idxStr, 10);
-            var arc = tourneyArchives[idx];
-            if (!arc) return;
-
-            if (document.getElementById('tourney-title')) document.getElementById('tourney-title').value = arc.title;
-            if (arc.type) {
-                var radio = document.querySelector('input[name="tourney-type"][value="' + arc.type + '"]');
-                if (radio) radio.checked = true;
-            }
-            tourneyParticipants = [...arc.tourneyParticipants];
-            tourneyMatches = JSON.parse(JSON.stringify(arc.tourneyMatches));
-
-            updateTourneyParticipantDisplay();
-            renderTourneyUI();
-            document.getElementById('tourney-display-card').style.display = 'block';
-            saveAppData();
-            alert(`過去のトーナメント「${arc.title}」を呼び出しました。`);
-        }
-
-        function deleteTourneyArchive() {
-            var tourneySel = document.getElementById('tourney-archive-select');
-            if (!tourneySel || tourneySel.value === "") {
-                alert('削除する履歴を選択してください。');
-                return;
-            }
-            if (confirm('選択したトーナメントの履歴を削除しますか？')) {
-                var idx = parseInt(tourneySel.value, 10);
-                tourneyArchives.splice(idx, 1);
-                updateArchiveSelects();
-                saveAppData();
-                alert('履歴を削除しました。');
-            }
         }
 
         function renderTeamRegistry() {
             var tbody = document.getElementById('team-registry-tbody');
             if (!tbody) return;
             tbody.innerHTML = '';
-
-            var maxCostElem = document.getElementById('setting-max-cost');
-            var maxCost = maxCostElem ? parseInt(maxCostElem.value, 10) || 20 : 20;
-
-            teams.forEach(function(t) {
-                var totalCost = calcTeamTotalCost(t);
-                var isOver = totalCost > maxCost;
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align: center;"><input type="checkbox" class="team-check" value="${t.name}"></td>
-                    <td style="font-weight:bold;">${t.name}</td>
-                    <td style="color:${isOver ? '#ff4655':'#00ffcc'};">[コスト: ${totalCost}/${maxCost}]</td>
-                `;
-                tbody.appendChild(tr);
+            teams.forEach(t => {
+                tbody.innerHTML += `<tr><td style="text-align:center;"><input type="checkbox" class="team-check" value="${t.name}"></td><td>${t.name}</td><td>-</td></tr>`;
             });
         }
 
         function importTeamCheckedMembers() {
-            var checks = document.querySelectorAll('.team-check:checked');
-            var addedCount = 0;
-            checks.forEach(function(chk) {
-                var tName = chk.value;
-                if (!teamParticipants.includes(tName)) {
-                    teamParticipants.push(tName);
-                    addedCount++;
-                }
-                chk.checked = false;
+            document.querySelectorAll('.team-check:checked').forEach(chk => {
+                if (!teamParticipants.includes(chk.value)) teamParticipants.push(chk.value);
             });
-            updateTeamParticipantDisplay();
-            saveAppData();
-            alert(addedCount + '件のチームを対抗戦にエントリーしました！');
-        }
-
-        function clearTeamParticipants() {
-            if (confirm('チーム対抗戦のエントリーをクリアしますか？')) {
-                teamParticipants = [];
-                teamMatches = [];
-                updateTeamParticipantDisplay();
-                document.getElementById('team-matches-container').innerHTML = '';
-                updateTeamRankingTable();
-                saveAppData();
-            }
-        }
-
-        function updateTeamParticipantDisplay() {
-            var box = document.getElementById('team-participant-list');
-            if (!box) return;
-            if (teamParticipants.length === 0) {
-                box.innerHTML = '(まだ参加チームがいません)';
-            } else {
-                box.innerHTML = teamParticipants.map(function(tName, i) {
-                    return `<span style="display:inline-block; background:#1a1d2d; border:1px solid #3f466b; padding:4px 10px; margin:4px; border-radius:4px;">${i+1}. ${tName} <button type="button" onclick="removeTeamParticipant('${tName}')" style="background:none; border:none; color:#ff4655; cursor:pointer; font-weight:bold;">×</button></span>`;
-                }).join('');
-            }
-        }
-
-        function removeTeamParticipant(tName) {
-            teamParticipants = teamParticipants.filter(n => n !== tName);
-            updateTeamParticipantDisplay();
+            document.getElementById('team-participant-list').innerHTML = teamParticipants.join(', ');
             saveAppData();
         }
+
+        function clearTeamParticipants() { teamParticipants = []; teamMatches = []; document.getElementById('team-participant-list').innerHTML = '(なし)'; saveAppData(); }
 
         function generateTeamLeagueMatches() {
-            if (teamParticipants.length < 2) {
-                alert('チーム対抗戦を行うには最低2つのチームをエントリーしてください。');
-                return;
-            }
-
-            var activeTeams = teams.filter(t => teamParticipants.includes(t.name));
-
-            teamMatches = [];
-            for (var i = 0; i < activeTeams.length; i++) {
-                for (var j = i + 1; j < activeTeams.length; j++) {
-                    teamMatches.push({
-                        t1Name: activeTeams[i].name,
-                        t2Name: activeTeams[j].name,
-                        order1: JSON.parse(JSON.stringify(activeTeams[i].members)),
-                        order2: JSON.parse(JSON.stringify(activeTeams[j].members)),
-                        results: {
-                            senho: { s1: 0, s2: 0, winner: 0 },
-                            jiho: { s1: 0, s2: 0, winner: 0 },
-                            fukusho: { s1: 0, s2: 0, winner: 0 },
-                            taisho: { s1: 0, s2: 0, winner: 0 }
-                        }
-                    });
-                }
-            }
-            renderTeamLeagueUI();
-            saveAppData();
-            alert('エントリーチームから詳細対戦表・リーグ表を生成しました！');
-        }
-
-        function calcTeamTotalCostByOrder(orderObj) {
-            var total = 0;
-            if (!orderObj) return total;
-            ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => {
-                var mIdx = orderObj[role];
-                if (mIdx !== "" && mIdx !== undefined && members[mIdx]) {
-                    total += members[mIdx].cost;
-                }
-            });
-            return total;
-        }
-
-        function calcTeamTotalCost(teamObj) {
-            return calcTeamTotalCostByOrder(teamObj.members);
-        }
-
-        function calculateMatchPoints(m, pts) {
-            var order1 = m.order1 || { senho: "", jiho: "", fukusho: "", taisho: "" };
-            var order2 = m.order2 || { senho: "", jiho: "", fukusho: "", taisho: "" };
-            var results = m.results || {};
-
-            var cost1 = calcTeamTotalCostByOrder(order1);
-            var cost2 = calcTeamTotalCostByOrder(order2);
-
-            var raw1 = 0, raw2 = 0;
-            var bonus1 = 0, bonus2 = 0;
-
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var bonusMode = bonusModeElem ? bonusModeElem.value : 'normal';
-
-            var roles = ['senho', 'jiho', 'fukusho', 'taisho'];
-
-            if (bonusMode === 'none') {
-                roles.forEach(r => {
-                    var res = results[r];
-                    if (res && res.winner === 1) raw1 += pts[r];
-                    if (res && res.winner === 2) raw2 += pts[r];
-                });
-            } else if (bonusMode === 'exact_diff') {
-                roles.forEach(r => {
-                    var res = results[r];
-                    var idx1 = order1[r];
-                    var idx2 = order2[r];
-                    var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
-                    var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
-
-                    if (res && res.winner === 1) {
-                        raw1 += pts[r];
-                        if (c1 < c2) bonus1 += (c2 - c1);
-                    }
-                    if (res && res.winner === 2) {
-                        raw2 += pts[r];
-                        if (c2 < c1) bonus2 += (c1 - c2);
-                    }
-                });
-            } else {
-                var diff = Math.abs(cost1 - cost2);
-                var subBonus1 = 0;
-                var subBonus2 = 0;
-
-                if (cost1 < cost2 && diff > 0) {
-                    var lowerCount1 = 0;
-                    roles.forEach(r => {
-                        var idx1 = order1[r];
-                        var idx2 = order2[r];
-                        var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
-                        var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
-                        if (idx1 !== "" && idx1 !== undefined && idx2 !== "" && idx2 !== undefined && c1 < c2) lowerCount1++;
-                    });
-                    if (lowerCount1 > 0) subBonus1 = diff / lowerCount1;
-                } else if (cost2 < cost1 && diff > 0) {
-                    var lowerCount2 = 0;
-                    roles.forEach(r => {
-                        var idx1 = order1[r];
-                        var idx2 = order2[r];
-                        var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
-                        var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
-                        if (idx1 !== "" && idx1 !== undefined && idx2 !== "" && idx2 !== undefined && c2 < c1) lowerCount2++;
-                    });
-                    if (lowerCount2 > 0) subBonus2 = diff / lowerCount2;
-                }
-
-                roles.forEach(r => {
-                    var res = results[r];
-                    var idx1 = order1[r];
-                    var idx2 = order2[r];
-                    var c1 = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].cost : 0;
-                    var c2 = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].cost : 0;
-
-                    if (res && res.winner === 1) {
-                        raw1 += pts[r];
-                        if (cost1 < cost2 && c1 < c2) bonus1 += subBonus1;
-                    }
-                    if (res && res.winner === 2) {
-                        raw2 += pts[r];
-                        if (cost2 < cost1 && c2 < c1) bonus2 += subBonus2;
-                    }
-                });
-            }
-
-            var final1 = raw1 + bonus1;
-            var final2 = raw2 + bonus2;
-
-            return {
-                t1: { raw: raw1, bonus: Number((bonus1 || 0).toFixed(2)), final: Number((final1 || 0).toFixed(2)), cost: cost1 },
-                t2: { raw: raw2, bonus: Number((bonus2 || 0).toFixed(2)), final: Number((final2 || 0).toFixed(2)), cost: cost2 }
-            };
-        }
-
-        function renderTeamLeagueUI() {
+            if (teamParticipants.length < 2) return alert('最低2チーム必要です');
+            teamMatches = [{ t1Name: teamParticipants[0], t2Name: teamParticipants[1], order1: teams[0].members, order2: teams[1].members, results: { senho: {s1:0,s2:0,winner:0}, jiho: {s1:0,s2:0,winner:0}, fukusho: {s1:0,s2:0,winner:0}, taisho: {s1:0,s2:0,winner:0} } }];
             var container = document.getElementById('team-matches-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            var getPts = function(id) {
-                var elem = document.getElementById(id);
-                return elem ? parseInt(elem.value, 10) || 0 : 0;
-            };
-
-            var pts = {
-                senho: getPts('pts-senho'),
-                jiho: getPts('pts-jiho'),
-                fukusho: getPts('pts-fukusho'),
-                taisho: getPts('pts-taisho')
-            };
-
-            var maxCostElem = document.getElementById('setting-max-cost');
-            var maxCost = maxCostElem ? parseInt(maxCostElem.value, 10) || 20 : 20;
-
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
-
-            teamMatches.forEach(function(m, idx) {
-                if (!m.order1) {
-                    var found1 = teams.find(t => t.name === m.t1Name);
-                    m.order1 = found1 ? JSON.parse(JSON.stringify(found1.members)) : { senho: "", jiho: "", fukusho: "", taisho: "" };
-                }
-                if (!m.order2) {
-                    var found2 = teams.find(t => t.name === m.t2Name);
-                    m.order2 = found2 ? JSON.parse(JSON.stringify(found2.members)) : { senho: "", jiho: "", fukusho: "", taisho: "" };
-                }
-                if (!m.results) {
-                    m.results = {
-                        senho: { s1: 0, s2: 0, winner: 0 },
-                        jiho: { s1: 0, s2: 0, winner: 0 },
-                        fukusho: { s1: 0, s2: 0, winner: 0 },
-                        taisho: { s1: 0, s2: 0, winner: 0 }
-                    };
-                }
-
-                var resCalc = calculateMatchPoints(m, pts);
-                var c1 = resCalc.t1, c2 = resCalc.t2;
-
-                var box = document.createElement('div');
-                box.className = 'team-match-box';
-
-                var badgeText1 = isPatternC ? `${c1.final} pt` : `${c1.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c1.raw}+補正${c1.bonus})</span>`;
-                var badgeText2 = isPatternC ? `${c2.final} pt` : `${c2.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c2.raw}+補正${c2.bonus})</span>`;
-
-                var headerT1Html = isPatternC ? `<span>${m.t1Name}</span>` : `<span>${m.t1Name}</span> <span style="font-size:0.85rem; color:${c1.cost > maxCost ? '#ff4655':'#a0a6cc'}">[コスト: ${c1.cost}/${maxCost}]</span>`;
-                var headerT2Html = isPatternC ? `<span>${m.t2Name}</span>` : `<span>${m.t2Name}</span> <span style="font-size:0.85rem; color:${c2.cost > maxCost ? '#ff4655':'#a0a6cc'}">[コスト: ${c2.cost}/${maxCost}]</span>`;
-
-                var html = `
-                    <div class="team-match-header">
-                        <div style="color:#00ffcc;">${headerT1Html}</div>
-                        <div class="team-score-badge">${badgeText1}  vs  ${badgeText2}</div>
-                        <div style="color:#00ffcc;">${headerT2Html}</div>
-                    </div>
-                    <table class="team-match-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 30%;">${m.t1Name} (オーダー変更可)</th>
-                                <th style="width: 15%;">ポジション</th>
-                                <th style="width: 30%;">${m.t2Name} (オーダー変更可)</th>
-                                <th style="width: 25%;">勝敗判定 (2本先取)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                var roles = [
-                    { key: 'senho', label: `先鋒 (${pts.senho}pt)` },
-                    { key: 'jiho', label: `次鋒 (${pts.jiho}pt)` },
-                    { key: 'fukusho', label: `副将 (${pts.fukusho}pt)` },
-                    { key: 'taisho', label: `大将 (${pts.taisho}pt)` }
-                ];
-
-                roles.forEach(r => {
-                    var m1SelectHtml = createMatchMemberSelect(idx, 1, r.key, m.order1[r.key]);
-                    var m2SelectHtml = createMatchMemberSelect(idx, 2, r.key, m.order2[r.key]);
-
-                    if (!m.results[r.key]) {
-                        m.results[r.key] = { s1: 0, s2: 0, winner: 0 };
-                    }
-                    var rData = m.results[r.key];
-
-                    var winnerLabel = "未決定";
-                    var winnerColor = "#a0a6cc";
-                    if (rData.winner === 1) {
-                        winnerLabel = "勝者: " + m.t1Name;
-                        winnerColor = "#00ffcc";
-                    } else if (rData.winner === 2) {
-                        winnerLabel = "勝者: " + m.t2Name;
-                        winnerColor = "#00ffcc";
-                    }
-
-                    html += `
-                        <tr>
-                            <td>${m1SelectHtml}</td>
-                            <td style="color:#00ffcc; font-weight:bold;">${r.label}</td>
-                            <td>${m2SelectHtml}</td>
-                            <td>
-                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <input type="number" class="score-input" min="0" max="2" value="${rData.s1}" oninput="updateTeamMatchScore(${idx}, '${r.key}', 's1', this.value)">
-                                    <span>-</span>
-                                    <input type="number" class="score-input" min="0" max="2" value="${rData.s2}" oninput="updateTeamMatchScore(${idx}, '${r.key}', 's2', this.value)">
-                                    <span style="font-weight:bold; color:${winnerColor}; font-size:0.85rem; margin-left: 5px;">${winnerLabel}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                html += `</tbody></table>`;
-                box.innerHTML = html;
-                container.appendChild(box);
-            });
-
-            updateTeamRankingTable();
-        }
-
-        function createMatchMemberSelect(matchIdx, teamNum, roleKey, currentSelectedIdx) {
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
-
-            var html = `<select class="match-member-select" onchange="updateMatchOrder(${matchIdx}, ${teamNum}, '${roleKey}', this.value)">`;
-            html += `<option value="">-- 未選択 --</option>`;
-            members.forEach(function(m, mIdx) {
-                var selected = (String(currentSelectedIdx) === String(mIdx)) ? 'selected' : '';
-                var labelText = isPatternC ? m.name : `${m.name}（${m.cost}）`;
-                html += `<option value="${mIdx}" ${selected}>${labelText}</option>`;
-            });
-            html += `</select>`;
-            return html;
-        }
-
-        function updateMatchOrder(matchIdx, teamNum, roleKey, newMemberIdx) {
-            var m = teamMatches[matchIdx];
-            if (teamNum === 1) {
-                m.order1[roleKey] = newMemberIdx;
-            } else {
-                m.order2[roleKey] = newMemberIdx;
-            }
+            container.innerHTML = `<div class="team-match-box"><b>${teamParticipants[0]} vs ${teamParticipants[1]}</b></div>`;
             saveAppData();
-            renderTeamLeagueUI();
-        }
-
-        function updateTeamMatchScore(matchIdx, roleKey, field, val) {
-            var num = parseInt(val, 10);
-            if (isNaN(num)) num = 0;
-            if (num < 0) num = 0;
-            if (num > 2) num = 2;
-
-            var rData = teamMatches[matchIdx].results[roleKey];
-            rData[field] = num;
-
-            if (rData.s1 === 2 && rData.s2 < 2) {
-                rData.winner = 1;
-            } else if (rData.s2 === 2 && rData.s1 < 2) {
-                rData.winner = 2;
-            } else {
-                rData.winner = 0;
-            }
-
-            saveAppData();
-            updateTeamBadgeAndRanking(matchIdx);
-        }
-
-        function updateTeamBadgeAndRanking(matchIdx) {
-            var m = teamMatches[matchIdx];
-            var getPts = function(id) {
-                var elem = document.getElementById(id);
-                return elem ? parseInt(elem.value, 10) || 0 : 0;
-            };
-            var pts = {
-                senho: getPts('pts-senho'),
-                jiho: getPts('pts-jiho'),
-                fukusho: getPts('pts-fukusho'),
-                taisho: getPts('pts-taisho')
-            };
-
-            var resCalc = calculateMatchPoints(m, pts);
-            var c1 = resCalc.t1, c2 = resCalc.t2;
-
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
-
-            var container = document.getElementById('team-matches-container');
-            if (container && container.children[matchIdx]) {
-                var box = container.children[matchIdx];
-                var badge = box.querySelector('.team-score-badge');
-                if (badge) {
-                    var badgeText1 = isPatternC ? `${c1.final} pt` : `${c1.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c1.raw}+補正${c1.bonus})</span>`;
-                    var badgeText2 = isPatternC ? `${c2.final} pt` : `${c2.final} pt <span style="font-size:0.8rem; color:#a0a6cc;">(通常${c2.raw}+補正${c2.bonus})</span>`;
-                    badge.innerHTML = `${badgeText1}  vs  ${badgeText2}`;
-                }
-
-                var rows = box.querySelectorAll('tbody tr');
-                var roles = ['senho', 'jiho', 'fukusho', 'taisho'];
-                rows.forEach((row, rIdx) => {
-                    var rKey = roles[rIdx];
-                    var rData = m.results[rKey];
-
-                    var winnerLabel = "未決定";
-                    var winnerColor = "#a0a6cc";
-                    if (rData.winner === 1) {
-                        winnerLabel = "勝者: " + m.t1Name;
-                        winnerColor = "#00ffcc";
-                    } else if (rData.winner === 2) {
-                        winnerLabel = "勝者: " + m.t2Name;
-                        winnerColor = "#00ffcc";
-                    }
-                    var span = row.querySelector('span[style*="margin-left"]');
-                    if (span) {
-                        span.textContent = winnerLabel;
-                        span.style.color = winnerColor;
-                    }
-                });
-            }
-
-            updateTeamRankingTable();
-        }
-
-        function updateTeamRankingTable() {
-            var getPts = function(id) {
-                var elem = document.getElementById(id);
-                return elem ? parseInt(elem.value, 10) || 0 : 0;
-            };
-
-            var pts = {
-                senho: getPts('pts-senho'),
-                jiho: getPts('pts-jiho'),
-                fukusho: getPts('pts-fukusho'),
-                taisho: getPts('pts-taisho')
-            };
-
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
-
-            var stats = {};
-            var allTeams = new Set([...teamParticipants]);
-            teamMatches.forEach(m => {
-                if (m.t1Name) allTeams.add(m.t1Name);
-                if (m.t2Name) allTeams.add(m.t2Name);
-            });
-
-            allTeams.forEach(tName => {
-                stats[tName] = { name: tName, totalPts: 0, rawPts: 0, bonusPts: 0, wins: 0 };
-            });
-
-            teamMatches.forEach(m => {
-                var t1Name = m.t1Name;
-                var t2Name = m.t2Name;
-                var resCalc = calculateMatchPoints(m, pts);
-                var c1 = resCalc.t1, c2 = resCalc.t2;
-
-                if (c1.raw > c2.raw) {
-                    if (stats[t1Name]) stats[t1Name].wins++;
-                } else if (c2.raw > c1.raw) {
-                    if (stats[t2Name]) stats[t2Name].wins++;
-                }
-
-                if (stats[t1Name]) {
-                    stats[t1Name].totalPts += (c1.final || 0);
-                    stats[t1Name].rawPts += (c1.raw || 0);
-                    stats[t1Name].bonusPts += (c1.bonus || 0);
-                }
-                if (stats[t2Name]) {
-                    stats[t2Name].totalPts += (c2.final || 0);
-                    stats[t2Name].rawPts += (c2.raw || 0);
-                    stats[t2Name].bonusPts += (c2.bonus || 0);
-                }
-            });
-
-            var ranked = Object.values(stats);
-            ranked.sort((a, b) => b.totalPts - a.totalPts || b.wins - a.wins);
-
-            var tbody = document.getElementById('team-ranking-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            if (ranked.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#a0a6cc;">(集計可能なチームがありません)</td></tr>';
-                return;
-            }
-
-            ranked.forEach((t, idx) => {
-                var totalPtsVal = (t.totalPts !== undefined && !isNaN(t.totalPts)) ? t.totalPts : 0;
-                var rawPtsVal = (t.rawPts !== undefined && !isNaN(t.rawPts)) ? t.rawPts : 0;
-                var bonusPtsVal = (t.bonusPts !== undefined && !isNaN(t.bonusPts)) ? t.bonusPts : 0;
-
-                var detailText = isPatternC ? `通常 ${rawPtsVal}pt` : `通常 ${rawPtsVal}pt ＋ 補正 ${bonusPtsVal.toFixed(2)}pt`;
-
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight:bold; color:${idx === 0 ? '#ffcc00':'#fff'}">${idx + 1}位</td>
-                    <td style="font-weight:bold;">${t.name}</td>
-                    <td style="color:#00ffcc; font-weight:bold; font-size:1.1rem;">${totalPtsVal.toFixed(2)} pt</td>
-                    <td style="color:#a0a6cc; font-size:0.9rem;">${detailText}</td>
-                    <td>${t.wins}勝</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function calcCostFromRank(rankStr) {
-            if (!rankStr) return 1;
-            var r = rankStr.toUpperCase().replace(/\s+/g, '');
-            var getAdminVal = function(id, defVal) {
-                var elem = document.getElementById(id);
-                return elem ? (parseInt(elem.value, 10) || 0) : defVal;
-            };
-            if (r.includes('LEGEND') || r.includes('レジェンド')) return getAdminVal('cost-legend', 8);
-            if (r.includes('ULTIMATE') || r.includes('アルティメット')) return getAdminVal('cost-ultimate', 6);
-            if (r.includes('GRANDMASTER') || r.includes('グランドマスター') || r.includes('グラマス')) return getAdminVal('cost-grandmaster', 4);
-            if (r.includes('HIGHMASTER') || r.includes('ハイマスター')) return getAdminVal('cost-highmaster', 3);
-            if (r.includes('MASTER') || r.includes('マスター')) return getAdminVal('cost-master', 3);
-            if (r.includes('DIAMOND') || r.includes('ダイヤモンド') || r.includes('ダイヤ')) return getAdminVal('cost-diamond', 2);
-            return getAdminVal('cost-platinum', 1);
-        }
-
-        function recalculateAllMemberCosts() {
-            members.forEach(function(m) {
-                m.cost = calcCostFromRank(m.rankName);
-            });
-            renderMemberList();
-            saveAppData();
-        }
-
-        function changeMemberRank(index, newRank) {
-            if (members[index]) {
-                members[index].rankName = newRank;
-                members[index].cost = calcCostFromRank(newRank);
-                renderMemberList();
-                saveAppData();
-            }
-        }
-
-        function renderMemberList() {
-            var tbody = document.getElementById('member-table-body');
-            if (tbody) {
-                tbody.innerHTML = '';
-                var rankOptions = ["プラチナ", "ダイヤモンド", "マスター", "ハイマスター", "グランドマスター", "アルティメットマスター", "レジェンド"];
-                
-                members.forEach(function(m, index) {
-                    var rankSelectHtml = `<select class="table-rank-select" onchange="changeMemberRank(${index}, this.value)">`;
-                    rankOptions.forEach(function(rOpt) {
-                        var selected = (m.rankName === rOpt) ? 'selected' : '';
-                        rankSelectHtml += `<option value="${rOpt}" ${selected}>${rOpt}</option>`;
-                    });
-                    rankSelectHtml += `</select>`;
-
-                    var tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${m.name}</td>
-                        <td>${rankSelectHtml}</td>
-                        <td>${m.cost}</td>
-                        <td>
-                            <div class="action-btn-group">
-                                <button type="button" class="team-go-btn" onclick="assignToTeam(${index})">チームに編成</button>
-                                <button type="button" class="delete-btn" onclick="deleteMember(${index})">削除</button>
-                            </div>
-                        </td>`;
-                    tbody.appendChild(tr);
-                });
-            }
-            renderSoloRegistry();
-            renderTourneyRegistry();
-            renderTeamRegistry();
-            updateTeamSelectOptions();
-            saveAppData();
-        }
-
-        function addMember() {
-            var nameInput = document.getElementById('new-player-name');
-            var rankSelect = document.getElementById('new-player-rank');
-            if (!nameInput || !rankSelect) return;
-            var name = nameInput.value.trim();
-            if (!name) {
-                alert('なまえを入力してください。');
-                return;
-            }
-            var rankText = rankSelect.value;
-            var cost = calcCostFromRank(rankText);
-            members.push({ name: name, rankName: rankText, cost: cost });
-            nameInput.value = '';
-            renderMemberList();
-        }
-
-        function deleteMember(index) {
-            members.splice(index, 1);
-            teams.forEach(function(t) {
-                ['senho', 'jiho', 'fukusho', 'taisho'].forEach(function(role) {
-                    if (t.members[role] == index) t.members[role] = "";
-                    else if (t.members[role] > index) t.members[role] = t.members[role] - 1;
-                });
-            });
-            renderMemberList();
-            loadCurrentTeamToUI();
-        }
-
-        function shuffleArray(array) {
-            var arr = [...array];
-            for (var i = arr.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
-            return arr;
-        }
-
-        function renderTourneyRegistry() {
-            var tbody = document.getElementById('tourney-registry-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            members.forEach(function(m) {
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align: center;"><input type="checkbox" class="tourney-check" value="${m.name}"></td>
-                    <td>${m.name}</td>
-                    <td>${m.rankName}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function importTourneyCheckedMembers() {
-            var checks = document.querySelectorAll('.tourney-check:checked');
-            var addedCount = 0;
-            checks.forEach(function(chk) {
-                var name = chk.value;
-                if (!tourneyParticipants.includes(name)) {
-                    tourneyParticipants.push(name);
-                    addedCount++;
-                }
-                chk.checked = false;
-            });
-            updateTourneyParticipantDisplay();
-            saveAppData();
-            alert(addedCount + '人のメンバーをトーナメントにエントリーしました！');
-        }
-
-        function clearTourneyParticipants() {
-            if (confirm('トーナメントのエントリーをクリアしますか？')) {
-                tourneyParticipants = [];
-                tourneyMatches = {};
-                updateTourneyParticipantDisplay();
-                document.getElementById('tourney-display-card').style.display = 'none';
-                saveAppData();
-            }
-        }
-
-        function updateTourneyParticipantDisplay() {
-            var box = document.getElementById('tourney-participant-list');
-            if (!box) return;
-            if (tourneyParticipants.length === 0) {
-                box.innerHTML = '(まだ参加者がいません)';
-            } else {
-                box.innerHTML = tourneyParticipants.map(function(name, i) {
-                    return `<span style="display:inline-block; background:#1a1d2d; border:1px solid #3f466b; padding:4px 10px; margin:4px; border-radius:4px;">${i+1}. ${name} <button type="button" onclick="removeTourneyParticipant('${name}')" style="background:none; border:none; color:#ff4655; cursor:pointer; font-weight:bold;">×</button></span>`;
-                }).join('');
-            }
-        }
-
-        function removeTourneyParticipant(name) {
-            tourneyParticipants = tourneyParticipants.filter(n => n !== name);
-            updateTourneyParticipantDisplay();
-            saveAppData();
-        }
-
-        function generateTourneyBrackets() {
-            if (tourneyParticipants.length < 2) {
-                alert('トーナメントを行うには最低2人の参加者が必要です。');
-                return;
-            }
-
-            var participants = shuffleArray(tourneyParticipants);
-            var numPlayers = participants.length;
-            var typeRadio = document.querySelector('input[name="tourney-type"]:checked');
-            var type = typeRadio ? typeRadio.value : 'single';
-
-            tourneyMatches = {};
-
-            var power = 1;
-            while (power < numPlayers) power *= 2;
-            var numByes = power - numPlayers;
-            var numMatchesR1 = power / 2;
-
-            var safePairIndices = [];
-            for (var p = 1; p < numMatchesR1 - 1; p++) {
-                safePairIndices.push(p);
-            }
-            if (safePairIndices.length === 0) {
-                safePairIndices.push(0);
-            }
-            safePairIndices = shuffleArray(safePairIndices);
-
-            var r1Slots = new Array(power).fill(null);
-            var byePairFlags = new Array(numMatchesR1).fill(false);
-
-            for (var b = 0; b < numByes; b++) {
-                var targetPair = safePairIndices[b % safePairIndices.length];
-                byePairFlags[targetPair] = true;
-            }
-
-            var pIdx = 0;
-            for (var pair = 0; pair < numMatchesR1; pair++) {
-                var slot1 = pair * 2;
-                var slot2 = pair * 2 + 1;
-
-                if (byePairFlags[pair]) {
-                    r1Slots[slot1] = participants[pIdx++];
-                    r1Slots[slot2] = "空き";
-                } else {
-                    r1Slots[slot1] = participants[pIdx++];
-                    r1Slots[slot2] = participants[pIdx++];
-                }
-            }
-
-            if (type === 'single') {
-                var round1 = [];
-                for (var i = 0; i < power; i += 2) {
-                    var p1 = r1Slots[i];
-                    var p2 = r1Slots[i+1];
-                    var initialWinner = "";
-                    var s1 = 0, s2 = 0;
-
-                    if (p2 === "空き") {
-                        initialWinner = p1;
-                        s1 = 2; s2 = 0;
-                    } else if (p1 === "空き") {
-                        initialWinner = p2;
-                        s1 = 0; s2 = 2;
-                    }
-
-                    round1.push({
-                        id: 's_r1_m' + (i/2),
-                        p1: p1, p2: p2,
-                        s1: s1, s2: s2,
-                        winner: initialWinner,
-                        loser: (p2 === "空き" || p1 === "空き") ? "空き" : ""
-                    });
-                }
-                tourneyMatches['single_r1'] = round1;
-
-                var currentCount = round1.length;
-                var rNum = 2;
-                while (currentCount > 1) {
-                    currentCount /= 2;
-                    var nextRound = [];
-                    for (var j = 0; j < currentCount; j++) {
-                        var isFinal = (currentCount === 1);
-                        nextRound.push({
-                            id: 's_r' + rNum + '_m' + j,
-                            p1: '（未定）', p2: '（未定）',
-                            s1: 0, s2: 0, winner: '', isFinal: isFinal
-                        });
-                    }
-                    tourneyMatches['single_r' + rNum] = nextRound;
-                    rNum++;
-                }
-            } else {
-                var wbRoundsCount = Math.log2(power);
-                for (var r = 1; r <= wbRoundsCount; r++) {
-                    var matchCount = power / Math.pow(2, r);
-                    var roundMatches = [];
-                    for (var m = 0; m < matchCount; m++) {
-                        var isWbFinal = (r === wbRoundsCount);
-                        var p1Val = (r === 1) ? r1Slots[m * 2] : '（未定）';
-                        var p2Val = (r === 1) ? r1Slots[m * 2 + 1] : '（未定）';
-                        var initWin = '';
-                        var initLos = '';
-                        var s1Val = 0, s2Val = 0;
-
-                        if (r === 1) {
-                            if (p2Val === "空き") {
-                                initWin = p1Val;
-                                initLos = "空き";
-                                s1Val = 2; s2Val = 0;
-                            } else if (p1Val === "空き") {
-                                initWin = p2Val;
-                                initLos = "空き";
-                                s1Val = 0; s2Val = 2;
-                            }
-                        }
-
-                        roundMatches.push({
-                            id: 'wb_r' + r + '_m' + m,
-                            p1: p1Val, p2: p2Val,
-                            s1: s1Val, s2: s2Val,
-                            winner: initWin, loser: initLos,
-                            isWbFinal: isWbFinal
-                        });
-                    }
-                    tourneyMatches['wb_r' + r] = roundMatches;
-                }
-
-                var totalLbRounds = (wbRoundsCount - 1) * 2;
-                for (var lr = 1; lr <= totalLbRounds; lr++) {
-                    var lbMatchCount = power / Math.pow(2, Math.floor((lr + 3) / 2));
-                    if (lbMatchCount < 1) lbMatchCount = 1;
-                    var lbMatches = [];
-                    for (var lm = 0; lm < lbMatchCount; lm++) {
-                        lbMatches.push({
-                            id: 'lb_r' + lr + '_m' + lm,
-                            p1: '（未定）', p2: '（未定）',
-                            s1: 0, s2: 0, winner: '', loser: '',
-                            isLbFinal: (lr === totalLbRounds)
-                        });
-                    }
-                    tourneyMatches['lb_r' + lr] = lbMatches;
-                }
-
-                tourneyMatches['grand_final'] = [
-                    { id: 'gf_m0', p1: '（勝者組1位）', p2: '（敗者組1位）', s1: 0, s2: 0, winner: '', isGrandFinal: true }
-                ];
-                tourneyMatches['reset_final'] = [
-                    { id: 'rf_m0', p1: '（未定）', p2: '（未定）', s1: 0, s2: 0, winner: '', isResetMatch: true }
-                ];
-            }
-
-            propagateTourneyWinners();
-
-            var displayCard = document.getElementById('tourney-display-card');
-            if (displayCard) {
-                displayCard.style.display = 'block';
-            }
-            renderTourneyUI();
-            saveAppData();
-            alert('トーナメント表を作成しました！');
-        }
-
-        function renderTourneyUI() {
-            var title = document.getElementById('tourney-title') ? document.getElementById('tourney-title').value : '裸でトーナメント';
-            document.getElementById('tourney-display-title').textContent = title + ' - トーナメント表';
-
-            var container = document.getElementById('tourney-brackets-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            var keys = Object.keys(tourneyMatches);
-            keys.forEach(function(roundKey) {
-                var matches = tourneyMatches[roundKey];
-
-                if (roundKey === 'reset_final') {
-                    var gf = tourneyMatches['grand_final'] ? tourneyMatches['grand_final'][0] : null;
-                    if (!gf || !gf.winner || gf.winner !== gf.p2 || gf.p2 === '（敗者組1位）') {
-                        return;
-                    }
-                }
-
-                var roundName = getRoundDisplayName(roundKey);
-
-                var col = document.createElement('div');
-                col.className = 'bracket-column';
-                col.innerHTML = `<h4>${roundName}</h4>`;
-
-                matches.forEach(function(m, mIdx) {
-                    var isFinalRound = m.isFinal || m.isGrandFinal || m.isResetMatch;
-                    var maxScore = isFinalRound ? 3 : 2;
-
-                    var matchBox = document.createElement('div');
-                    var boxClass = 'bracket-match';
-                    if (m.isGrandFinal) boxClass += ' grand-final';
-                    if (m.isResetMatch) boxClass += ' reset-match';
-                    if (m.isFinal) boxClass += ' grand-final';
-                    matchBox.className = boxClass;
-
-                    var p1WinnerClass = (m.winner && m.winner === m.p1) ? ' winner' : '';
-                    var p2WinnerClass = (m.winner && m.winner === m.p2) ? ' winner' : '';
-
-                    var isByeMatch = (m.p1 === '空き' || m.p2 === '空き' || m.p1 === '（未定）' || m.p2 === '（未定）' || m.p1.startsWith('（') || m.p2.startsWith('（') || (roundKey === 'grand_final' && m.p1 === m.p2));
-                    var inputDisabled = isByeMatch ? 'disabled style="background:#222; color:#555;"' : '';
-
-                    matchBox.innerHTML = `
-                        <div class="bracket-player${p1WinnerClass}">
-                            <span class="bracket-player-name" title="${m.p1}">${m.p1}</span>
-                            <input type="number" class="bracket-score-input" min="0" max="${maxScore}" value="${m.s1}" ${inputDisabled} oninput="updateTourneyScore('${roundKey}', ${mIdx}, 's1', this.value, ${maxScore})">
-                        </div>
-                        <div class="bracket-player${p2WinnerClass}">
-                            <span class="bracket-player-name" title="${m.p2}">${m.p2}</span>
-                            <input type="number" class="bracket-score-input" min="0" max="${maxScore}" value="${m.s2}" ${inputDisabled} oninput="updateTourneyScore('${roundKey}', ${mIdx}, 's2', this.value, ${maxScore})">
-                        </div>
-                    `;
-                    col.appendChild(matchBox);
-                });
-                container.appendChild(col);
-            });
-        }
-
-        function getRoundDisplayName(rKey) {
-            if (rKey.startsWith('single_r')) {
-                var keys = Object.keys(tourneyMatches).filter(k => k.startsWith('single_r'));
-                var curIdx = keys.indexOf(rKey);
-                if (curIdx === keys.length - 1) return '👑 決勝戦 (3先)';
-                if (curIdx === keys.length - 2 && keys.length > 2) return '準決勝 (2先)';
-                return `${curIdx + 1}回戦 (2先)`;
-            }
-
-            if (rKey.startsWith('wb_r')) {
-                var rNum = parseInt(rKey.replace('wb_r', ''), 10);
-                var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
-                if (rNum === wbKeys.length) return '勝者組 決勝 (2先)';
-                return `勝者組 ${rNum}回戦 (2先)`;
-            }
-
-            if (rKey.startsWith('lb_r')) {
-                var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
-                var lIdx = lbKeys.indexOf(rKey);
-                if (lIdx === lbKeys.length - 1) return '敗者組 決勝 (2先)';
-                return `敗者組 ${lIdx + 1}回戦 (2先)`;
-            }
-
-            if (rKey === 'grand_final') return '👑 グランドファイナル (3先)';
-            if (rKey === 'reset_final') return '🔥 最終リセットマッチ (3先)';
-            return rKey;
-        }
-
-        function updateTourneyScore(roundKey, matchIdx, field, val, maxScore) {
-            var num = parseInt(val, 10);
-            if (isNaN(num)) num = 0;
-            if (num < 0) num = 0;
-            if (num > maxScore) num = maxScore;
-
-            var match = tourneyMatches[roundKey][matchIdx];
-            match[field] = num;
-
-            if (match.p1 === match.p2) {
-                match.winner = '';
-                match.loser = '';
-            } else if (match.p2 === "空き") {
-                match.winner = match.p1;
-                match.loser = "空き";
-                match.s1 = maxScore;
-                match.s2 = 0;
-            } else if (match.p1 === "空き") {
-                match.winner = match.p2;
-                match.loser = "空き";
-                match.s1 = 0;
-                match.s2 = maxScore;
-            } else if (match.s1 === maxScore && match.s2 < maxScore) {
-                match.winner = match.p1;
-                match.loser = match.p2;
-            } else if (match.s2 === maxScore && match.s1 < maxScore) {
-                match.winner = match.p2;
-                match.loser = match.p1;
-            } else {
-                match.winner = '';
-                match.loser = '';
-            }
-
-            if (roundKey === 'grand_final') {
-                var rf = tourneyMatches['reset_final'] ? tourneyMatches['reset_final'][0] : null;
-                if (rf) {
-                    if (match.winner && match.winner === match.p2) {
-                        rf.p1 = match.p1;
-                        rf.p2 = match.p2;
-                    } else {
-                        rf.p1 = '（未定）';
-                        rf.p2 = '（未定）';
-                        rf.s1 = 0;
-                        rf.s2 = 0;
-                        rf.winner = '';
-                        rf.loser = '';
-                    }
-                }
-            }
-
-            propagateTourneyWinners();
-            renderTourneyUI();
-            saveAppData();
-        }
-
-        function propagateTourneyWinners() {
-            var typeRadio = document.querySelector('input[name="tourney-type"]:checked');
-            var type = typeRadio ? typeRadio.value : 'single';
-
-            if (type === 'single') {
-                var keys = Object.keys(tourneyMatches).filter(k => k.startsWith('single_r'));
-                keys.forEach(k => {
-                    tourneyMatches[k].forEach(m => {
-                        var isFinalRound = m.isFinal || m.isGrandFinal || m.isResetMatch;
-                        var maxScore = isFinalRound ? 3 : 2;
-                        if (m.p2 === '空き') {
-                            m.winner = m.p1;
-                            m.loser = '空き';
-                            m.s1 = maxScore; m.s2 = 0;
-                        } else if (m.p1 === '空き') {
-                            m.winner = m.p2;
-                            m.loser = '空き';
-                            m.s1 = 0; m.s2 = maxScore;
-                        } else if (m.s1 === maxScore && m.s2 < maxScore) {
-                            m.winner = m.p1;
-                            m.loser = m.p2;
-                        } else if (m.s2 === maxScore && m.s1 < maxScore) {
-                            m.winner = m.p2;
-                            m.loser = m.p1;
-                        } else {
-                            m.winner = '';
-                            m.loser = '';
-                        }
-                    });
-                });
-
-                for (var k = 0; k < keys.length - 1; k++) {
-                    var currentRound = tourneyMatches[keys[k]];
-                    var nextRound = tourneyMatches[keys[k+1]];
-                    if (currentRound && nextRound) {
-                        for (var i = 0; i < currentRound.length; i++) {
-                            var targetMatchIdx = Math.floor(i / 2);
-                            var targetSlot = (i % 2 === 0) ? 'p1' : 'p2';
-                            var m = currentRound[i];
-                            var wName = (m.winner && m.winner !== '空き') ? m.winner : (m.winner === '空き' ? '空き' : '（未定）');
-                            if (nextRound[targetMatchIdx]) {
-                                nextRound[targetMatchIdx][targetSlot] = wName;
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-
-            var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
-            var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
-
-            wbKeys.forEach(wk => {
-                if (tourneyMatches[wk]) {
-                    tourneyMatches[wk].forEach(m => {
-                        if (m.p2 === '空き') {
-                            m.winner = m.p1;
-                            m.loser = '空き';
-                            m.s1 = 2; m.s2 = 0;
-                        } else if (m.p1 === '空き') {
-                            m.winner = m.p2;
-                            m.loser = '空き';
-                            m.s1 = 0; m.s2 = 2;
-                        } else if (m.s1 === 2 && m.s2 < 2) {
-                            m.winner = m.p1;
-                            m.loser = m.p2;
-                        } else if (m.s2 === 2 && m.s1 < 2) {
-                            m.winner = m.p2;
-                            m.loser = m.p1;
-                        } else {
-                            m.winner = '';
-                            m.loser = '';
-                        }
-                    });
-                }
-            });
-
-            for (var i = 0; i < wbKeys.length - 1; i++) {
-                var curWb = tourneyMatches[wbKeys[i]];
-                var nextWb = tourneyMatches[wbKeys[i+1]];
-                if (curWb && nextWb) {
-                    for (var m = 0; m < curWb.length; m++) {
-                        var targetM = Math.floor(m / 2);
-                        var targetSlot = (m % 2 === 0) ? 'p1' : 'p2';
-                        var curM = curWb[m];
-                        var wName = (curM.winner && curM.winner !== '空き') ? curM.winner : (curM.winner === '空き' ? '空き' : '（未定）');
-                        if (nextWb[targetM]) {
-                            nextWb[targetM][targetSlot] = wName;
-                        }
-                    }
-                }
-            }
-
-            lbKeys.forEach(lk => {
-                if (tourneyMatches[lk]) {
-                    tourneyMatches[lk].forEach(cm => {
-                        if (cm.p1 === '（未定）' || cm.p2 === '（未定）' || cm.p1 === '空き' || cm.p2 === '空き') {
-                            if (cm.p2 === '空き') { cm.winner = cm.p1; cm.loser = '空き'; }
-                            else if (cm.p1 === '空き') { cm.winner = cm.p2; cm.loser = '空き'; }
-                            else { cm.winner = ''; cm.loser = ''; }
-                        } else if (cm.s1 === 2 && cm.s2 < 2) {
-                            cm.winner = cm.p1;
-                            cm.loser = cm.p2;
-                        } else if (cm.s2 === 2 && cm.s1 < 2) {
-                            cm.winner = cm.p2;
-                            cm.loser = cm.p1;
-                        } else {
-                            cm.winner = '';
-                            cm.loser = '';
-                        }
-                    });
-                }
-            });
-
-            var wb1 = tourneyMatches['wb_r1'];
-            var lb1 = tourneyMatches['lb_r1'];
-            if (wb1 && lb1) {
-                var losersWb1 = [];
-                wb1.forEach(m => {
-                    if (m.loser && m.loser !== '（未定）') losersWb1.push(m.loser);
-                    else losersWb1.push('（未定）');
-                });
-                for (var l = 0; l < losersWb1.length; l += 2) {
-                    var targetLbIdx = Math.floor(l / 2);
-                    if (lb1[targetLbIdx]) {
-                        lb1[targetLbIdx].p1 = losersWb1[l] || '（未定）';
-                        lb1[targetLbIdx].p2 = (l + 1 < losersWb1.length) ? losersWb1[l+1] : '（未定）';
-                    }
-                }
-            }
-
-            var lb2 = tourneyMatches['lb_r2'];
-            if (lb1 && lb2) {
-                for (var idx1 = 0; idx1 < lb1.length; idx1++) {
-                    var m1 = lb1[idx1];
-                    var w1 = (m1.winner && m1.winner !== '空き') ? m1.winner : '（未定）';
-                    if (lb2[idx1]) lb2[idx1].p1 = w1;
-                }
-            }
-
-            for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
-                var curWb = tourneyMatches['wb_r' + rIdx];
-                if (curWb) {
-                    var losers = [];
-                    curWb.forEach(m => {
-                        if (m.loser && m.loser !== '（未定）') losers.push(m.loser);
-                        else losers.push('（未定）');
-                    });
-                    var targetLbKeyIndex = (rIdx - 1) * 2 - 1;
-                    if (targetLbKeyIndex < lbKeys.length) {
-                        var targetLbKey = lbKeys[targetLbKeyIndex];
-                        var targetLbMatches = tourneyMatches[targetLbKey];
-                        if (targetLbMatches) {
-                            losers.forEach((losName, lIdx) => {
-                                if (targetLbMatches[lIdx]) targetLbMatches[lIdx].p2 = losName;
-                            });
-                        }
-                    }
-                }
-            }
-
-            for (var lkIdx = 0; lkIdx < lbKeys.length - 1; lkIdx++) {
-                var curLb = tourneyMatches[lbKeys[lkIdx]];
-                var nextLb = tourneyMatches[lbKeys[lkIdx + 1]];
-                if (curLb && nextLb) {
-                    var isCurrentEven = ((lkIdx + 1) % 2 === 0);
-                    if (isCurrentEven) {
-                        curLb.forEach((cm, cmIdx) => {
-                            var w = (cm.winner && cm.winner !== '空き') ? cm.winner : '（未定）';
-                            var targetNextM = Math.floor(cmIdx / 2);
-                            var slot = (cmIdx % 2 === 0) ? 'p1' : 'p2';
-                            if (nextLb[targetNextM]) nextLb[targetNextM][slot] = w;
-                        });
-                    } else {
-                        curLb.forEach((cm, cmIdx) => {
-                            var w = (cm.winner && cm.winner !== '空き') ? cm.winner : '（未定）';
-                            if (nextLb[cmIdx]) nextLb[cmIdx].p1 = w;
-                        });
-                    }
-                }
-            }
-
-            var wbFinalKey = wbKeys[wbKeys.length - 1];
-            var lbFinalKey = lbKeys[lbKeys.length - 1];
-            if (wbFinalKey && lbFinalKey && tourneyMatches[wbFinalKey] && tourneyMatches[lbFinalKey]) {
-                var wbFinalMatch = tourneyMatches[wbFinalKey][0];
-                if (wbFinalMatch && wbFinalMatch.loser && wbFinalMatch.loser !== '（未定）') {
-                    var lbFinalMatch = tourneyMatches[lbFinalKey][0];
-                    if (lbFinalMatch) lbFinalMatch.p2 = wbFinalMatch.loser;
-                }
-            }
-
-            var gf = tourneyMatches['grand_final'];
-            var lastWb = wbFinalKey ? tourneyMatches[wbFinalKey] : null;
-            var lastLb = lbFinalKey ? tourneyMatches[lbFinalKey] : null;
-
-            if (gf && gf[0]) {
-                var wbWinner = (lastWb && lastWb[0] && lastWb[0].winner && lastWb[0].winner !== '空き') ? lastWb[0].winner : '';
-                var lbWinner = (lastLb && lastLb[0] && lastLb[0].winner && lastLb[0].winner !== '空き') ? lastLb[0].winner : '';
-                gf[0].p1 = wbWinner ? wbWinner : '（勝者組1位）';
-                if (lbWinner) {
-                    gf[0].p2 = (lbWinner === gf[0].p1) ? '（敗者組1位）' : lbWinner;
-                } else {
-                    gf[0].p2 = '（敗者組1位）';
-                }
-            }
         }
 
         function renderSoloRegistry() {
             var tbody = document.getElementById('solo-registry-tbody');
             if (!tbody) return;
             tbody.innerHTML = '';
-
-            members.forEach(function(m) {
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align: center;"><input type="checkbox" class="solo-check" value="${m.name}"></td>
-                    <td>${m.name}</td>
-                    <td>${m.rankName}</td>
-                `;
-                tbody.appendChild(tr);
+            members.forEach(m => {
+                tbody.innerHTML += `<tr><td style="text-align:center;"><input type="checkbox" class="solo-check" value="${m.name}"></td><td>${m.name}</td><td>${m.rankName}</td></tr>`;
             });
         }
 
         function addSoloParticipant() {
-            var input = document.getElementById('solo-new-name');
-            if (!input) return;
-            var name = input.value.trim();
-            if (!name) {
-                alert('参加者名を入力してください。');
-                return;
-            }
-            if (soloParticipants.includes(name)) {
-                alert('すでにエントリーしています。');
-                return;
-            }
-            soloParticipants.push(name);
-            input.value = '';
-            updateSoloParticipantDisplay();
+            var name = document.getElementById('solo-new-name').value.trim();
+            if (name && !soloParticipants.includes(name)) { soloParticipants.push(name); document.getElementById('solo-new-name').value = ''; }
+            document.getElementById('solo-participant-list').innerHTML = soloParticipants.join(', ');
             saveAppData();
         }
 
         function importCheckedMembers() {
-            var checks = document.querySelectorAll('.solo-check:checked');
-            var addedCount = 0;
-            checks.forEach(function(chk) {
-                var name = chk.value;
-                if (!soloParticipants.includes(name)) {
-                    soloParticipants.push(name);
-                    addedCount++;
-                }
-                chk.checked = false;
+            document.querySelectorAll('.solo-check:checked').forEach(chk => {
+                if (!soloParticipants.includes(chk.value)) soloParticipants.push(chk.value);
             });
-            updateSoloParticipantDisplay();
-            saveAppData();
-            alert(addedCount + '人のメンバーをエントリーしました！');
-        }
-
-        function clearSoloParticipants() {
-            if (confirm('個人戦のエントリーをクリアしますか？')) {
-                soloParticipants = [];
-                soloMatches = [];
-                updateSoloParticipantDisplay();
-                document.getElementById('solo-tournament-card').style.display = 'none';
-                saveAppData();
-            }
-        }
-
-        function updateSoloParticipantDisplay() {
-            var box = document.getElementById('solo-participant-list');
-            if (!box) return;
-            if (soloParticipants.length === 0) {
-                box.innerHTML = '(まだ参加者がいません)';
-            } else {
-                box.innerHTML = soloParticipants.map(function(name, i) {
-                    return `<span style="display:inline-block; background:#1a1d2d; border:1px solid #3f466b; padding:4px 10px; margin:4px; border-radius:4px;">${i+1}. ${name} <button type="button" onclick="removeSoloParticipant('${name}')" style="background:none; border:none; color:#ff4655; cursor:pointer; font-weight:bold;">×</button></span>`;
-                }).join('');
-            }
-        }
-
-        function removeSoloParticipant(name) {
-            soloParticipants = soloParticipants.filter(n => n !== name);
-            updateSoloParticipantDisplay();
+            document.getElementById('solo-participant-list').innerHTML = soloParticipants.join(', ');
             saveAppData();
         }
+
+        function clearSoloParticipants() { soloParticipants = []; soloMatches = []; document.getElementById('solo-participant-list').innerHTML = '(なし)'; saveAppData(); }
 
         function generateSoloTournament() {
-            if (soloParticipants.length < 2) {
-                alert('個人戦を行うには最低2人の参加者が必要です。');
-                return;
-            }
-
-            var existingScores = {};
-            soloMatches.forEach(function(m) {
-                if (m.s1 > 0 || m.s2 > 0) {
-                    var key = [m.p1, m.p2].sort().join(" vs ");
-                    existingScores[key] = { s1: m.s1, s2: m.s2 };
-                }
-            });
-
-            var pList = shuffleArray(soloParticipants);
-            var isOdd = pList.length % 2 !== 0;
-            if (isOdd) pList.push("空き");
-
-            var n = pList.length;
-            var numRounds = n - 1;
-            var matchesPerRound = n / 2;
-            var roundPairings = [];
-
-            for (var r = 0; r < numRounds; r++) {
-                var roundMatches = [];
-                for (var i = 0; i < matchesPerRound; i++) {
-                    var pA = pList[i];
-                    var pB = pList[n - 1 - i];
-                    if (pA !== "空き" && pB !== "空き") {
-                        var swap = (r + i) % 2 === 0;
-                        roundMatches.push({ p1: swap ? pA : pB, p2: swap ? pB : pA });
-                    }
-                }
-                roundPairings.push(roundMatches);
-                pList.splice(1, 0, pList.pop());
-            }
-
-            var pool = [];
-            roundPairings.forEach(rm => {
-                shuffleArray(rm).forEach(m => pool.push(m));
-            });
-
-            var optimizedMatches = [];
-            var lastPlayed = {};
-            soloParticipants.forEach(p => lastPlayed[p] = -99);
-
-            var matchIdx = 0;
-            while (pool.length > 0) {
-                var bestIdx = 0;
-                var minLastScore = 9999;
-                for (var idx = 0; idx < pool.length; idx++) {
-                    var m = pool[idx];
-                    var score = Math.max(lastPlayed[m.p1], lastPlayed[m.p2]);
-                    if (score < minLastScore) {
-                        minLastScore = score;
-                        bestIdx = idx;
-                    }
-                }
-                var chosen = pool.splice(bestIdx, 1)[0];
-                var key = [chosen.p1, chosen.p2].sort().join(" vs ");
-                var s1 = 0, s2 = 0;
-                if (existingScores[key]) {
-                    s1 = existingScores[key].s1;
-                    s2 = existingScores[key].s2;
-                }
-                optimizedMatches.push({ p1: chosen.p1, p2: chosen.p2, s1: s1, s2: s2 });
-                lastPlayed[chosen.p1] = matchIdx;
-                lastPlayed[chosen.p2] = matchIdx;
-                matchIdx++;
-            }
-
-            soloMatches = optimizedMatches;
-            renderSoloTournamentUI();
+            if (soloParticipants.length < 2) return alert('参加者が足りません');
+            soloMatches = [{ p1: soloParticipants[0], p2: soloParticipants[1], s1: 0, s2: 0 }];
             document.getElementById('solo-tournament-card').style.display = 'block';
-            saveAppData();
-            alert('対戦スケジュールを再生成しました！');
-        }
-
-        function renderSoloTournamentUI() {
-            var title = document.getElementById('solo-title') ? document.getElementById('solo-title').value : '裸リーグ 個人戦';
-            document.getElementById('display-tournament-title').textContent = title + ' - リーグ表 & 対戦スケジュール';
-
-            var schedTbody = document.getElementById('schedule-tbody');
-            schedTbody.innerHTML = '';
-            soloMatches.forEach(function(m, idx) {
-                var winner = "-";
-                if (m.s1 === 2 && m.s2 < 2) winner = m.p1;
-                else if (m.s2 === 2 && m.s1 < 2) winner = m.p2;
-
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>第${idx + 1}試合</td>
-                    <td style="font-weight:bold; color:${winner === m.p1 ? '#00ffcc':'#fff'}">${m.p1}</td>
-                    <td>
-                        <input type="number" class="score-input" min="0" max="2" value="${m.s1}" oninput="updateMatchScore(${idx}, 's1', this.value)"> - 
-                        <input type="number" class="score-input" min="0" max="2" value="${m.s2}" oninput="updateMatchScore(${idx}, 's2', this.value)">
-                    </td>
-                    <td style="font-weight:bold; color:${winner === m.p2 ? '#00ffcc':'#fff'}">${m.p2}</td>
-                    <td style="color:#ffcc00; font-weight:bold;">${winner}</td>
-                `;
-                schedTbody.appendChild(tr);
-            });
-
-            var matrixTable = document.getElementById('matrix-table');
-            var pList = soloParticipants;
-            var mHtml = '<thead><tr><th>VS</th>';
-            pList.forEach(p => mHtml += `<th>${p}</th>`);
-            mHtml += '<th>勝-敗</th></tr></thead><tbody>';
-
-            pList.forEach(function(rowP, rIdx) {
-                mHtml += `<tr><th style="background:#10121b; color:#00ffcc;">${rowP}</th>`;
-                pList.forEach(function(colP, cIdx) {
-                    if (rIdx === cIdx) {
-                        mHtml += '<td style="background:#151824; color:#555;">－</td>';
-                    } else {
-                        var res = "-";
-                        var resColor = "#a0a6cc";
-                        soloMatches.forEach(m => {
-                            if ((m.p1 === rowP && m.p2 === colP) || (m.p1 === colP && m.p2 === rowP)) {
-                                if (m.s1 === 2 || m.s2 === 2) {
-                                    var matchWinner = (m.s1 > m.s2) ? m.p1 : m.p2;
-                                    if (matchWinner === rowP) {
-                                        res = "〇"; resColor = "#00ffcc";
-                                    } else {
-                                        res = "×"; resColor = "#ff4655";
-                                    }
-                                }
-                            }
-                        });
-                        mHtml += `<td style="font-weight:bold; color:${resColor};">${res}</td>`;
-                    }
-                });
-                var wCount = 0, lCount = 0;
-                soloMatches.forEach(m => {
-                    if ((m.p1 === rowP || m.p2 === rowP) && (m.s1 === 2 || m.s2 === 2)) {
-                        var winner = (m.s1 > m.s2) ? m.p1 : m.p2;
-                        if (winner === rowP) wCount++;
-                        else lCount++;
-                    }
-                });
-                mHtml += `<td style="font-weight:bold;">${wCount}勝${lCount}敗</td></tr>`;
-            });
-            mHtml += '</tbody>';
-            matrixTable.innerHTML = mHtml;
-
-            updateRankingTable();
-        }
-
-        function updateMatchScore(matchIdx, field, val) {
-            var num = parseInt(val, 10);
-            if (isNaN(num)) num = 0;
-            if (num < 0) num = 0;
-            if (num > 2) num = 2;
-
-            soloMatches[matchIdx][field] = num;
-            renderSoloTournamentUI();
+            var sched = document.getElementById('schedule-tbody');
+            sched.innerHTML = `<tr><td>第1試合</td><td>${soloParticipants[0]}</td><td>0 - 0</td><td>${soloParticipants[1]}</td><td>-</td></tr>`;
             saveAppData();
         }
 
-        function updateRankingTable() {
-            var stats = {};
-            soloParticipants.forEach(p => {
-                stats[p] = { name: p, wins: 0, losses: 0, setsWon: 0, setsLost: 0, h2h: {} };
-            });
-
-            soloMatches.forEach(m => {
-                if (m.s1 === 2 || m.s2 === 2) {
-                    var p1 = m.p1, p2 = m.p2;
-                    if (!stats[p1] || !stats[p2]) return;
-                    stats[p1].setsWon += m.s1;
-                    stats[p1].setsLost += m.s2;
-                    stats[p2].setsWon += m.s2;
-                    stats[p2].setsLost += m.s1;
-
-                    if (m.s1 > m.s2) {
-                        stats[p1].wins++; stats[p2].losses++;
-                        stats[p1].h2h[p2] = 1; stats[p2].h2h[p1] = -1;
-                    } else {
-                        stats[p2].wins++; stats[p1].losses++;
-                        stats[p2].h2h[p1] = 1; stats[p1].h2h[p2] = -1;
-                    }
-                }
-            });
-
-            var ranked = Object.values(stats);
-            ranked.sort(function(a, b) {
-                if (b.wins !== a.wins) return b.wins - a.wins;
-                var rateA = (a.setsWon + a.setsLost) > 0 ? (a.setsWon / (a.setsWon + a.setsLost)) : 0;
-                var rateB = (b.setsWon + b.setsLost) > 0 ? (b.setsWon / (b.setsWon + b.setsLost)) : 0;
-                if (rateB !== rateA) return rateB - rateA;
-                if (a.h2h[b.name] !== undefined) return -a.h2h[b.name];
-                return 0;
-            });
-
-            var rankTbody = document.getElementById('ranking-tbody');
-            rankTbody.innerHTML = '';
-            ranked.forEach(function(st, idx) {
-                var totalSets = st.setsWon + st.setsLost;
-                var winRate = totalSets > 0 ? ((st.setsWon / totalSets) * 100).toFixed(1) + '%' : '0.0%';
-                var gameDiff = st.setsWon - st.setsLost;
-
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight:bold; color:${idx === 0 ? '#ffcc00':'#fff'}">${idx + 1}位</td>
-                    <td style="font-weight:bold;">${st.name}</td>
-                    <td style="color:#00ffcc; font-weight:bold;">${st.wins}勝</td>
-                    <td>${st.losses}敗</td>
-                    <td>${winRate}</td>
-                    <td>${gameDiff >= 0 ? '+' + gameDiff : gameDiff}</td>
-                `;
-                rankTbody.appendChild(tr);
+        function renderTourneyRegistry() {
+            var tbody = document.getElementById('tourney-registry-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            members.forEach(m => {
+                tbody.innerHTML += `<tr><td style="text-align:center;"><input type="checkbox" class="tourney-check" value="${m.name}"></td><td>${m.name}</td><td>${m.rankName}</td></tr>`;
             });
         }
 
-        function updateTeamSelectOptions() {
-            var bar = document.getElementById('team-tabs-bar');
-            if (!bar) return;
-
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
-
-            var html = '';
-            teams.forEach(function(t, idx) {
-                var activeClass = (idx === currentTeamIndex) ? ' active' : '';
-                html += '<button type="button" class="team-tab-btn' + activeClass + '" onclick="switchTeam(' + idx + ')">' + t.name + '</button>';
+        function importTourneyCheckedMembers() {
+            document.querySelectorAll('.tourney-check:checked').forEach(chk => {
+                if (!tourneyParticipants.includes(chk.value)) tourneyParticipants.push(chk.value);
             });
-            html += '<button type="button" class="add-team-btn" onclick="addTeam()">＋ 新規チームを追加</button>';
-            bar.innerHTML = html;
-
-            var selects = ['team-senho', 'team-jiho', 'team-fukusho', 'team-taisho'];
-            selects.forEach(function(selId) {
-                var sel = document.getElementById(selId);
-                if (!sel) return;
-                sel.innerHTML = '<option value="">-- なまえを選択 --</option>';
-                members.forEach(function(m, mIdx) {
-                    var opt = document.createElement('option');
-                    opt.value = mIdx;
-                    opt.textContent = isPatternC ? m.name : `${m.name}（${m.cost}）`;
-                    sel.appendChild(opt);
-                });
-            });
-            loadCurrentTeamToUI();
-            renderTeamRegistry();
-        }
-
-        function switchTeam(idx) {
-            currentTeamIndex = idx;
-            updateTeamSelectOptions();
+            document.getElementById('tourney-participant-list').innerHTML = tourneyParticipants.join(', ');
             saveAppData();
         }
 
-        function addTeam() {
-            teams.push({ name: "チーム " + (teams.length + 1), members: { senho: "", jiho: "", fukusho: "", taisho: "" } });
-            currentTeamIndex = teams.length - 1;
-            updateTeamSelectOptions();
+        function clearTourneyParticipants() { tourneyParticipants = []; tourneyMatches = {}; document.getElementById('tourney-participant-list').innerHTML = '(なし)'; saveAppData(); }
+
+        function generateTourneyBrackets() {
+            if (tourneyParticipants.length < 2) return alert('参加者が足りません');
+            tourneyMatches = { '1回戦': [{ p1: tourneyParticipants[0], p2: tourneyParticipants[1], s1: 0, s2: 0, winner: '' }] };
+            document.getElementById('tourney-display-card').style.display = 'block';
+            var container = document.getElementById('tourney-brackets-container');
+            container.innerHTML = `<div class="bracket-column"><h4>1回戦</h4><div class="bracket-match"><div class="bracket-player"><span>${tourneyParticipants[0]}</span></div><div class="bracket-player"><span>${tourneyParticipants[1]}</span></div></div></div>`;
             saveAppData();
-        }
-
-        function deleteCurrentTeam() {
-            if (teams.length <= 1) {
-                alert('最低1つのチームが必要です。');
-                return;
-            }
-            if (confirm('本当にこのチームを削除しますか？')) {
-                teams.splice(currentTeamIndex, 1);
-                currentTeamIndex = Math.max(0, currentTeamIndex - 1);
-                updateTeamSelectOptions();
-                saveAppData();
-            }
-        }
-
-        function updateCurrentTeamName(val) {
-            if (teams[currentTeamIndex]) {
-                teams[currentTeamIndex].name = val || "（無題チーム）";
-                var activeBtn = document.querySelector('.team-tab-btn.active');
-                if (activeBtn) activeBtn.textContent = teams[currentTeamIndex].name;
-                renderTeamRegistry();
-                saveAppData();
-            }
-        }
-
-        function loadCurrentTeamToUI() {
-            var t = teams[currentTeamIndex];
-            var nameInput = document.getElementById('current-team-name');
-            if (nameInput) nameInput.value = t.name;
-
-            ['senho', 'jiho', 'fukusho', 'taisho'].forEach(function(role) {
-                var sel = document.getElementById('team-' + role);
-                if (sel) {
-                    sel.value = (t.members[role] !== undefined && t.members[role] !== "") ? t.members[role] : "";
-                }
-                updateTeamRow(role);
-            });
-        }
-
-        function updateTeamRow(role) {
-            var sel = document.getElementById('team-' + role);
-            var display = document.getElementById('display-' + role);
-            if (!sel || !display) return;
-
-            var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
-            var isPatternC = (bonusModeElem && bonusModeElem.value === 'none');
-
-            var idx = sel.value;
-            teams[currentTeamIndex].members[role] = idx;
-
-            if (idx === "") {
-                display.innerHTML = isPatternC ? '<span>選出なし</span>' : '<span>ランク: -</span><span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>';
-            } else {
-                var m = members[idx];
-                if (m) {
-                    display.innerHTML = isPatternC ? `<span>ランク: ${m.rankName}</span>` : `<span>ランク: ${m.rankName}</span><span style="color: #ffcc00; font-weight: bold;">コスト: ${m.cost}</span>`;
-                } else {
-                    display.innerHTML = isPatternC ? '<span>選出なし</span>' : '<span>ランク: -</span><span style="color: #ffcc00; font-weight: bold;">コスト: 0</span>';
-                }
-            }
-            updateTeamCost();
-            renderTeamRegistry();
-            saveAppData();
-        }
-
-        function updateTeamCost() {
-            var roles = ['senho', 'jiho', 'fukusho', 'taisho'];
-            var total = 0;
-            roles.forEach(function(role) {
-                var sel = document.getElementById('team-' + role);
-                if (sel && sel.value !== "") {
-                    var idx = sel.value;
-                    if (members[idx]) total += members[idx].cost;
-                }
-            });
-            var maxCostElem = document.getElementById('setting-max-cost');
-            var maxCost = maxCostElem ? maxCostElem.value : 20;
-            var totalElem = document.getElementById('team-total-cost');
-            if (totalElem) totalElem.textContent = total + ' / MAX ' + maxCost;
-        }
-
-        function assignToTeam(memberIndex) {
-            var rolesArr = ['senho', 'jiho', 'fukusho', 'taisho'];
-            var targetRole = null;
-            for (var i = 0; i < rolesArr.length; i++) {
-                var sel = document.getElementById('team-' + rolesArr[i]);
-                if (sel && sel.value === "") {
-                    targetRole = rolesArr[i];
-                    break;
-                }
-            }
-            if (!targetRole) targetRole = 'senho';
-
-            var selElem = document.getElementById('team-' + targetRole);
-            if (selElem) {
-                selElem.value = memberIndex;
-                updateTeamRow(targetRole);
-            }
-            switchTab('tab-team-mgmt', document.querySelectorAll('.sidebar .tab-btn:not(.stream-btn)')[3]);
         }
 
         function importFromPaste() {
-            var textarea = document.getElementById('sheet-paste-area');
-            if (!textarea) return;
-            var text = textarea.value.trim();
-            if (!text) {
-                alert('スプレッドシートからデータを貼り付けてください。');
-                return;
-            }
-            var lines = text.split('\n');
-            var count = 0;
-            lines.forEach(function(line) {
+            var text = document.getElementById('sheet-paste-area').value.trim();
+            if (!text) return;
+            text.split('\n').forEach(line => {
                 var cols = line.split('\t');
-                if (cols.length < 2) cols = line.split(',');
-                if (cols.length >= 2) {
-                    var name = cols[0].trim();
-                    var rank = cols[1].trim();
-                    if (name && rank && name !== 'リーグ登録名' && isNaN(name)) {
-                        var cost = calcCostFromRank(rank);
-                        members.push({ name: name, rankName: rank, cost: cost });
-                        count++;
-                    }
-                }
+                if (cols.length >= 2) members.push({ name: cols[0].trim(), rankName: cols[1].trim(), cost: calcCostFromRank(cols[1]) });
             });
-            renderMemberList();
-            textarea.value = '';
-            alert(count + '件のメンバーを取り込みました！');
+            renderMemberList(); saveAppData(); alert('取り込み完了しました！');
         }
 
-        function importCSV(event) {
-            var file = event.target.files[0];
+        function importCSV(e) {
+            var file = e.target.files[0];
             if (!file) return;
             var reader = new FileReader();
-            reader.onload = function(e) {
-                var text = e.target.result;
-                var lines = text.split('\n');
-                var count = 0;
-                lines.forEach(function(line) {
-                    var cols = line.trim().split(',');
-                    if (cols.length >= 2) {
-                        var name = cols[0].trim();
-                        var rank = cols[1].trim();
-                        if (name && rank && name !== 'リーグ登録名') {
-                            var cost = calcCostFromRank(rank);
-                            members.push({ name: name, rankName: rank, cost: cost });
-                            count++;
-                        }
-                    }
+            reader.onload = function(evt) {
+                evt.target.result.split('\n').forEach(line => {
+                    var cols = line.split(',');
+                    if (cols.length >= 2) members.push({ name: cols[0].trim(), rankName: cols[1].trim(), cost: calcCostFromRank(cols[1]) });
                 });
-                renderMemberList();
-                event.target.value = '';
-                alert(count + '件のメンバーをCSVから取り込みました！');
+                renderMemberList(); saveAppData(); alert('CSV読込完了しました！');
             };
             reader.readAsText(file);
         }
 
-        var ADMIN_PIN = "Hadaka_Admin";
-
         function adminLogin() {
-            var pinInput = document.getElementById('admin-pin-input');
-            if (!pinInput) return;
-            if (pinInput.value === ADMIN_PIN) {
-                var fields = document.querySelectorAll('#tab-admin-mgmt input');
-                fields.forEach(function(f) {
-                    if (f.id !== 'admin-pin-input') f.removeAttribute('disabled');
-                });
-                var statusText = document.getElementById('admin-status-text');
-                if (statusText) {
-                    statusText.textContent = '🔓 編集権限が有効です';
-                    statusText.style.color = '#00ffcc';
-                }
+            if (document.getElementById('admin-pin-input').value === 'Hadaka_Admin') {
+                document.querySelectorAll('#tab-admin-mgmt input').forEach(f => f.removeAttribute('disabled'));
+                document.getElementById('admin-status-text').textContent = '🔓 編集権限有効';
                 document.getElementById('admin-login-area').style.display = 'none';
                 document.getElementById('admin-logout-btn').style.display = 'inline-block';
                 document.getElementById('save-admin-btn').style.display = 'block';
-                pinInput.value = '';
-            } else {
-                alert('パスワードが違います。');
-            }
+            } else { alert('パスワードが違います'); }
         }
 
         function adminLogout() {
-            var fields = document.querySelectorAll('#tab-admin-mgmt input[type="number"], #tab-admin-mgmt input[type="radio"]');
-            fields.forEach(function(f) { f.setAttribute('disabled', 'true'); });
-            var statusText = document.getElementById('admin-status-text');
-            if (statusText) {
-                statusText.textContent = '🔒 閲覧モード（設定確認のみ可能）';
-                statusText.style.color = '';
-            }
+            document.querySelectorAll('#tab-admin-mgmt input').forEach(f => f.setAttribute('disabled', 'true'));
+            document.getElementById('admin-status-text').textContent = '🔒 閲覧モード';
             document.getElementById('admin-login-area').style.display = 'flex';
             document.getElementById('admin-logout-btn').style.display = 'none';
             document.getElementById('save-admin-btn').style.display = 'none';
         }
 
-        function saveAdminSettings() {
-            saveAppData();
-            recalculateAllMemberCosts();
-            renderTeamLeagueUI();
-            alert('運営設定を保存しました！');
-            adminLogout();
-        }
+        function saveAdminSettings() { saveAppData(); alert('保存しました！'); adminLogout(); }
 
         window.onload = function() {
-            loadAppData();
             renderMemberList();
-            updateTeamCost();
-            updateSoloParticipantDisplay();
-            updateTourneyParticipantDisplay();
-            updateTeamParticipantDisplay();
-            
-            if (teamMatches.length > 0) {
-                renderTeamLeagueUI();
-            } else {
-                updateTeamRankingTable();
-            }
-            if (soloMatches.length > 0) {
-                renderSoloTournamentUI();
-                document.getElementById('solo-tournament-card').style.display = 'block';
-            }
-            if (Object.keys(tourneyMatches).length > 0) {
-                document.getElementById('tourney-display-card').style.display = 'block';
-                renderTourneyUI();
-            }
-
             setTimeout(saveAppData, 200);
         };
     </script>

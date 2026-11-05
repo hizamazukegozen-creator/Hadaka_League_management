@@ -2,38 +2,30 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HDK LEAGUE - 対戦カードリスト</title>
     <style>
         body { background-color: transparent; color: #f0f0f0; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 15px; box-sizing: border-box; }
         .list-container { display: flex; flex-direction: column; gap: 12px; max-width: 420px; margin: 0 auto; }
-        .list-title { font-size: 1.1rem; font-weight: 900; font-style: italic; text-transform: uppercase; color: #00ffcc; border-bottom: 2px solid #3f466b; padding-bottom: 6px; margin-bottom: 5px; text-shadow: 0 0 8px rgba(0, 255, 204, 0.5); }
+        .list-title { font-size: 1.1rem; font-weight: 900; font-style: italic; color: #00ffcc; border-bottom: 2px solid #3f466b; padding-bottom: 6px; }
         .mode-tabs { display: flex; gap: 6px; background: rgba(20, 23, 36, 0.95); padding: 6px; border-radius: 6px; border: 1px solid #3f466b; }
-        .mode-tab-btn { flex: 1; background: #1a1d2d; border: 1px solid #3f466b; color: #a0a6cc; padding: 6px 4px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; cursor: pointer; text-align: center; transition: all 0.15s; }
-        .mode-tab-btn:hover { color: #fff; border-color: #00ffcc; }
+        .mode-tab-btn { flex: 1; background: #1a1d2d; border: 1px solid #3f466b; color: #a0a6cc; padding: 6px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; cursor: pointer; text-align: center; }
         .mode-tab-btn.active { background: #00ffcc; color: #0f111a; border-color: #00ffcc; }
-        .match-card { background: rgba(20, 23, 36, 0.95); border: 1px solid #3f466b; border-radius: 8px; padding: 12px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 8px; transition: border-color 0.2s; }
+        .match-card { background: rgba(20, 23, 36, 0.95); border: 1px solid #3f466b; border-radius: 8px; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; }
         .match-card.is-active { border: 2px solid #00ffcc; box-shadow: 0 0 12px rgba(0, 255, 204, 0.4); }
         .match-header { font-size: 0.8rem; color: #ffcc00; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2e45; padding-bottom: 6px; }
-        .stage-select-btn { background: #10121b; border: 1px solid #3f466b; color: #a0a6cc; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.15s ease; }
-        .stage-select-btn:hover { border-color: #00ffcc; color: #fff; }
-        .stage-select-btn.active { background: #00ffcc; color: #000; font-weight: bold; border-color: #00ffcc; }
+        .stage-select-btn { background: #10121b; border: 1px solid #3f466b; color: #a0a6cc; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
+        .stage-select-btn.active { background: #00ffcc; color: #000; font-weight: bold; }
         .player-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .player-info { display: flex; align-items: center; gap: 8px; flex: 1; overflow: hidden; }
-        .side-badge { font-size: 0.75rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+        .side-badge { font-size: 0.75rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; }
         .p1-badge { background: #00d9ff; color: #000; }
         .p2-badge { background: #ff4655; color: #fff; }
-        .player-name { font-size: 1rem; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ffffff; }
-        .player-name.winner { color: #00ffcc !important; text-shadow: 0 0 6px rgba(0, 255, 204, 0.6); }
-        .score-control { display: flex; align-items: center; gap: 4px; background: #10121b; border: 1px solid #3f466b; border-radius: 6px; padding: 2px 6px; flex-shrink: 0; }
-        .score-btn { background-color: #1a1d2d; border: 1px solid #3f466b; color: #00d9ff; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-        .score-btn.p2-btn { color: #ff4655; border-color: #ff4655; }
+        .player-name { font-size: 1rem; font-weight: bold; color: #ffffff; }
+        .score-control { display: flex; align-items: center; gap: 4px; background: #10121b; border: 1px solid #3f466b; border-radius: 6px; padding: 2px 6px; }
+        .score-btn { background-color: #1a1d2d; border: 1px solid #3f466b; color: #00d9ff; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .score-val { font-size: 1.1rem; font-weight: 900; color: #ffcc00; width: 22px; text-align: center; }
-        .vs-divider { text-align: center; font-size: 0.75rem; font-weight: 900; color: #ff1a40; letter-spacing: 2px; margin: -2px 0; opacity: 0.8; }
     </style>
 </head>
 <body>
-
     <div class="list-container">
         <div class="list-title">📺 対戦カードリスト & 操作</div>
         <div class="mode-tabs">
@@ -46,11 +38,7 @@
 
     <script>
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
-
-        var members = [];
-        var teamMatches = [];
-        var soloMatches = [];
-        var tourneyMatches = {};
+        var members = [], teamMatches = [], soloMatches = [], tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
         var currentViewMode = 'team';
 
@@ -65,14 +53,11 @@
 
         bc.onmessage = function(e) {
             if (e.data) {
-                var latestData = e.data;
-                members = latestData.members || [];
-                teamMatches = latestData.teamMatches || [];
-                soloMatches = latestData.soloMatches || [];
-                tourneyMatches = latestData.tourneyMatches || {};
-                if (latestData.activeStreamMatch) {
-                    activeStreamMatch = latestData.activeStreamMatch;
-                }
+                members = e.data.members || [];
+                teamMatches = e.data.teamMatches || [];
+                soloMatches = e.data.soloMatches || [];
+                tourneyMatches = e.data.tourneyMatches || {};
+                if (e.data.activeStreamMatch) activeStreamMatch = e.data.activeStreamMatch;
                 renderList();
             }
         };
@@ -83,159 +68,53 @@
             var html = '';
 
             if (currentViewMode === 'team') {
-                teamMatches.forEach(function(m, mIdx) {
-                    var roles = [{ key: 'senho', label: '先鋒' }, { key: 'jiho', label: '次鋒' }, { key: 'fukusho', label: '副将' }, { key: 'taisho', label: '大将' }];
-                    roles.forEach(function(r) {
-                        var idx1 = m.order1 ? m.order1[r.key] : "";
-                        var idx2 = m.order2 ? m.order2[r.key] : "";
-                        var p1Name = (idx1 !== "" && members[idx1]) ? members[idx1].name : "（未定）";
-                        var p2Name = (idx2 !== "" && members[idx2]) ? members[idx2].name : "（未定）";
-
-                        var res = (m.results && m.results[r.key]) ? m.results[r.key] : { s1: 0, s2: 0, winner: 0 };
-                        var p1Win = (res.winner === 1) ? ' winner' : '';
-                        var p2Win = (res.winner === 2) ? ' winner' : '';
-                        var isActive = (activeStreamMatch.mode === 'team' && activeStreamMatch.matchIndex === mIdx && activeStreamMatch.subIndex === r.key);
-
-                        html += `
-                            <div class="match-card ${isActive ? 'is-active' : ''}">
-                                <div class="match-header">
-                                    <span>${m.t1Name} vs ${m.t2Name} 【${r.label}】</span>
-                                    <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('team', ${mIdx}, '${r.key}')">
-                                        ${isActive ? '📺 配信中' : '📺 メインに表示'}
-                                    </button>
-                                </div>
-                                <div class="player-row">
-                                    <div class="player-info"><span class="side-badge p1-badge">1P</span><span class="player-name${p1Win}">${p1Name}</span></div>
-                                    <div class="score-control">
-                                        <button type="button" class="score-btn" onclick="modifyScore('team', ${mIdx}, '${r.key}', 's1', -1)">-</button>
-                                        <span class="score-val">${res.s1}</span>
-                                        <button type="button" class="score-btn" onclick="modifyScore('team', ${mIdx}, '${r.key}', 's1', 1)">+</button>
-                                    </div>
-                                </div>
-                                <div class="vs-divider">VS</div>
-                                <div class="player-row">
-                                    <div class="player-info"><span class="side-badge p2-badge">2P</span><span class="player-name${p2Win}">${p2Name}</span></div>
-                                    <div class="score-control">
-                                        <button type="button" class="score-btn p2-btn" onclick="modifyScore('team', ${mIdx}, '${r.key}', 's2', -1)">-</button>
-                                        <span class="score-val">${res.s2}</span>
-                                        <button type="button" class="score-btn p2-btn" onclick="modifyScore('team', ${mIdx}, '${r.key}', 's2', 1)">+</button>
-                                    </div>
-                                </div>
-                            </div>`;
+                teamMatches.forEach((m, mIdx) => {
+                    ['senho', 'jiho', 'fukusho', 'taisho'].forEach(rKey => {
+                        var label = rKey === 'senho' ? '先鋒' : rKey === 'jiho' ? '次鋒' : rKey === 'fukusho' ? '副将' : '大将';
+                        var res = m.results && m.results[rKey] ? m.results[rKey] : { s1: 0, s2: 0 };
+                        var isActive = (activeStreamMatch.mode === 'team' && activeStreamMatch.matchIndex === mIdx && activeStreamMatch.subIndex === rKey);
+                        html += `<div class="match-card ${isActive ? 'is-active' : ''}">
+                            <div class="match-header"><span>${m.t1Name} vs ${m.t2Name} 【${label}】</span>
+                            <button class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('team', ${mIdx}, '${rKey}')">${isActive ? '📺 配信中' : '📺 メインに表示'}</button></div>
+                            <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p1-badge">1P</span><span class="player-name">選手1</span></div>
+                            <div class="score-control"><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's1', -1)">-</button><span class="score-val">${res.s1}</span><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's1', 1)">+</button></div></div>
+                            <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p2-badge">2P</span><span class="player-name">選手2</span></div>
+                            <div class="score-control"><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's2', -1)">-</button><span class="score-val">${res.s2}</span><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's2', 1)">+</button></div></div>
+                        </div>`;
                     });
                 });
             } else if (currentViewMode === 'solo') {
-                soloMatches.forEach(function(m, idx) {
-                    var winner = (m.s1 === 2 && m.s2 < 2) ? m.p1 : ((m.s2 === 2 && m.s1 < 2) ? m.p2 : "-");
-                    var p1Win = (winner === m.p1) ? ' winner' : '';
-                    var p2Win = (winner === m.p2) ? ' winner' : '';
+                soloMatches.forEach((m, idx) => {
                     var isActive = (activeStreamMatch.mode === 'solo' && activeStreamMatch.matchIndex === idx);
-
-                    html += `
-                        <div class="match-card ${isActive ? 'is-active' : ''}">
-                            <div class="match-header">
-                                <span>個人戦 第 ${idx + 1} 試合</span>
-                                <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('solo', ${idx}, 0)">
-                                    ${isActive ? '📺 配信中' : '📺 メインに表示'}
-                                </button>
-                            </div>
-                            <div class="player-row">
-                                <div class="player-info"><span class="side-badge p1-badge">1P</span><span class="player-name${p1Win}">${m.p1}</span></div>
-                                <div class="score-control">
-                                    <button type="button" class="score-btn" onclick="modifyScore('solo', ${idx}, 0, 's1', -1)">-</button>
-                                    <span class="score-val">${m.s1}</span>
-                                    <button type="button" class="score-btn" onclick="modifyScore('solo', ${idx}, 0, 's1', 1)">+</button>
-                                </div>
-                            </div>
-                            <div class="vs-divider">VS</div>
-                            <div class="player-row">
-                                <div class="player-info"><span class="side-badge p2-badge">2P</span><span class="player-name${p2Win}">${m.p2}</span></div>
-                                <div class="score-control">
-                                    <button type="button" class="score-btn p2-btn" onclick="modifyScore('solo', ${idx}, 0, 's2', -1)">-</button>
-                                    <span class="score-val">${m.s2}</span>
-                                    <button type="button" class="score-btn p2-btn" onclick="modifyScore('solo', ${idx}, 0, 's2', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-            } else if (currentViewMode === 'tourney') {
-                Object.keys(tourneyMatches).forEach(function(roundKey) {
-                    tourneyMatches[roundKey].forEach(function(m, mIdx) {
-                        if (m.p1 === '空き' && m.p2 === '空き') return;
-                        var maxScore = (m.isFinal || m.isGrandFinal || m.isResetMatch) ? 3 : 2;
-                        var p1Win = (m.winner && m.winner === m.p1) ? ' winner' : '';
-                        var p2Win = (m.winner && m.winner === m.p2) ? ' winner' : '';
-                        var isActive = (activeStreamMatch.mode === 'tourney' && activeStreamMatch.matchIndex === mIdx && activeStreamMatch.subIndex === roundKey);
-
-                        html += `
-                            <div class="match-card ${isActive ? 'is-active' : ''}">
-                                <div class="match-header">
-                                    <span>[${roundKey}] 第 ${mIdx + 1} 試合</span>
-                                    <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('tourney', ${mIdx}, '${roundKey}')">
-                                        ${isActive ? '📺 配信中' : '📺 メインに表示'}
-                                    </button>
-                                </div>
-                                <div class="player-row">
-                                    <div class="player-info"><span class="side-badge p1-badge">1P</span><span class="player-name${p1Win}">${m.p1}</span></div>
-                                    <div class="score-control">
-                                        <button type="button" class="score-btn" onclick="modifyScore('tourney', ${mIdx}, '${roundKey}', 's1', -1)">-</button>
-                                        <span class="score-val">${m.s1}</span>
-                                        <button type="button" class="score-btn" onclick="modifyScore('tourney', ${mIdx}, '${roundKey}', 's1', 1)">+</button>
-                                    </div>
-                                </div>
-                                <div class="vs-divider">VS</div>
-                                <div class="player-row">
-                                    <div class="player-info"><span class="side-badge p2-badge">2P</span><span class="player-name${p2Win}">${m.p2}</span></div>
-                                    <div class="score-control">
-                                        <button type="button" class="score-btn p2-btn" onclick="modifyScore('tourney', ${mIdx}, '${roundKey}', 's2', -1)">-</button>
-                                        <span class="score-val">${m.s2}</span>
-                                        <button type="button" class="score-btn p2-btn" onclick="modifyScore('tourney', ${mIdx}, '${roundKey}', 's2', 1)">+</button>
-                                    </div>
-                                </div>
-                            </div>`;
-                    });
+                    html += `<div class="match-card ${isActive ? 'is-active' : ''}">
+                        <div class="match-header"><span>個人戦 第 ${idx + 1} 試合</span>
+                        <button class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('solo', ${idx}, 0)">${isActive ? '📺 配信中' : '📺 メインに表示'}</button></div>
+                        <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p1-badge">1P</span><span class="player-name">${m.p1}</span></div>
+                        <div class="score-control"><button class="score-btn" onclick="modifyScore('solo', ${idx}, 0, 's1', -1)">-</button><span class="score-val">${m.s1}</span><button class="score-btn" onclick="modifyScore('solo', ${idx}, 0, 's1', 1)">+</button></div></div>
+                        <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p2-badge">2P</span><span class="player-name">${m.p2}</span></div>
+                        <div class="score-control"><button class="score-btn" onclick="modifyScore('solo', ${idx}, 0, 's2', -1)">-</button><span class="score-val">${m.s2}</span><button class="score-btn" onclick="modifyScore('solo', ${idx}, 0, 's2', 1)">+</button></div></div>
+                    </div>`;
                 });
             }
-
-            container.innerHTML = html || '<div style="color:#a0a6cc; text-align:center; padding:20px;">表示可能な対戦カードがありません</div>';
+            container.innerHTML = html || '<div style="color:#a0a6cc; text-align:center; padding:20px;">カードがありません</div>';
         }
 
         function setActiveMatch(mode, matchIndex, subIndex) {
-            bc.postMessage({
-                type: 'UPDATE_ACTIVE_MATCH',
-                activeStreamMatch: { mode: mode, matchIndex: matchIndex, subIndex: subIndex }
-            });
+            bc.postMessage({ type: 'UPDATE_ACTIVE_MATCH', activeStreamMatch: { mode, matchIndex, subIndex } });
         }
 
         function modifyScore(mode, matchIndex, subIndex, field, delta) {
             var currentVal = 0;
-            if (mode === 'team') {
-                var m = teamMatches[matchIndex];
-                if (m && m.results && m.results[subIndex]) currentVal = m.results[subIndex][field] || 0;
-            } else if (mode === 'solo') {
-                if (soloMatches[matchIndex]) currentVal = soloMatches[matchIndex][field] || 0;
-            } else if (mode === 'tourney') {
-                if (tourneyMatches[subIndex] && tourneyMatches[subIndex][matchIndex]) currentVal = tourneyMatches[subIndex][matchIndex][field] || 0;
+            if (mode === 'team' && teamMatches[matchIndex] && teamMatches[matchIndex].results[subIndex]) {
+                currentVal = teamMatches[matchIndex].results[subIndex][field] || 0;
+            } else if (mode === 'solo' && soloMatches[matchIndex]) {
+                currentVal = soloMatches[matchIndex][field] || 0;
             }
-
-            var newVal = currentVal + delta;
-            if (newVal < 0) newVal = 0;
-            if (newVal > 3) newVal = 3;
-
-            bc.postMessage({
-                type: 'UPDATE_SCORE_FROM_OVERLAY',
-                mode: mode,
-                matchIndex: matchIndex,
-                subIndex: subIndex,
-                roundKey: subIndex,
-                field: field,
-                val: newVal
-            });
+            var newVal = Math.max(0, currentVal + delta);
+            bc.postMessage({ type: 'UPDATE_SCORE_FROM_OVERLAY', mode, matchIndex, subIndex, roundKey: subIndex, field, val: newVal });
         }
 
-        window.onload = function() {
-            bc.postMessage({ type: 'REQUEST_SYNC' });
-        };
+        window.onload = function() { bc.postMessage({ type: 'REQUEST_SYNC' }); };
     </script>
 </body>
 </html>
