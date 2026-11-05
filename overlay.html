@@ -180,7 +180,6 @@
             line-height: 1;
         }
 
-        /* スコア変更ボタン付きディスプレイ */
         .stream-score-display {
             display: flex;
             justify-content: center;
@@ -352,7 +351,6 @@
                     
                     <div class="stream-vs-badge">
                         <div class="stream-vs-text">VS</div>
-                        <!-- 中央のスコア変更ボタン付きエリア -->
                         <div class="stream-score-display">
                             <button class="score-btn" onclick="addScore(1, -1)">-</button>
                             <span class="stream-score-num" id="stream-s1">0</span>
@@ -425,7 +423,6 @@
             updateStreamStageDisplay();
         }
 
-        // オーバーレイ側からスコアを加減算して更新し、ストレージ経由で管理画面側へ即時同期
         function addScore(playerNum, delta) {
             loadAppData();
 

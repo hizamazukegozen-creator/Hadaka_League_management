@@ -2608,7 +2608,6 @@
             var wbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('wb_r'));
             var lbKeys = Object.keys(tourneyMatches).filter(k => k.startsWith('lb_r'));
 
-            // 1. 勝者組の各試合の勝敗判定を最新状態にする
             wbKeys.forEach(wk => {
                 if (tourneyMatches[wk]) {
                     tourneyMatches[wk].forEach(m => {
@@ -2634,7 +2633,6 @@
                 }
             });
 
-            // 2. 勝者組の勝者を次ラウンドへ送り込む
             for (var i = 0; i < wbKeys.length - 1; i++) {
                 var curWb = tourneyMatches[wbKeys[i]];
                 var nextWb = tourneyMatches[wbKeys[i+1]];
@@ -2651,7 +2649,6 @@
                 }
             }
 
-            // 3. 敗者組の各試合の勝敗判定を最新状態にする
             lbKeys.forEach(lk => {
                 if (tourneyMatches[lk]) {
                     tourneyMatches[lk].forEach(cm => {
@@ -2673,7 +2670,6 @@
                 }
             });
 
-            // 4. 勝者組1回戦の敗者を敗者組1回戦（lb_r1）のスロット（p1 / p2）へ割り当てる
             var wb1 = tourneyMatches['wb_r1'];
             var lb1 = tourneyMatches['lb_r1'];
             if (wb1 && lb1) {
@@ -2694,7 +2690,6 @@
                 }
             }
 
-            // 5. 敗者組1回戦の勝者を敗者組2回戦（lb_r2）の p1 へ送り込む
             var lb2 = tourneyMatches['lb_r2'];
             if (lb1 && lb2) {
                 for (var idx1 = 0; idx1 < lb1.length; idx1++) {
@@ -2706,7 +2701,6 @@
                 }
             }
 
-            // 6. 勝者組2回戦以降の敗者を、対応する敗者組偶数ラウンド（lb_r2, lb_r4...）の p2 へドロップする
             for (var rIdx = 2; rIdx <= wbKeys.length; rIdx++) {
                 var curWb = tourneyMatches['wb_r' + rIdx];
                 if (curWb) {
@@ -2734,15 +2728,13 @@
                 }
             }
 
-            // 7. 敗者組内部の勝者を次ラウンドへ正しく送り込む（大人数でも人数半減に対応するロジック）
             for (var lkIdx = 0; lkIdx < lbKeys.length - 1; lkIdx++) {
                 var curLb = tourneyMatches[lbKeys[lkIdx]];
                 var nextLb = tourneyMatches[lbKeys[lkIdx + 1]];
                 if (curLb && nextLb) {
-                    var isCurrentEven = ((lkIdx + 1) % 2 === 0); // lb_r2, lb_r4 等の偶数ラウンドか
+                    var isCurrentEven = ((lkIdx + 1) % 2 === 0);
                     
                     if (isCurrentEven) {
-                        // 偶数ラウンド（勝者サバイバル）の勝者は、人数が半分になるため次ラウンド（奇数）へ p1 / p2 に交互に振り分ける
                         curLb.forEach((cm, cmIdx) => {
                             var w = (cm.winner && cm.winner !== '空き') ? cm.winner : '（未定）';
                             var targetNextM = Math.floor(cmIdx / 2);
@@ -2752,7 +2744,6 @@
                             }
                         });
                     } else {
-                        // 奇数ラウンド（ドロップ合流後）の勝者は、同数のまま次ラウンド（偶数）の p1 へそのまま送る
                         curLb.forEach((cm, cmIdx) => {
                             var w = (cm.winner && cm.winner !== '空き') ? cm.winner : '（未定）';
                             if (nextLb[cmIdx]) {
@@ -2763,7 +2754,6 @@
                 }
             }
 
-            // 8. 勝者組決勝の敗者を敗者組決勝の p2 へドロップする
             var wbFinalKey = wbKeys[wbKeys.length - 1];
             var lbFinalKey = lbKeys[lbKeys.length - 1];
             if (wbFinalKey && lbFinalKey && tourneyMatches[wbFinalKey] && tourneyMatches[lbFinalKey]) {
@@ -2776,7 +2766,6 @@
                 }
             }
 
-            // 9. グランドファイナル（GF）への進出者設定
             var gf = tourneyMatches['grand_final'];
             var lastWb = wbFinalKey ? tourneyMatches[wbFinalKey] : null;
             var lastLb = lbFinalKey ? tourneyMatches[lbFinalKey] : null;
@@ -3379,26 +3368,44 @@
                 renderTourneyUI();
             }
 
-            // オーバーレイ側等でのスコア変更を管理画面側へ自動反映させる同期ループ
+            // ★追加：別タブ（オーバーレイ）でのスコア変更をリアルタイムで検知・同期する処理
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'hadaka_league_master_data') {
+                    loadAppData();
+                    if (document.getElementById('tab-league-team').classList.contains('active')) {
+                        renderTeamLeagueUI();
+                    } else if (document.getElementById('tab-league-solo').classList.contains('active')) {
+                        renderSoloTournamentUI();
+                    } else if (document.getElementById('tab-tournament').classList.contains('active')) {
+                        renderTourneyUI();
+                    }
+                }
+            });
+
             setInterval(function() {
                 var json = localStorage.getItem('hadaka_league_master_data');
                 if (json) {
                     try {
                         var data = JSON.parse(json);
-                        teamMatches = data.teamMatches || teamMatches;
-                        soloMatches = data.soloMatches || soloMatches;
-                        tourneyMatches = data.tourneyMatches || tourneyMatches;
-                        
-                        if (document.getElementById('tab-league-team').classList.contains('active')) {
-                            updateTeamRankingTable();
-                        } else if (document.getElementById('tab-league-solo').classList.contains('active')) {
-                            renderSoloTournamentUI();
-                        } else if (document.getElementById('tab-tournament').classList.contains('active')) {
-                            renderTourneyUI();
+                        if (JSON.stringify(data.teamMatches) !== JSON.stringify(teamMatches) ||
+                            JSON.stringify(data.soloMatches) !== JSON.stringify(soloMatches) ||
+                            JSON.stringify(data.tourneyMatches) !== JSON.stringify(tourneyMatches)) {
+                            
+                            teamMatches = data.teamMatches || teamMatches;
+                            soloMatches = data.soloMatches || soloMatches;
+                            tourneyMatches = data.tourneyMatches || tourneyMatches;
+                            
+                            if (document.getElementById('tab-league-team').classList.contains('active')) {
+                                renderTeamLeagueUI();
+                            } else if (document.getElementById('tab-league-solo').classList.contains('active')) {
+                                renderSoloTournamentUI();
+                            } else if (document.getElementById('tab-tournament').classList.contains('active')) {
+                                renderTourneyUI();
+                            }
                         }
                     } catch(e) {}
                 }
-            }, 500);
+            }, 300);
         };
     </script>
 </body>
