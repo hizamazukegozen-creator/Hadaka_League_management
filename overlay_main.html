@@ -16,13 +16,11 @@
             width: 1920px;
             height: 1080px;
             overflow: hidden;
-            /* ズレを防ぎ、ブラウザやOBSで意図した位置に確実に収めるためFlexで中央配置の基点を作る */
             display: flex;
             justify-content: center;
             align-items: flex-start;
         }
 
-        /* 全体コンテナ（ブラウザで開いてもOBSでも位置が崩れないように上からのマージンで調整） */
         .overlay-wrapper {
             margin-top: 50px;
             display: flex;
@@ -30,7 +28,6 @@
             align-items: center;
         }
 
-        /* --- HDK LEAGUE ロゴエリア --- */
         .header-brand-container {
             display: flex;
             flex-direction: column;
@@ -46,12 +43,12 @@
         }
 
         .brand-logo-text .hdk {
-            color: #ff2a2a; /* 赤 */
+            color: #ff2a2a;
             text-shadow: 0 0 12px rgba(255, 42, 42, 0.8);
         }
 
         .brand-logo-text .league {
-            color: #00e5ff; /* シアン */
+            color: #00e5ff;
             text-shadow: 0 0 12px rgba(0, 229, 255, 0.8);
         }
 
@@ -65,7 +62,6 @@
             opacity: 0.85;
         }
 
-        /* 対戦カード・ステージタイトル枠 */
         .match-title-box {
             background: rgba(20, 25, 35, 0.92);
             border: 2px solid #00e5ff;
@@ -79,7 +75,6 @@
             margin-bottom: 15px;
         }
 
-        /* --- プレイヤー枠 ＆ 中央VS/スコア行 --- */
         .main-row {
             display: flex;
             align-items: center;
@@ -87,7 +82,6 @@
             width: 100%;
         }
 
-        /* プレイヤーボックス */
         .player-box {
             width: 500px;
             height: 85px;
@@ -132,7 +126,6 @@
             margin-top: 2px;
         }
 
-        /* 真ん中の VS ＆ スコア表示 */
         .center-score-container {
             display: flex;
             flex-direction: column;
@@ -179,7 +172,6 @@
 <body>
 
     <div class="overlay-wrapper">
-        <!-- ロゴ＆サブタイトル -->
         <div class="header-brand-container">
             <div class="brand-logo-text">
                 <span class="hdk">HDK</span> <span class="league">LEAGUE</span>
@@ -187,12 +179,10 @@
             <div class="brand-sub-text">ANGER MANAGEMENT</div>
         </div>
 
-        <!-- 対戦カード名 -->
         <div id="stream-stage-title" class="match-title-box">
             --- vs ---
         </div>
 
-        <!-- プレイヤーおよび中央スコア -->
         <div class="main-row">
             <div class="player-box p1">
                 <div class="player-info">
@@ -222,87 +212,46 @@
     <script>
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
 
-        function fetchAndRender() {
-            const rawData = localStorage.getItem('hadaka_league_master_data');
-            if (!rawData) return;
+        // BroadcastChannel経由で飛んできたリアルタイムのデータオブジェクトを直接画面に反映する
+        function renderData(data) {
+            if (!data) return;
 
             try {
-                const data = JSON.parse(rawData);
-                const members = data.members || [];
-                const teamMatches = data.teamMatches || [];
-                const soloMatches = data.soloMatches || [];
-                const activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
-
-                let p1Name = "---";
-                let p2Name = "---";
-                let p1Detail = "ランク: -";
-                let p2Detail = "ランク: -";
-                let s1 = 0;
-                let s2 = 0;
-                let stageTitle = "MATCH";
-
-                if (activeMatch.mode === 'team') {
-                    const m = teamMatches[activeMatch.matchIndex];
-                    if (m) {
-                        const rKey = activeMatch.subIndex || 'senho';
-                        const roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
-                        stageTitle = `${m.t1Name || 'チームA'} vs ${m.t2Name || 'チームB'} 【${roleLabels[rKey] || rKey}】`;
-
-                        const idx1 = m.order1 ? m.order1[rKey] : "";
-                        const idx2 = m.order2 ? m.order2[rKey] : "";
-
-                        if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
-                            p1Name = members[idx1].name || "---";
-                            p1Detail = `ランク: ${members[idx1].rankName || '-'}`;
-                        } else {
-                            p1Name = "（空き）";
-                        }
-
-                        if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
-                            p2Name = members[idx2].name || "---";
-                            p2Detail = `ランク: ${members[idx2].rankName || '-'}`;
-                        } else {
-                            p2Name = "（空き）";
-                        }
-
-                        if (m.results && m.results[rKey]) {
-                            s1 = m.results[rKey].s1 || 0;
-                            s2 = m.results[rKey].s2 || 0;
-                        }
-                    }
-                } else if (activeMatch.mode === 'solo') {
-                    const sm = soloMatches[activeMatch.matchIndex];
-                    if (sm) {
-                        stageTitle = `個人戦 第 ${activeMatch.matchIndex + 1} 試合`;
-                        p1Name = sm.p1 || "---";
-                        p2Name = sm.p2 || "---";
-                        p1Detail = "個人戦";
-                        p2Detail = "個人戦";
-                        s1 = sm.s1 || 0;
-                        s2 = sm.s2 || 0;
-                    }
+                // 送信されてくるデータ構造に合わせて各要素を更新
+                if (data.stageTitle !== undefined) {
+                    document.getElementById('stream-stage-title').textContent = data.stageTitle;
                 }
-
-                document.getElementById('stream-stage-title').textContent = stageTitle;
-                document.getElementById('stream-p1-name').textContent = p1Name;
-                document.getElementById('stream-p2-name').textContent = p2Name;
-                document.getElementById('stream-p1-detail').textContent = p1Detail;
-                document.getElementById('stream-p2-detail').textContent = p2Detail;
-                document.getElementById('stream-s1').textContent = s1;
-                document.getElementById('stream-s2').textContent = s2;
+                if (data.p1Name !== undefined) {
+                    document.getElementById('stream-p1-name').textContent = data.p1Name;
+                }
+                if (data.p2Name !== undefined) {
+                    document.getElementById('stream-p2-name').textContent = data.p2Name;
+                }
+                if (data.p1Detail !== undefined) {
+                    document.getElementById('stream-p1-detail').textContent = data.p1Detail;
+                }
+                if (data.p2Detail !== undefined) {
+                    document.getElementById('stream-p2-detail').textContent = data.p2Detail;
+                }
+                if (data.s1 !== undefined) {
+                    document.getElementById('stream-s1').textContent = data.s1;
+                }
+                if (data.s2 !== undefined) {
+                    document.getElementById('stream-s2').textContent = data.s2;
+                }
             } catch (err) {
-                console.error("データ描画エラー:", err);
+                console.error("描画エラー:", err);
             }
         }
 
+        // メッセージ受信時
         bc.onmessage = function(e) {
-            if (e.data && e.data.type === 'UPDATE_OVERLAY') {
-                fetchAndRender();
+            if (e.data) {
+                // データが直接入っている場合と、{ type: 'UPDATE_OVERLAY', payload: ... } などの形式の両方に対応
+                const payload = e.data.payload || e.data.data || e.data;
+                renderData(payload);
             }
         };
-
-        window.addEventListener('DOMContentLoaded', fetchAndRender);
-        fetchAndRender();
     </script>
 </body>
 </html>
