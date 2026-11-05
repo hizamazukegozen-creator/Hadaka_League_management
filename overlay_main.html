@@ -4,185 +4,36 @@
     <meta charset="UTF-8">
     <title>HDK LEAGUE - Main Overlay</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-        }
-        body {
-            background-color: transparent;
-            color: #ffffff;
-            width: 1920px;
-            height: 1080px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .overlay-wrapper {
-            margin-top: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .header-brand-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .brand-logo-text {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            font-style: italic;
-        }
-
-        .brand-logo-text .hdk {
-            color: #ff2a2a;
-            text-shadow: 0 0 12px rgba(255, 42, 42, 0.8);
-        }
-
-        .brand-logo-text .league {
-            color: #00e5ff;
-            text-shadow: 0 0 12px rgba(0, 229, 255, 0.8);
-        }
-
-        .brand-sub-text {
-            font-size: 11px;
-            font-weight: 700;
-            color: #00e5ff;
-            letter-spacing: 4px;
-            font-style: italic;
-            margin-top: -2px;
-            opacity: 0.85;
-        }
-
-        .match-title-box {
-            background: rgba(20, 25, 35, 0.92);
-            border: 2px solid #00e5ff;
-            padding: 5px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ffcc00;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            margin-bottom: 15px;
-        }
-
-        .main-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .player-box {
-            width: 500px;
-            height: 85px;
-            background: rgba(15, 20, 30, 0.95);
-            border: 2px solid #00e5ff;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            padding: 0 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .player-box.p1 {
-            justify-content: flex-start;
-            border-left: 8px solid #00e5ff;
-        }
-
-        .player-box.p2 {
-            justify-content: flex-end;
-            border-right: 8px solid #ff2a2a;
-            text-align: right;
-        }
-
-        .player-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .player-name {
-            font-size: 28px;
-            font-weight: 900;
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            letter-spacing: 1px;
-        }
-
-        .player-rank {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-top: 2px;
-        }
-
-        .center-score-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 30px;
-        }
-
-        .vs-text {
-            font-size: 20px;
-            font-weight: 900;
-            font-style: italic;
-            color: #ff2a2a;
-            text-shadow: 0 0 10px rgba(255, 42, 42, 0.9);
-            margin-bottom: 4px;
-        }
-
-        .score-box {
-            background: rgba(15, 20, 30, 0.95);
-            border: 2px solid #00e5ff;
-            border-radius: 8px;
-            padding: 5px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-        }
-
-        .score-num {
-            font-size: 28px;
-            font-weight: 900;
-            color: #ffcc00;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .score-divider {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffffff;
-            margin: 0 6px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        body { background-color: transparent; color: #ffffff; width: 1920px; height: 1080px; overflow: hidden; display: flex; justify-content: center; align-items: flex-start; }
+        .overlay-wrapper { margin-top: 50px; display: flex; flex-direction: column; align-items: center; }
+        .header-brand-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 8px; }
+        .brand-logo-text { font-size: 32px; font-weight: 900; letter-spacing: 2px; font-style: italic; }
+        .brand-logo-text .hdk { color: #ff2a2a; text-shadow: 0 0 12px rgba(255, 42, 42, 0.8); }
+        .brand-logo-text .league { color: #00e5ff; text-shadow: 0 0 12px rgba(0, 229, 255, 0.8); }
+        .brand-sub-text { font-size: 11px; font-weight: 700; color: #00e5ff; letter-spacing: 4px; font-style: italic; margin-top: -2px; opacity: 0.85; }
+        .match-title-box { background: rgba(20, 25, 35, 0.92); border: 2px solid #00e5ff; padding: 5px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; color: #ffcc00; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); margin-bottom: 15px; }
+        .main-row { display: flex; align-items: center; justify-content: center; width: 100%; }
+        .player-box { width: 500px; height: 85px; background: rgba(15, 20, 30, 0.95); border: 2px solid #00e5ff; border-radius: 10px; display: flex; align-items: center; padding: 0 25px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7); position: relative; overflow: hidden; }
+        .player-box.p1 { justify-content: flex-start; border-left: 8px solid #00e5ff; }
+        .player-box.p2 { justify-content: flex-end; border-right: 8px solid #ff2a2a; text-align: right; }
+        .player-info { display: flex; flex-direction: column; }
+        .player-name { font-size: 28px; font-weight: 900; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px; }
+        .player-rank { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+        .center-score-container { display: flex; flex-direction: column; align-items: center; margin: 0 30px; }
+        .vs-text { font-size: 20px; font-weight: 900; font-style: italic; color: #ff2a2a; text-shadow: 0 0 10px rgba(255, 42, 42, 0.9); margin-bottom: 4px; }
+        .score-box { background: rgba(15, 20, 30, 0.95); border: 2px solid #00e5ff; border-radius: 8px; padding: 5px 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); }
+        .score-num { font-size: 28px; font-weight: 900; color: #ffcc00; min-width: 30px; text-align: center; }
+        .score-divider { font-size: 20px; font-weight: bold; color: #ffffff; margin: 0 6px; }
     </style>
 </head>
 <body>
-
     <div class="overlay-wrapper">
         <div class="header-brand-container">
-            <div class="brand-logo-text">
-                <span class="hdk">HDK</span> <span class="league">LEAGUE</span>
-            </div>
+            <div class="brand-logo-text"><span class="hdk">HDK</span> <span class="league">LEAGUE</span></div>
             <div class="brand-sub-text">ANGER MANAGEMENT</div>
         </div>
-
-        <div id="stream-stage-title" class="match-title-box">
-            --- vs ---
-        </div>
-
+        <div id="stream-stage-title" class="match-title-box">--- vs ---</div>
         <div class="main-row">
             <div class="player-box p1">
                 <div class="player-info">
@@ -190,7 +41,6 @@
                     <div id="stream-p1-detail" class="player-rank">ランク: -</div>
                 </div>
             </div>
-
             <div class="center-score-container">
                 <div class="vs-text">VS</div>
                 <div class="score-box">
@@ -199,7 +49,6 @@
                     <span id="stream-s2" class="score-num">0</span>
                 </div>
             </div>
-
             <div class="player-box p2">
                 <div class="player-info">
                     <div id="stream-p2-name" class="player-name">---</div>
@@ -214,49 +63,24 @@
 
         function updateOverlay(d) {
             if (!d) return;
-
-            if (d.stageTitle !== undefined) {
-                document.getElementById('stream-stage-title').textContent = d.stageTitle;
-            }
-            if (d.p1Name !== undefined) {
-                document.getElementById('stream-p1-name').textContent = d.p1Name;
-            }
-            if (d.p2Name !== undefined) {
-                document.getElementById('stream-p2-name').textContent = d.p2Name;
-            }
-            if (d.p1Detail !== undefined) {
-                document.getElementById('stream-p1-detail').textContent = d.p1Detail;
-            }
-            if (d.p2Detail !== undefined) {
-                document.getElementById('stream-p2-detail').textContent = d.p2Detail;
-            }
-            if (d.s1 !== undefined) {
-                document.getElementById('stream-s1').textContent = d.s1;
-            }
-            if (d.s2 !== undefined) {
-                document.getElementById('stream-s2').textContent = d.s2;
-            }
+            if (d.stageTitle !== undefined) document.getElementById('stream-stage-title').textContent = d.stageTitle;
+            if (d.p1Name !== undefined) document.getElementById('stream-p1-name').textContent = d.p1Name;
+            if (d.p2Name !== undefined) document.getElementById('stream-p2-name').textContent = d.p2Name;
+            if (d.p1Detail !== undefined) document.getElementById('stream-p1-detail').textContent = d.p1Detail;
+            if (d.p2Detail !== undefined) document.getElementById('stream-p2-detail').textContent = d.p2Detail;
+            if (d.s1 !== undefined) document.getElementById('stream-s1').textContent = d.s1;
+            if (d.s2 !== undefined) document.getElementById('stream-s2').textContent = d.s2;
         }
 
         bc.onmessage = function(e) {
             if (e.data) {
-                const data = e.data.payload || e.data.data || e.data;
+                const data = e.data.payload || e.data;
                 updateOverlay(data);
-                // 状態をセッション等に保持して初期表示に備える
-                try {
-                    sessionStorage.setItem('hadaka_last_overlay_data', JSON.stringify(data));
-                } catch(err) {}
             }
         };
 
-        // ページ読み込み時に前回のデータがあれば即座に復元表示する
         window.addEventListener('DOMContentLoaded', () => {
-            try {
-                const saved = sessionStorage.getItem('hadaka_last_overlay_data');
-                if (saved) {
-                    updateOverlay(JSON.parse(saved));
-                }
-            } catch(err) {}
+            bc.postMessage({ type: 'REQUEST_SYNC' });
         });
     </script>
 </body>
