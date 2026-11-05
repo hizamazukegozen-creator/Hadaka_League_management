@@ -39,7 +39,7 @@
             width: 100%;
         }
 
-        /* 1. 最上部に配置する HDK LEAGUE ロゴ */
+        /* 1. 最上部：ロゴ */
         .stream-stage-logo-box {
             text-align: center;
             padding: 2px 20px;
@@ -93,7 +93,7 @@
             transform: skewX(-7deg);
         }
 
-        /* 2. ロゴのすぐ下に配置する チーム名（対戦タイトル） */
+        /* 2. マッチタイトル */
         .stream-stage-match-title {
             text-align: center;
             font-size: 0.95rem;
@@ -108,7 +108,7 @@
             margin-top: 2px;
         }
 
-        /* 3. 左右に広げた対戦カード＆VS表示エリア */
+        /* 3. VS＆カードエリア */
         .stream-versus-box {
             display: flex;
             justify-content: space-between;
@@ -202,14 +202,14 @@
                 <div class="stream-sub-logo">ANGER MANAGEMENT</div>
             </div>
 
-            <!-- 2. その下：チーム名（マッチタイトル） -->
+            <!-- 2. タイトル -->
             <div class="stream-stage-match-title" id="stream-stage-title">FEATURED MATCH</div>
             
-            <!-- 3. その下：VS ＆ プレイヤーカード -->
+            <!-- 3. VS ＆ プレイヤーカード -->
             <div class="stream-versus-box">
                 <div class="stream-player-card p1-card">
-                    <div class="stream-player-name" id="stream-p1-name">P1 プレイヤー名</div>
-                    <div class="stream-player-detail" id="stream-p1-detail">ランク: -</div>
+                    <div class="stream-player-name" id="stream-p1-name">---</div>
+                    <div class="stream-player-detail" id="stream-p1-detail">---</div>
                 </div>
                 
                 <div class="stream-vs-badge">
@@ -222,136 +222,98 @@
                 </div>
 
                 <div class="stream-player-card p2-card">
-                    <div class="stream-player-name" id="stream-p2-name">P2 プレイヤー名</div>
-                    <div class="stream-player-detail" id="stream-p2-detail">ランク: -</div>
+                    <div class="stream-player-name" id="stream-p2-name">---</div>
+                    <div class="stream-player-detail" id="stream-p2-detail">---</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        var members = [];
-        var teamMatches = [];
-        var soloMatches = [];
-        var tourneyMatches = {};
-        var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
-
-        function loadAppData() {
+        // OBS環境でも確実に動くデータ取得処理
+        function fetchAndRender() {
             var json = localStorage.getItem('hadaka_league_master_data');
-            if (json) {
-                try {
-                    var data = JSON.parse(json);
-                    members = data.members || [];
-                    teamMatches = data.teamMatches || [];
-                    soloMatches = data.soloMatches || [];
-                    tourneyMatches = data.tourneyMatches || {};
-                    if (data.activeStreamMatch) {
-                        activeStreamMatch = data.activeStreamMatch;
+            if (!json) return;
+
+            try {
+                var data = JSON.parse(json);
+                var members = data.members || [];
+                var teamMatches = data.teamMatches || [];
+                var soloMatches = data.soloMatches || [];
+                var tourneyMatches = data.tourneyMatches || {};
+                var activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
+
+                var p1Name = "---";
+                var p2Name = "---";
+                var p1Detail = "ランク: -";
+                var p2Detail = "ランク: -";
+                var s1 = 0;
+                var s2 = 0;
+                var stageTitle = "FEATURED MATCH";
+
+                if (activeMatch.mode === 'team') {
+                    var m = teamMatches[activeMatch.matchIndex];
+                    if (m) {
+                        stageTitle = m.t1Name + " vs " + m.t2Name;
+                        var rKey = activeMatch.subIndex;
+                        var roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
+                        stageTitle += " 【" + (roleLabels[rKey] || rKey) + "】";
+
+                        var idx1 = m.order1 ? m.order1[rKey] : "";
+                        var idx2 = m.order2 ? m.order2[rKey] : "";
+
+                        if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
+                            p1Name = members[idx1].name || "P1";
+                            p1Detail = "ランク: " + (members[idx1].rankName || "-");
+                        } else {
+                            p1Name = "（未定）";
+                        }
+
+                        if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
+                            p2Name = members[idx2].name || "P2";
+                            p2Detail = "ランク: " + (members[idx2].rankName || "-");
+                        } else {
+                            p2Name = "（未定）";
+                        }
+
+                        if (m.results && m.results[rKey]) {
+                            s1 = m.results[rKey].s1 || 0;
+                            s2 = m.results[rKey].s2 || 0;
+                        }
                     }
-                } catch(e) {}
+                } else if (activeMatch.mode === 'solo') {
+                    var sm = soloMatches[activeMatch.matchIndex];
+                    if (sm) {
+                        stageTitle = "個人戦 第 " + (activeMatch.matchIndex + 1) + " 試合";
+                        p1Name = sm.p1 || "P1";
+                        p2Name = sm.p2 || "P2";
+                        p1Detail = "個人戦";
+                        p2Detail = "個人戦";
+                        s1 = sm.s1 || 0;
+                        s2 = sm.s2 || 0;
+                    }
+                }
+
+                // DOMへの反映処理
+                document.getElementById('stream-stage-title').innerText = stageTitle;
+                document.getElementById('stream-p1-name').innerText = p1Name;
+                document.getElementById('stream-p2-name').innerText = p2Name;
+                document.getElementById('stream-p1-detail').innerText = p1Detail;
+                document.getElementById('stream-p2-detail').innerText = p2Detail;
+                document.getElementById('stream-s1').innerText = s1;
+                document.getElementById('stream-s2').innerText = s2;
+            } catch(e) {
+                console.error("Data parse error:", e);
             }
         }
 
-        function refreshOverlay() {
-            loadAppData();
-            updateStreamStageDisplay();
-        }
-
-        function updateStreamStageDisplay() {
-            var p1NameElem = document.getElementById('stream-p1-name');
-            var p2NameElem = document.getElementById('stream-p2-name');
-            var p1DetailElem = document.getElementById('stream-p1-detail');
-            var p2DetailElem = document.getElementById('stream-p2-detail');
-            var s1Elem = document.getElementById('stream-s1');
-            var s2Elem = document.getElementById('stream-s2');
-            var stageTitleElem = document.getElementById('stream-stage-title');
-
-            if (!p1NameElem) return;
-
-            var p1Name = "P1 プレイヤー名";
-            var p2Name = "P2 プレイヤー名";
-            var p1Detail = "ランク: -";
-            var p2Detail = "ランク: -";
-            var s1 = 0;
-            var s2 = 0;
-            var stageTitle = "FEATURED MATCH";
-
-            if (activeStreamMatch.mode === 'team') {
-                var m = teamMatches[activeStreamMatch.matchIndex];
-                if (m) {
-                    stageTitle = m.t1Name + " vs " + m.t2Name;
-                    var rKey = activeStreamMatch.subIndex;
-                    var roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
-                    stageTitle += " 【" + (roleLabels[rKey] || rKey) + "】";
-
-                    var idx1 = m.order1 ? m.order1[rKey] : "";
-                    var idx2 = m.order2 ? m.order2[rKey] : "";
-
-                    if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
-                        p1Name = members[idx1].name || "P1";
-                        p1Detail = "ランク: " + (members[idx1].rankName || "-");
-                    } else {
-                        p1Name = "（未定）";
-                    }
-
-                    if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
-                        p2Name = members[idx2].name || "P2";
-                        p2Detail = "ランク: " + (members[idx2].rankName || "-");
-                    } else {
-                        p2Name = "（未定）";
-                    }
-
-                    if (m.results && m.results[rKey]) {
-                        s1 = m.results[rKey].s1 || 0;
-                        s2 = m.results[rKey].s2 || 0;
-                    }
-                }
-            } else if (activeStreamMatch.mode === 'solo') {
-                var sm = soloMatches[activeStreamMatch.matchIndex];
-                if (sm) {
-                    stageTitle = "個人戦リーグ 第" + (activeStreamMatch.matchIndex + 1) + "試合";
-                    p1Name = sm.p1 || "P1";
-                    p2Name = sm.p2 || "P2";
-                    p1Detail = "個人戦";
-                    p2Detail = "個人戦";
-                    s1 = sm.s1 || 0;
-                    s2 = sm.s2 || 0;
-                }
-            } else if (activeStreamMatch.mode === 'tourney') {
-                var rk = activeStreamMatch.matchIndex;
-                var tmIdx = activeStreamMatch.subIndex;
-                if (tourneyMatches[rk] && tourneyMatches[rk][tmIdx]) {
-                    var tm = tourneyMatches[rk][tmIdx];
-                    stageTitle = "トーナメント戦";
-                    p1Name = tm.p1 || "P1";
-                    p2Name = tm.p2 || "P2";
-                    p1Detail = "トーナメント";
-                    p2Detail = "トーナメント";
-                    s1 = tm.s1 || 0;
-                    s2 = tm.s2 || 0;
-                }
-            }
-
-            if (stageTitleElem) stageTitleElem.innerText = stageTitle;
-            if (p1NameElem) p1NameElem.innerText = p1Name;
-            if (p2NameElem) p2NameElem.innerText = p2Name;
-            if (p1DetailElem) p1DetailElem.innerText = p1Detail;
-            if (p2DetailElem) p2DetailElem.innerText = p2Detail;
-            if (s1Elem) s1Elem.innerText = s1;
-            if (s2Elem) s2Elem.innerText = s2;
-        }
-
+        // ページ読み込み完了時 ＆ 300msごとに強制リフレッシュ
         window.onload = function() {
-            refreshOverlay();
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'hadaka_league_master_data') {
-                    refreshOverlay();
-                }
-            });
-            setInterval(function() {
-                refreshOverlay();
-            }, 300);
+            fetchAndRender();
+            setInterval(fetchAndRender, 300);
         };
+        // 直ちに一回実行
+        fetchAndRender();
     </script>
 </body>
 </html>
