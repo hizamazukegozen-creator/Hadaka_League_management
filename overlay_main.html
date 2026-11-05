@@ -74,8 +74,10 @@
 
         bc.onmessage = function(e) {
             if (e.data) {
-                const data = e.data.payload || e.data;
-                updateOverlay(data);
+                const payload = e.data.payload || (e.data.stageTitle ? e.data : null);
+                if (payload) {
+                    updateOverlay(payload);
+                }
             }
         };
 
