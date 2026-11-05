@@ -34,7 +34,6 @@
             text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
         }
 
-        /* 被りを完全に回避する縦積カードデザイン */
         .match-card {
             background: rgba(20, 23, 36, 0.95);
             border: 1px solid #3f466b;
@@ -44,6 +43,12 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .match-card.is-active {
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.4);
         }
 
         .match-header {
@@ -52,11 +57,38 @@
             font-weight: bold;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid #2a2e45;
             padding-bottom: 6px;
         }
 
-        /* 1P / 2P プレイヤー行 */
+        /* メイン反映用選択ボタン */
+        .stage-select-btn {
+            background: #10121b;
+            border: 1px solid #3f466b;
+            color: #a0a6cc;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .stage-select-btn:hover {
+            border-color: #00ffcc;
+            color: #fff;
+        }
+
+        .stage-select-btn.active {
+            background: #00ffcc;
+            color: #000;
+            font-weight: bold;
+            border-color: #00ffcc;
+        }
+
         .player-row {
             display: flex;
             justify-content: space-between;
@@ -97,7 +129,6 @@
             text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
         }
 
-        /* スコア単体操作コントロール */
         .score-control {
             display: flex;
             align-items: center;
@@ -166,6 +197,7 @@
         var members = [];
         var teamMatches = [];
         var soloMatches = [];
+        var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
         function loadDataAndRender() {
             var json = localStorage.getItem('hadaka_league_master_data');
@@ -175,6 +207,10 @@
                 members = data.members || [];
                 teamMatches = data.teamMatches || [];
                 soloMatches = data.soloMatches || [];
+                if (data.activeStreamMatch) {
+                    activeStreamMatch = data.activeStreamMatch;
+                }
+
                 var container = document.getElementById('overlay-matches-list');
                 if (!container) return;
 
@@ -202,11 +238,17 @@
                             var p1Win = (res.winner === 1) ? ' winner' : '';
                             var p2Win = (res.winner === 2) ? ' winner' : '';
 
+                            var isActive = (activeStreamMatch.mode === 'team' && 
+                                            activeStreamMatch.matchIndex === mIdx && 
+                                            activeStreamMatch.subIndex === r.key);
+
                             html += `
-                                <div class="match-card">
+                                <div class="match-card ${isActive ? 'is-active' : ''}">
                                     <div class="match-header">
-                                        <span>${m.t1Name} vs ${m.t2Name}</span>
-                                        <span style="color:#00ffcc;">【${r.label}】</span>
+                                        <span>${m.t1Name} vs ${m.t2Name} 【${r.label}】</span>
+                                        <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('team', ${mIdx}, '${r.key}')">
+                                            ${isActive ? '📺 配信中' : '📺 メインに表示'}
+                                        </button>
                                     </div>
                                     <!-- 1P側 -->
                                     <div class="player-row">
@@ -249,11 +291,16 @@
                         var p1Win = (winner === m.p1) ? ' winner' : '';
                         var p2Win = (winner === m.p2) ? ' winner' : '';
 
+                        var isActive = (activeStreamMatch.mode === 'solo' && 
+                                        activeStreamMatch.matchIndex === idx);
+
                         html += `
-                            <div class="match-card">
+                            <div class="match-card ${isActive ? 'is-active' : ''}">
                                 <div class="match-header">
                                     <span>個人戦 第 ${idx + 1} 試合</span>
-                                    <span>${winner !== '-' ? '勝者: ' + winner : '進行中'}</span>
+                                    <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('solo', ${idx}, 0)">
+                                        ${isActive ? '📺 配信中' : '📺 メインに表示'}
+                                    </button>
                                 </div>
                                 <!-- 1P側 -->
                                 <div class="player-row">
@@ -293,6 +340,21 @@
             } catch(e) {
                 console.error(e);
             }
+        }
+
+        function setActiveMatch(mode, matchIdx, subIdx) {
+            var json = localStorage.getItem('hadaka_league_master_data');
+            if (!json) return;
+            try {
+                var data = JSON.parse(json);
+                data.activeStreamMatch = {
+                    mode: mode,
+                    matchIndex: matchIdx,
+                    subIndex: subIdx
+                };
+                localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                loadDataAndRender();
+            } catch(e) {}
         }
 
         function modifySoloScore(matchIdx, field, delta) {
