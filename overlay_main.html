@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>HDK LEAGUE - Top Overlay</title>
+    <title>HDK LEAGUE - Main Overlay</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,21 +16,21 @@
             width: 1920px;
             height: 1080px;
             overflow: hidden;
-            position: relative;
+            /* ズレを防ぎ、ブラウザやOBSで意図した位置に確実に収めるためFlexで中央配置の基点を作る */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
-        /* 画面上部全体を覆う配置コンテナ */
+        /* 全体コンテナ（ブラウザで開いてもOBSでも位置が崩れないように上からのマージンで調整） */
         .overlay-wrapper {
-            position: absolute;
-            top: 30px;
-            left: 0;
-            width: 1920px;
+            margin-top: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* --- 中央配置：HDK LEAGUE ロゴ ＆ ステージ枠 --- */
+        /* --- HDK LEAGUE ロゴエリア --- */
         .header-brand-container {
             display: flex;
             flex-direction: column;
@@ -46,12 +46,12 @@
         }
 
         .brand-logo-text .hdk {
-            color: #ff2a2a;
+            color: #ff2a2a; /* 赤 */
             text-shadow: 0 0 12px rgba(255, 42, 42, 0.8);
         }
 
         .brand-logo-text .league {
-            color: #00e5ff;
+            color: #00e5ff; /* シアン */
             text-shadow: 0 0 12px rgba(0, 229, 255, 0.8);
         }
 
@@ -85,7 +85,6 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 0 60px;
         }
 
         /* プレイヤーボックス */
@@ -180,7 +179,7 @@
 <body>
 
     <div class="overlay-wrapper">
-        <!-- プレイヤー真ん中上部のロゴ -->
+        <!-- ロゴ＆サブタイトル -->
         <div class="header-brand-container">
             <div class="brand-logo-text">
                 <span class="hdk">HDK</span> <span class="league">LEAGUE</span>
