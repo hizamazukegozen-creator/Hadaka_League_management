@@ -34,7 +34,7 @@
             text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
         }
 
-        /* 縦に広げて名前が被らないようにしたカードデザイン */
+        /* 被りを完全に回避する縦積カードデザイン */
         .match-card {
             background: rgba(20, 23, 36, 0.95);
             border: 1px solid #3f466b;
@@ -43,7 +43,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .match-header {
@@ -52,76 +52,84 @@
             font-weight: bold;
             display: flex;
             justify-content: space-between;
+            border-bottom: 1px solid #2a2e45;
+            padding-bottom: 6px;
         }
 
-        /* 上段：1Pと2Pの名前を左右に配置 */
-        .players-row {
+        /* 1P / 2P プレイヤー行 */
+        .player-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1rem;
-            font-weight: bold;
-            padding: 0 5px;
+            gap: 10px;
         }
 
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .side-badge {
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .p1-badge { background: #00d9ff; color: #000; }
+        .p2-badge { background: #ff4655; color: #fff; }
+
         .player-name {
+            font-size: 1rem;
+            font-weight: bold;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 170px; /* 名前を長めに表示できるように拡張 */
         }
-
-        .player-name.p1-name {
-            text-align: left;
-            color: #00d9ff;
-        }
-
-        .player-name.p2-name {
-            text-align: right;
-            color: #ff4655;
-        }
+        .player-name.p1-text { color: #ffffff; }
+        .player-name.p2-text { color: #ffffff; }
 
         .player-name.winner {
             color: #00ffcc !important;
             text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
         }
 
-        /* 下段：スコア操作ボックスを中央に大きく配置 */
-        .score-control-container {
+        /* スコア単体操作コントロール */
+        .score-control {
             display: flex;
-            justify-content: center;
             align-items: center;
+            gap: 4px;
             background: #10121b;
             border: 1px solid #3f466b;
             border-radius: 6px;
-            padding: 6px 12px;
-            gap: 8px;
-        }
-
-        .score-box-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            padding: 2px 6px;
+            flex-shrink: 0;
         }
 
         .score-btn {
             background-color: #1a1d2d;
             border: 1px solid #3f466b;
             color: #00d9ff;
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            transition: all 0.1s;
         }
-        .score-btn.minus-p2 {
+
+        .score-btn.p2-btn {
             color: #ff4655;
             border-color: #ff4655;
         }
+
         .score-btn:hover {
             background-color: #2a2e45;
         }
@@ -130,15 +138,18 @@
             font-size: 1.1rem;
             font-weight: 900;
             color: #ffcc00;
-            width: 24px;
+            width: 22px;
             text-align: center;
         }
 
-        .score-divider {
-            color: #777;
-            margin: 0 6px;
-            font-weight: bold;
-            font-size: 1.1rem;
+        .vs-divider {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: #ff4655;
+            letter-spacing: 2px;
+            margin: -2px 0;
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -197,21 +208,29 @@
                                         <span>${m.t1Name} vs ${m.t2Name}</span>
                                         <span style="color:#00ffcc;">【${r.label}】</span>
                                     </div>
-                                    <div class="players-row">
-                                        <span class="player-name p1-name${p1Win}" title="${p1Name}">${p1Name}</span>
-                                        <span class="player-name p2-name${p2Win}" title="${p2Name}">${p2Name}</span>
-                                    </div>
-                                    <div class="score-control-container">
-                                        <div class="score-box-group">
+                                    <!-- 1P側 -->
+                                    <div class="player-row">
+                                        <div class="player-info">
+                                            <span class="side-badge p1-badge">1P</span>
+                                            <span class="player-name p1-text${p1Win}" title="${p1Name}">${p1Name}</span>
+                                        </div>
+                                        <div class="score-control">
                                             <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', -1)">-</button>
                                             <span class="score-val">${res.s1}</span>
                                             <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', 1)">+</button>
                                         </div>
-                                        <span class="score-divider">-</span>
-                                        <div class="score-box-group">
-                                            <button type="button" class="score-btn minus-p2" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', -1)">-</button>
+                                    </div>
+                                    <div class="vs-divider">VS</div>
+                                    <!-- 2P側 -->
+                                    <div class="player-row">
+                                        <div class="player-info">
+                                            <span class="side-badge p2-badge">2P</span>
+                                            <span class="player-name p2-text${p2Win}" title="${p2Name}">${p2Name}</span>
+                                        </div>
+                                        <div class="score-control">
+                                            <button type="button" class="score-btn p2-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', -1)">-</button>
                                             <span class="score-val">${res.s2}</span>
-                                            <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', 1)">+</button>
+                                            <button type="button" class="score-btn p2-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', 1)">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -236,21 +255,29 @@
                                     <span>個人戦 第 ${idx + 1} 試合</span>
                                     <span>${winner !== '-' ? '勝者: ' + winner : '進行中'}</span>
                                 </div>
-                                <div class="players-row">
-                                    <span class="player-name p1-name${p1Win}" title="${m.p1}">${m.p1}</span>
-                                    <span class="player-name p2-name${p2Win}" title="${m.p2}">${m.p2}</span>
-                                </div>
-                                <div class="score-control-container">
-                                    <div class="score-box-group">
+                                <!-- 1P側 -->
+                                <div class="player-row">
+                                    <div class="player-info">
+                                        <span class="side-badge p1-badge">1P</span>
+                                        <span class="player-name p1-text${p1Win}" title="${m.p1}">${m.p1}</span>
+                                    </div>
+                                    <div class="score-control">
                                         <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', -1)">-</button>
                                         <span class="score-val">${m.s1}</span>
                                         <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', 1)">+</button>
                                     </div>
-                                    <span class="score-divider">-</span>
-                                    <div class="score-box-group">
-                                        <button type="button" class="score-btn minus-p2" onclick="modifySoloScore(${idx}, 's2', -1)">-</button>
+                                </div>
+                                <div class="vs-divider">VS</div>
+                                <!-- 2P側 -->
+                                <div class="player-row">
+                                    <div class="player-info">
+                                        <span class="side-badge p2-badge">2P</span>
+                                        <span class="player-name p2-text${p2Win}" title="${m.p2}">${m.p2}</span>
+                                    </div>
+                                    <div class="score-control">
+                                        <button type="button" class="score-btn p2-btn" onclick="modifySoloScore(${idx}, 's2', -1)">-</button>
                                         <span class="score-val">${m.s2}</span>
-                                        <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's2', 1)">+</button>
+                                        <button type="button" class="score-btn p2-btn" onclick="modifySoloScore(${idx}, 's2', 1)">+</button>
                                     </div>
                                 </div>
                             </div>
