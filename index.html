@@ -750,7 +750,9 @@
                 <button type="button" class="tab-btn" onclick="switchTab('tab-team-mgmt', this)">④ チーム管理</button>
                 <button type="button" class="tab-btn" onclick="switchTab('tab-member-mgmt', this)">⑤ メンバー管理</button>
                 <button type="button" class="tab-btn" onclick="switchTab('tab-admin-mgmt', this)">⑥ 運営管理</button>
-                <button type="button" class="tab-btn stream-btn" onclick="openBothOverlays()">📺 配信オーバーレイを開く (両方)</button>
+                <!-- 配信オーバーレイを開くボタンを2つに分割 -->
+                <button type="button" class="tab-btn stream-btn" onclick="openMainOverlay()">📺 メインステージを開く</button>
+                <button type="button" class="tab-btn stream-btn" onclick="openListOverlay()">📺 対戦カードリストを開く</button>
             </div>
         </div>
 
@@ -1207,8 +1209,12 @@
             return yyyy + '.' + mm + '.' + dd;
         }
 
-        function openBothOverlays() {
+        // 個別のウィンドウを開く関数に分割
+        function openMainOverlay() {
             window.open('overlay_main.html', '_blank', 'width=1600,height=900');
+        }
+
+        function openListOverlay() {
             window.open('overlay_list.html', '_blank', 'width=450,height=900');
         }
 
