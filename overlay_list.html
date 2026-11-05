@@ -34,6 +34,41 @@
             text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
         }
 
+        /* モード切り替えタブバー */
+        .mode-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(20, 23, 36, 0.95);
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #3f466b;
+        }
+
+        .mode-tab-btn {
+            flex: 1;
+            background: #1a1d2d;
+            border: 1px solid #3f466b;
+            color: #a0a6cc;
+            padding: 6px 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .mode-tab-btn:hover {
+            color: #fff;
+            border-color: #00ffcc;
+        }
+
+        .mode-tab-btn.active {
+            background: #00ffcc;
+            color: #0f111a;
+            border-color: #00ffcc;
+        }
+
         .match-card {
             background: rgba(20, 23, 36, 0.95);
             border: 1px solid #3f466b;
@@ -62,7 +97,6 @@
             padding-bottom: 6px;
         }
 
-        /* メイン反映用選択ボタン */
         .stage-select-btn {
             background: #10121b;
             border: 1px solid #3f466b;
@@ -120,9 +154,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            color: #ffffff;
         }
-        .player-name.p1-text { color: #ffffff; }
-        .player-name.p2-text { color: #ffffff; }
 
         .player-name.winner {
             color: #00ffcc !important;
@@ -177,7 +210,7 @@
             text-align: center;
             font-size: 0.75rem;
             font-weight: 900;
-            color: #ff4655;
+            color: #ff1a40;
             letter-spacing: 2px;
             margin: -2px 0;
             opacity: 0.8;
@@ -187,7 +220,15 @@
 <body>
 
     <div class="list-container">
-        <div class="list-title">📺 対戦カード & スコア操作</div>
+        <div class="list-title">📺 対戦カードリスト & 操作</div>
+
+        <!-- モード切り替えタブ -->
+        <div class="mode-tabs">
+            <button type="button" class="mode-tab-btn active" id="tab-btn-team" onclick="switchViewMode('team')">チーム戦</button>
+            <button type="button" class="mode-tab-btn" id="tab-btn-solo" onclick="switchViewMode('solo')">個人戦</button>
+            <button type="button" class="mode-tab-btn" id="tab-btn-tourney" onclick="switchViewMode('tourney')">トーナメント</button>
+        </div>
+
         <div id="overlay-matches-list" style="display: flex; flex-direction: column; gap: 10px;">
             <!-- 動的生成 -->
         </div>
@@ -197,9 +238,26 @@
         var members = [];
         var teamMatches = [];
         var soloMatches = [];
+        var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
+        var currentViewMode = 'team'; // 'team', 'solo', 'tourney'
+        var isLocalUpdating = false;
+
+        function switchViewMode(mode) {
+            currentViewMode = mode;
+            ['team', 'solo', 'tourney'].forEach(m => {
+                var btn = document.getElementById('tab-btn-' + m);
+                if (btn) {
+                    if (m === mode) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
+            });
+            loadDataAndRender();
+        }
 
         function loadDataAndRender() {
+            if (isLocalUpdating) return;
+
             var json = localStorage.getItem('hadaka_league_master_data');
             if (!json) return;
             try {
@@ -207,6 +265,7 @@
                 members = data.members || [];
                 teamMatches = data.teamMatches || [];
                 soloMatches = data.soloMatches || [];
+                tourneyMatches = data.tourneyMatches || {};
                 if (data.activeStreamMatch) {
                     activeStreamMatch = data.activeStreamMatch;
                 }
@@ -216,124 +275,180 @@
 
                 var html = '';
 
-                // 1. チーム戦のカード生成
-                if (teamMatches.length > 0) {
-                    teamMatches.forEach(function(m, mIdx) {
-                        var roles = [
-                            { key: 'senho', label: '先鋒' },
-                            { key: 'jiho', label: '次鋒' },
-                            { key: 'fukusho', label: '副将' },
-                            { key: 'taisho', label: '大将' }
-                        ];
-                        roles.forEach(function(r) {
-                            var idx1 = m.order1 ? m.order1[r.key] : "";
-                            var idx2 = m.order2 ? m.order2[r.key] : "";
-                            var p1Name = (idx1 !== "" && members[idx1]) ? members[idx1].name : "（未定）";
-                            var p2Name = (idx2 !== "" && members[idx2]) ? members[idx2].name : "（未定）";
+                // 1. チーム戦表示
+                if (currentViewMode === 'team') {
+                    if (teamMatches.length > 0) {
+                        teamMatches.forEach(function(m, mIdx) {
+                            var roles = [
+                                { key: 'senho', label: '先鋒' },
+                                { key: 'jiho', label: '次鋒' },
+                                { key: 'fukusho', label: '副将' },
+                                { key: 'taisho', label: '大将' }
+                            ];
+                            roles.forEach(function(r) {
+                                var idx1 = m.order1 ? m.order1[r.key] : "";
+                                var idx2 = m.order2 ? m.order2[r.key] : "";
+                                var p1Name = (idx1 !== "" && members[idx1]) ? members[idx1].name : "（未定）";
+                                var p2Name = (idx2 !== "" && members[idx2]) ? members[idx2].name : "（未定）";
 
-                            if (!m.results) m.results = {};
-                            if (!m.results[r.key]) m.results[r.key] = { s1: 0, s2: 0, winner: 0 };
-                            var res = m.results[r.key];
+                                if (!m.results) m.results = {};
+                                if (!m.results[r.key]) m.results[r.key] = { s1: 0, s2: 0, winner: 0 };
+                                var res = m.results[r.key];
 
-                            var p1Win = (res.winner === 1) ? ' winner' : '';
-                            var p2Win = (res.winner === 2) ? ' winner' : '';
+                                var p1Win = (res.winner === 1) ? ' winner' : '';
+                                var p2Win = (res.winner === 2) ? ' winner' : '';
 
-                            var isActive = (activeStreamMatch.mode === 'team' && 
-                                            activeStreamMatch.matchIndex === mIdx && 
-                                            activeStreamMatch.subIndex === r.key);
+                                var isActive = (activeStreamMatch.mode === 'team' && 
+                                                activeStreamMatch.matchIndex === mIdx && 
+                                                activeStreamMatch.subIndex === r.key);
+
+                                html += `
+                                    <div class="match-card ${isActive ? 'is-active' : ''}">
+                                        <div class="match-header">
+                                            <span>${m.t1Name} vs ${m.t2Name} 【${r.label}】</span>
+                                            <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('team', ${mIdx}, '${r.key}')">
+                                                ${isActive ? '📺 配信中' : '📺 メインに表示'}
+                                            </button>
+                                        </div>
+                                        <div class="player-row">
+                                            <div class="player-info">
+                                                <span class="side-badge p1-badge">1P</span>
+                                                <span class="player-name${p1Win}" title="${p1Name}">${p1Name}</span>
+                                            </div>
+                                            <div class="score-control">
+                                                <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', -1)">-</button>
+                                                <span class="score-val">${res.s1}</span>
+                                                <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', 1)">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="vs-divider">VS</div>
+                                        <div class="player-row">
+                                            <div class="player-info">
+                                                <span class="side-badge p2-badge">2P</span>
+                                                <span class="player-name${p2Win}" title="${p2Name}">${p2Name}</span>
+                                            </div>
+                                            <div class="score-control">
+                                                <button type="button" class="score-btn p2-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', -1)">-</button>
+                                                <span class="score-val">${res.s2}</span>
+                                                <button type="button" class="score-btn p2-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', 1)">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        });
+                    }
+                }
+
+                // 2. 個人戦表示
+                else if (currentViewMode === 'solo') {
+                    if (soloMatches.length > 0) {
+                        soloMatches.forEach(function(m, idx) {
+                            var winner = "-";
+                            if (m.s1 === 2 && m.s2 < 2) winner = m.p1;
+                            else if (m.s2 === 2 && m.s1 < 2) winner = m.p2;
+
+                            var p1Win = (winner === m.p1) ? ' winner' : '';
+                            var p2Win = (winner === m.p2) ? ' winner' : '';
+
+                            var isActive = (activeStreamMatch.mode === 'solo' && 
+                                            activeStreamMatch.matchIndex === idx);
 
                             html += `
                                 <div class="match-card ${isActive ? 'is-active' : ''}">
                                     <div class="match-header">
-                                        <span>${m.t1Name} vs ${m.t2Name} 【${r.label}】</span>
-                                        <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('team', ${mIdx}, '${r.key}')">
+                                        <span>個人戦 第 ${idx + 1} 試合</span>
+                                        <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('solo', ${idx}, 0)">
                                             ${isActive ? '📺 配信中' : '📺 メインに表示'}
                                         </button>
                                     </div>
-                                    <!-- 1P側 -->
                                     <div class="player-row">
                                         <div class="player-info">
                                             <span class="side-badge p1-badge">1P</span>
-                                            <span class="player-name p1-text${p1Win}" title="${p1Name}">${p1Name}</span>
+                                            <span class="player-name${p1Win}" title="${m.p1}">${m.p1}</span>
                                         </div>
                                         <div class="score-control">
-                                            <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', -1)">-</button>
-                                            <span class="score-val">${res.s1}</span>
-                                            <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', 1)">+</button>
+                                            <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', -1)">-</button>
+                                            <span class="score-val">${m.s1}</span>
+                                            <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', 1)">+</button>
                                         </div>
                                     </div>
                                     <div class="vs-divider">VS</div>
-                                    <!-- 2P側 -->
                                     <div class="player-row">
                                         <div class="player-info">
                                             <span class="side-badge p2-badge">2P</span>
-                                            <span class="player-name p2-text${p2Win}" title="${p2Name}">${p2Name}</span>
+                                            <span class="player-name${p2Win}" title="${m.p2}">${m.p2}</span>
                                         </div>
                                         <div class="score-control">
-                                            <button type="button" class="score-btn p2-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', -1)">-</button>
-                                            <span class="score-val">${res.s2}</span>
-                                            <button type="button" class="score-btn p2-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', 1)">+</button>
+                                            <button type="button" class="score-btn p2-btn" onclick="modifySoloScore(${idx}, 's2', -1)">-</button>
+                                            <span class="score-val">${m.s2}</span>
+                                            <button type="button" class="score-btn p2-btn" onclick="modifySoloScore(${idx}, 's2', 1)">+</button>
                                         </div>
                                     </div>
                                 </div>
                             `;
                         });
-                    });
+                    }
                 }
 
-                // 2. 個人戦のカード生成
-                if (soloMatches.length > 0) {
-                    soloMatches.forEach(function(m, idx) {
-                        var winner = "-";
-                        if (m.s1 === 2 && m.s2 < 2) winner = m.p1;
-                        else if (m.s2 === 2 && m.s1 < 2) winner = m.p2;
+                // 3. トーナメント表示
+                else if (currentViewMode === 'tourney') {
+                    var tKeys = Object.keys(tourneyMatches);
+                    if (tKeys.length > 0) {
+                        tKeys.forEach(function(roundKey) {
+                            var matches = tourneyMatches[roundKey];
+                            matches.forEach(function(m, mIdx) {
+                                if (m.p1 === '空き' && m.p2 === '空き') return;
+                                var isFinalRound = m.isFinal || m.isGrandFinal || m.isResetMatch;
+                                var maxScore = isFinalRound ? 3 : 2;
 
-                        var p1Win = (winner === m.p1) ? ' winner' : '';
-                        var p2Win = (winner === m.p2) ? ' winner' : '';
+                                var p1Win = (m.winner && m.winner === m.p1) ? ' winner' : '';
+                                var p2Win = (m.winner && m.winner === m.p2) ? ' winner' : '';
 
-                        var isActive = (activeStreamMatch.mode === 'solo' && 
-                                        activeStreamMatch.matchIndex === idx);
+                                var isActive = (activeStreamMatch.mode === 'tourney' && 
+                                                activeStreamMatch.matchIndex === mIdx && 
+                                                activeStreamMatch.subIndex === roundKey);
 
-                        html += `
-                            <div class="match-card ${isActive ? 'is-active' : ''}">
-                                <div class="match-header">
-                                    <span>個人戦 第 ${idx + 1} 試合</span>
-                                    <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('solo', ${idx}, 0)">
-                                        ${isActive ? '📺 配信中' : '📺 メインに表示'}
-                                    </button>
-                                </div>
-                                <!-- 1P側 -->
-                                <div class="player-row">
-                                    <div class="player-info">
-                                        <span class="side-badge p1-badge">1P</span>
-                                        <span class="player-name p1-text${p1Win}" title="${m.p1}">${m.p1}</span>
+                                html += `
+                                    <div class="match-card ${isActive ? 'is-active' : ''}">
+                                        <div class="match-header">
+                                            <span>[${roundKey}] 第 ${mIdx + 1} 試合</span>
+                                            <button type="button" class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('tourney', ${mIdx}, '${roundKey}')">
+                                                ${isActive ? '📺 配信中' : '📺 メインに表示'}
+                                            </button>
+                                        </div>
+                                        <div class="player-row">
+                                            <div class="player-info">
+                                                <span class="side-badge p1-badge">1P</span>
+                                                <span class="player-name${p1Win}" title="${m.p1}">${m.p1}</span>
+                                            </div>
+                                            <div class="score-control">
+                                                <button type="button" class="score-btn" onclick="modifyTourneyScore('${roundKey}', ${mIdx}, 's1', -1, ${maxScore})">-</button>
+                                                <span class="score-val">${m.s1}</span>
+                                                <button type="button" class="score-btn" onclick="modifyTourneyScore('${roundKey}', ${mIdx}, 's1', 1, ${maxScore})">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="vs-divider">VS</div>
+                                        <div class="player-row">
+                                            <div class="player-info">
+                                                <span class="side-badge p2-badge">2P</span>
+                                                <span class="player-name${p2Win}" title="${m.p2}">${m.p2}</span>
+                                            </div>
+                                            <div class="score-control">
+                                                <button type="button" class="score-btn p2-btn" onclick="modifyTourneyScore('${roundKey}', ${mIdx}, 's2', -1, ${maxScore})">-</button>
+                                                <span class="score-val">${m.s2}</span>
+                                                <button type="button" class="score-btn p2-btn" onclick="modifyTourneyScore('${roundKey}', ${mIdx}, 's2', 1, ${maxScore})">+</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="score-control">
-                                        <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', -1)">-</button>
-                                        <span class="score-val">${m.s1}</span>
-                                        <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', 1)">+</button>
-                                    </div>
-                                </div>
-                                <div class="vs-divider">VS</div>
-                                <!-- 2P側 -->
-                                <div class="player-row">
-                                    <div class="player-info">
-                                        <span class="side-badge p2-badge">2P</span>
-                                        <span class="player-name p2-text${p2Win}" title="${m.p2}">${m.p2}</span>
-                                    </div>
-                                    <div class="score-control">
-                                        <button type="button" class="score-btn p2-btn" onclick="modifySoloScore(${idx}, 's2', -1)">-</button>
-                                        <span class="score-val">${m.s2}</span>
-                                        <button type="button" class="score-btn p2-btn" onclick="modifySoloScore(${idx}, 's2', 1)">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
+                                `;
+                            });
+                        });
+                    }
                 }
 
                 if (html === '') {
-                    container.innerHTML = '<div style="color:#a0a6cc; font-size:0.9rem; text-align:center; padding:20px;">対戦カードがありません</div>';
+                    container.innerHTML = '<div style="color:#a0a6cc; font-size:0.9rem; text-align:center; padding:20px;">表示可能な対戦カードがありません</div>';
                 } else {
                     container.innerHTML = html;
                 }
@@ -343,8 +458,9 @@
         }
 
         function setActiveMatch(mode, matchIdx, subIdx) {
+            isLocalUpdating = true;
             var json = localStorage.getItem('hadaka_league_master_data');
-            if (!json) return;
+            if (!json) { isLocalUpdating = false; return; }
             try {
                 var data = JSON.parse(json);
                 data.activeStreamMatch = {
@@ -353,31 +469,35 @@
                     subIndex: subIdx
                 };
                 localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                isLocalUpdating = false;
                 loadDataAndRender();
-            } catch(e) {}
+            } catch(e) { isLocalUpdating = false; }
         }
 
         function modifySoloScore(matchIdx, field, delta) {
+            isLocalUpdating = true;
             var json = localStorage.getItem('hadaka_league_master_data');
-            if (!json) return;
+            if (!json) { isLocalUpdating = false; return; }
             try {
                 var data = JSON.parse(json);
-                if (!data.soloMatches || !data.soloMatches[matchIdx]) return;
+                if (!data.soloMatches || !data.soloMatches[matchIdx]) { isLocalUpdating = false; return; }
                 var val = (data.soloMatches[matchIdx][field] || 0) + delta;
                 if (val < 0) val = 0;
                 if (val > 2) val = 2;
                 data.soloMatches[matchIdx][field] = val;
                 localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                isLocalUpdating = false;
                 loadDataAndRender();
-            } catch(e) {}
+            } catch(e) { isLocalUpdating = false; }
         }
 
         function modifyTeamScore(matchIdx, rKey, field, delta) {
+            isLocalUpdating = true;
             var json = localStorage.getItem('hadaka_league_master_data');
-            if (!json) return;
+            if (!json) { isLocalUpdating = false; return; }
             try {
                 var data = JSON.parse(json);
-                if (!data.teamMatches || !data.teamMatches[matchIdx]) return;
+                if (!data.teamMatches || !data.teamMatches[matchIdx]) { isLocalUpdating = false; return; }
                 var m = data.teamMatches[matchIdx];
                 if (!m.results) m.results = {};
                 if (!m.results[rKey]) m.results[rKey] = { s1: 0, s2: 0, winner: 0 };
@@ -396,13 +516,48 @@
                 }
 
                 localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                isLocalUpdating = false;
                 loadDataAndRender();
-            } catch(e) {}
+            } catch(e) { isLocalUpdating = false; }
+        }
+
+        function modifyTourneyScore(roundKey, matchIdx, field, delta, maxScore) {
+            isLocalUpdating = true;
+            var json = localStorage.getItem('hadaka_league_master_data');
+            if (!json) { isLocalUpdating = false; return; }
+            try {
+                var data = JSON.parse(json);
+                if (!data.tourneyMatches || !data.tourneyMatches[roundKey] || !data.tourneyMatches[roundKey][matchIdx]) { isLocalUpdating = false; return; }
+                var m = data.tourneyMatches[roundKey][matchIdx];
+                
+                var val = (m[field] || 0) + delta;
+                if (val < 0) val = 0;
+                if (val > maxScore) val = maxScore;
+                m[field] = val;
+
+                if (m.p1 === m.p2) {
+                    m.winner = '';
+                } else if (m.s1 === maxScore && m.s2 < maxScore) {
+                    m.winner = m.p1;
+                } else if (m.s2 === maxScore && m.s1 < maxScore) {
+                    m.winner = m.p2;
+                } else {
+                    m.winner = '';
+                }
+
+                localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                isLocalUpdating = false;
+                loadDataAndRender();
+            } catch(e) { isLocalUpdating = false; }
         }
 
         window.onload = function() {
             loadDataAndRender();
-            setInterval(loadDataAndRender, 300);
+            setInterval(function() {
+                if (!isLocalUpdating) {
+                    loadDataAndRender();
+                }
+            }, 300);
         };
     </script>
 </body>
