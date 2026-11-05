@@ -215,7 +215,6 @@
         function updateOverlay(d) {
             if (!d) return;
 
-            // 各項目がデータに含まれている場合のみ画面を書き換える
             if (d.stageTitle !== undefined) {
                 document.getElementById('stream-stage-title').textContent = d.stageTitle;
             }
@@ -241,11 +240,24 @@
 
         bc.onmessage = function(e) {
             if (e.data) {
-                // 送信形式（直接オブジェクト、あるいは payload や data プロパティ内）のいずれにも対応
                 const data = e.data.payload || e.data.data || e.data;
                 updateOverlay(data);
+                // 状態をセッション等に保持して初期表示に備える
+                try {
+                    sessionStorage.setItem('hadaka_last_overlay_data', JSON.stringify(data));
+                } catch(err) {}
             }
         };
+
+        // ページ読み込み時に前回のデータがあれば即座に復元表示する
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = sessionStorage.getItem('hadaka_last_overlay_data');
+                if (saved) {
+                    updateOverlay(JSON.parse(saved));
+                }
+            } catch(err) {}
+        });
     </script>
 </body>
 </html>
