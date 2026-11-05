@@ -750,7 +750,7 @@
                 <button type="button" class="tab-btn" onclick="switchTab('tab-team-mgmt', this)">④ チーム管理</button>
                 <button type="button" class="tab-btn" onclick="switchTab('tab-member-mgmt', this)">⑤ メンバー管理</button>
                 <button type="button" class="tab-btn" onclick="switchTab('tab-admin-mgmt', this)">⑥ 運営管理</button>
-                <a href="overlay.html" target="_blank" class="tab-btn stream-btn">📺 配信オーバーレイ画面</a>
+                <button type="button" class="tab-btn stream-btn" onclick="openBothOverlays()">📺 配信オーバーレイを開く (両方)</button>
             </div>
         </div>
 
@@ -1205,6 +1205,11 @@
             var mm = String(d.getMonth() + 1).padStart(2, '0');
             var dd = String(d.getDate()).padStart(2, '0');
             return yyyy + '.' + mm + '.' + dd;
+        }
+
+        function openBothOverlays() {
+            window.open('overlay_main.html', '_blank', 'width=1600,height=900');
+            window.open('overlay_list.html', '_blank', 'width=450,height=900');
         }
 
         function saveAppData() {
@@ -3368,7 +3373,6 @@
                 renderTourneyUI();
             }
 
-            // ★追加：別タブ（オーバーレイ）でのスコア変更をリアルタイムで検知・同期する処理
             window.addEventListener('storage', function(e) {
                 if (e.key === 'hadaka_league_master_data') {
                     loadAppData();
