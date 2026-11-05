@@ -33,18 +33,17 @@
         .cost-summary { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #2a2e45; font-weight: bold; font-size: 1.1rem; }
         .cost-num { color: #ffcc00; font-size: 1.3rem; }
         .team-match-box { background: #141724; border: 1px solid #3f466b; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
-        .team-match-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2e45; padding-bottom: 12px; margin-bottom: 15px; font-size: 1.15rem; font-weight: bold; flex-wrap: wrap; gap: 10px; }
-        .team-score-badge { background: #ff4655; color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 1rem; text-align: center; }
-        .team-match-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .team-match-table th, .team-match-table td { border: 1px solid #2a2e45; padding: 10px; text-align: center; font-size: 0.95rem; }
-        .team-match-table th { background-color: #10121b; color: #00ffcc; }
-        .team-match-table td { background-color: #1a1d2d; }
-        .match-member-select { background: #10121b; border: 1px solid #3f466b; color: #fff; padding: 6px; border-radius: 4px; font-size: 0.9rem; width: 100%; max-width: 180px; }
         .team-tabs-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; background: #141724; padding: 12px; border-radius: 6px; border: 1px solid #3f466b; }
         .team-tab-btn { background-color: #1a1d2d; border: 1px solid #3f466b; color: #a0a6cc; padding: 8px 14px; font-weight: bold; border-radius: 4px; cursor: pointer; }
         .team-tab-btn.active { background-color: #00ffcc; color: #0f111a; border-color: #00ffcc; }
         .add-team-btn { background-color: #ff4655; color: #fff; border: none; padding: 8px 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-left: auto; }
         .delete-team-btn { background-color: #2a2e45; color: #ff808b; border: 1px solid #ff4655; padding: 6px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
+        .tournament-wrapper { display: flex; gap: 25px; overflow-x: auto; padding: 20px 10px; align-items: flex-start; }
+        .bracket-column { display: flex; flex-direction: column; gap: 15px; min-width: 220px; }
+        .bracket-column h4 { color: #00ffcc; text-align: center; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #3f466b; padding-bottom: 6px; font-size: 0.95rem; }
+        .bracket-match { background: #141724; border: 1px solid #3f466b; border-radius: 6px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
+        .bracket-player { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #0f111a; border-radius: 4px; margin-bottom: 4px; font-size: 0.9rem; }
+        .bracket-player.winner { color: #00ffcc; font-weight: bold; border: 1px solid #00ffcc; background: #102624; }
         .tournament-entry-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
         .tournament-entry-table th, .tournament-entry-table td { border: 1px solid #2a2e45; padding: 8px 12px; text-align: left; }
         .tournament-entry-table th { background-color: #10121b; color: #a0a6cc; }
@@ -64,10 +63,7 @@
         .member-table th, .member-table td { border: 1px solid #2a2e45; padding: 12px; text-align: left; }
         .member-table th { background-color: #10121b; color: #a0a6cc; }
         .member-table td { background-color: #1a1d2d; }
-        .action-btn-group { display: flex; gap: 8px; align-items: center; }
-        .team-go-btn { background-color: #00ffcc; color: #0f111a; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
         .delete-btn { background-color: #ff4655; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
-        .table-rank-select { background: #10121b; border: 1px solid #3f466b; color: #fff; padding: 6px; border-radius: 4px; font-size: 0.9rem; }
         .admin-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #2a2e45; }
         .admin-section h3 { margin-top: 0; color: #00ffcc; font-size: 1.1rem; }
         .admin-input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -152,11 +148,7 @@
                         <input type="text" id="solo-date" placeholder="開催日" style="flex: 1;" oninput="saveAppData()">
                         <input type="text" id="solo-season" value="シーズン 1" placeholder="シーズン" style="flex: 1;" oninput="saveAppData()">
                     </div>
-                    <h3>1. 参加者追加</h3>
-                    <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="text" id="solo-new-name" placeholder="名前" style="flex: 2; padding:8px; background:#10121b; border:1px solid #3f466b; color:#fff; border-radius:4px;">
-                        <button type="button" class="action-btn" onclick="addSoloParticipant()">＋ 追加</button>
-                    </div>
+                    <h3>1. 参加メンバー選択</h3>
                     <table class="tournament-entry-table">
                         <thead><tr><th style="width: 50px; text-align: center;">選択</th><th>メンバー名</th><th>ランク</th></tr></thead>
                         <tbody id="solo-registry-tbody"></tbody>
@@ -299,7 +291,17 @@
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
         var members = [
             { name: "裸のラリーさん", rankName: "マスター", cost: 3 },
-            { name: "enushi35", rankName: "プラチナ", cost: 1 }
+            { name: "跪漬け御前", rankName: "マスター", cost: 3 },
+            { name: "enushi35", rankName: "プラチナ", cost: 1 },
+            { name: "B@ZS", rankName: "グランドマスター", cost: 4 },
+            { name: "ずなぷる", rankName: "ダイヤモンド", cost: 2 },
+            { name: "ピザポテト", rankName: "ハイマスター", cost: 3 },
+            { name: "友爺Tomo_G", rankName: "マスター", cost: 3 },
+            { name: "しらたき", rankName: "マスター", cost: 3 },
+            { name: "さつきだよん", rankName: "アルティメットマスター", cost: 6 },
+            { name: "猫神のオリバ", rankName: "マスター", cost: 3 },
+            { name: "TAKたかｱﾙﾌｧ楓", rankName: "シルバー", cost: 1 },
+            { name: "ガイナス", rankName: "マスター", cost: 3 }
         ];
         var soloParticipants = [], soloMatches = [];
         var tourneyParticipants = [], tourneyMatches = {};
@@ -386,6 +388,20 @@
             saveAppData();
         }
 
+        function populateTeamMemberSelects() {
+            ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => {
+                var sel = document.getElementById('team-' + role);
+                if (!sel) return;
+                var currentVal = sel.value;
+                var html = '<option value="">-- 選択 --</option>';
+                members.forEach((m, idx) => {
+                    html += `<option value="${idx}">${m.name} (${m.rankName})</option>`;
+                });
+                sel.innerHTML = html;
+                sel.value = currentVal;
+            });
+        }
+
         function renderMemberList() {
             var tbody = document.getElementById('member-table-body');
             if (!tbody) return;
@@ -395,7 +411,7 @@
                 tr.innerHTML = `<td>${idx + 1}</td><td>${m.name}</td><td>${m.rankName}</td><td>${m.cost}</td><td><button class="delete-btn" onclick="deleteMember(${idx})">削除</button></td>`;
                 tbody.appendChild(tr);
             });
-            renderSoloRegistry(); renderTourneyRegistry(); renderTeamRegistry(); updateTeamSelectOptions();
+            renderSoloRegistry(); renderTourneyRegistry(); renderTeamRegistry(); updateTeamSelectOptions(); populateTeamMemberSelects();
         }
 
         function addMember() {
@@ -427,17 +443,70 @@
             });
             html += '<button type="button" class="add-team-btn" onclick="addTeam()">＋ チーム追加</button>';
             bar.innerHTML = html;
+            loadCurrentTeamData();
         }
 
-        function switchTeam(idx) { currentTeamIndex = idx; updateTeamSelectOptions(); }
+        function switchTeam(idx) {
+            currentTeamIndex = idx;
+            updateTeamSelectOptions();
+        }
+
+        function loadCurrentTeamData() {
+            var t = teams[currentTeamIndex];
+            if (!t) return;
+            document.getElementById('current-team-name').value = t.name;
+            ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => {
+                var sel = document.getElementById('team-' + role);
+                if (sel) sel.value = t.members[role] !== undefined ? t.members[role] : "";
+                updateTeamRow(role);
+            });
+        }
 
         function updateCurrentTeamName(val) {
-            if (teams[currentTeamIndex]) { teams[currentTeamIndex].name = val; updateTeamSelectOptions(); saveAppData(); }
+            if (teams[currentTeamIndex]) {
+                teams[currentTeamIndex].name = val;
+                updateTeamSelectOptions();
+                saveAppData();
+            }
         }
 
         function updateTeamRow(role) {
             var sel = document.getElementById('team-' + role);
-            if (sel) teams[currentTeamIndex].members[role] = sel.value;
+            if (!sel) return;
+            var idx = sel.value;
+            teams[currentTeamIndex].members[role] = idx;
+            var disp = document.getElementById('display-' + role);
+            if (disp) {
+                if (idx !== "" && members[idx]) {
+                    disp.innerHTML = `<span>ランク: ${members[idx].rankName}</span><span>コスト: ${members[idx].cost}</span>`;
+                } else {
+                    disp.innerHTML = `<span>ランク: -</span><span>コスト: 0</span>`;
+                }
+            }
+            calcTotalTeamCost();
+            saveAppData();
+        }
+
+        function calcTotalTeamCost() {
+            var total = 0;
+            var t = teams[currentTeamIndex];
+            if (t && t.members) {
+                ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => {
+                    var idx = t.members[role];
+                    if (idx !== "" && members[idx]) {
+                        total += members[idx].cost;
+                    }
+                });
+            }
+            var sumEl = document.getElementById('team-total-cost');
+            if (sumEl) sumEl.textContent = total + ' / MAX 20';
+        }
+
+        function deleteCurrentTeam() {
+            if (teams.length <= 1) return alert('最低1チーム必要です');
+            teams.splice(currentTeamIndex, 1);
+            currentTeamIndex = Math.max(0, currentTeamIndex - 1);
+            updateTeamSelectOptions();
             saveAppData();
         }
 
@@ -477,13 +546,6 @@
             });
         }
 
-        function addSoloParticipant() {
-            var name = document.getElementById('solo-new-name').value.trim();
-            if (name && !soloParticipants.includes(name)) { soloParticipants.push(name); document.getElementById('solo-new-name').value = ''; }
-            document.getElementById('solo-participant-list').innerHTML = soloParticipants.join(', ');
-            saveAppData();
-        }
-
         function importCheckedMembers() {
             document.querySelectorAll('.solo-check:checked').forEach(chk => {
                 if (!soloParticipants.includes(chk.value)) soloParticipants.push(chk.value);
@@ -496,10 +558,18 @@
 
         function generateSoloTournament() {
             if (soloParticipants.length < 2) return alert('参加者が足りません');
-            soloMatches = [{ p1: soloParticipants[0], p2: soloParticipants[1], s1: 0, s2: 0 }];
+            soloMatches = [];
+            for(let i=0; i<soloParticipants.length; i++) {
+                for(let j=i+1; j<soloParticipants.length; j++) {
+                    soloMatches.push({ p1: soloParticipants[i], p2: soloParticipants[j], s1: 0, s2: 0 });
+                }
+            }
             document.getElementById('solo-tournament-card').style.display = 'block';
             var sched = document.getElementById('schedule-tbody');
-            sched.innerHTML = `<tr><td>第1試合</td><td>${soloParticipants[0]}</td><td>0 - 0</td><td>${soloParticipants[1]}</td><td>-</td></tr>`;
+            sched.innerHTML = '';
+            soloMatches.forEach((m, idx) => {
+                sched.innerHTML += `<tr><td>第${idx+1}試合</td><td>${m.p1}</td><td><input type="number" class="score-input" value="${m.s1}" onchange="soloMatches[${idx}].s1=parseInt(this.value)||0; saveAppData()"> - <input type="number" class="score-input" value="${m.s2}" onchange="soloMatches[${idx}].s2=parseInt(this.value)||0; saveAppData()"></td><td>${m.p2}</td><td>-</td></tr>`;
+            });
             saveAppData();
         }
 
