@@ -5,300 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HDK LEAGUE - 対戦カードリスト</title>
     <style>
-        html, body {
-            background-color: transparent !important;
+        body {
+            background-color: transparent; /* OBS透過用、必要に応じて #0f111a 等に変更 */
             color: #f0f0f0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            width: 420px;
-            height: 1080px;
-            overflow: hidden;
-            position: relative;
+            padding: 15px;
+            box-sizing: border-box;
         }
 
-        .stream-side-panel {
-            position: absolute;
-            top: 40px;
-            left: 20px;
-            width: 360px;
-            background: rgba(15, 18, 28, 0.95);
-            backdrop-filter: blur(6px);
-            border: 2px solid #3f466b;
-            border-radius: 8px;
+        .list-container {
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
-        .stream-side-header {
-            background: #121522;
-            color: #00d9ff;
-            padding: 10px 12px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #3f466b;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
+        .list-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #00ffcc;
+            border-bottom: 2px solid #3f466b;
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
         }
 
-        .stream-mode-selector {
-            background: #0b0d14;
-            color: #fff;
+        .match-card {
+            background: rgba(20, 23, 36, 0.9);
             border: 1px solid #3f466b;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-        }
-
-        .stream-card-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
+            border-radius: 8px;
+            padding: 12px 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 520px;
         }
 
-        .stream-card-item {
-            background: #141724;
-            border: 1px solid #2a2e45;
-            border-radius: 5px;
-            padding: 8px 10px;
-            cursor: pointer;
+        .match-header {
+            font-size: 0.8rem;
+            color: #a0a6cc;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .players-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
-        }
-
-        .stream-card-item.active-stream {
-            border-color: #00d9ff;
-            background: #102633;
-            box-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
-        }
-
-        .stream-card-info {
-            flex: 1;
-            font-size: 0.8rem;
-        }
-
-        .stream-card-teams {
+            font-size: 1rem;
             font-weight: bold;
-            color: #fff;
-            margin-bottom: 2px;
         }
 
-        .stream-card-sub {
-            font-size: 0.72rem;
-            color: #b3f0ff;
+        .player-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 130px;
         }
 
-        .stream-checkbox-label {
+        .player-name.winner {
+            color: #00ffcc;
+            text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
+        }
+
+        /* ご希望のスコア増減コントロール */
+        .score-control-box {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            font-size: 0.65rem;
-            color: #a0a6cc;
-            cursor: pointer;
-            gap: 2px;
+            justify-content: center;
+            background: #10121b;
+            border: 1px solid #3f466b;
+            border-radius: 6px;
+            padding: 4px 8px;
+            gap: 4px;
         }
 
-        .stream-checkbox-label input {
+        .score-btn {
+            background-color: #1a1d2d;
+            border: 1px solid #3f466b;
+            color: #00d9ff;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            font-weight: bold;
             cursor: pointer;
-            width: 14px;
-            height: 14px;
-            accent-color: #00d9ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.1s;
+        }
+        .score-btn.minus-p2 {
+            color: #ff4655;
+            border-color: #ff4655;
+        }
+        .score-btn:hover {
+            background-color: #2a2e45;
+        }
+
+        .score-val {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #ffcc00;
+            width: 24px;
+            text-align: center;
+            text-shadow: 0 0 6px rgba(255, 204, 0, 0.5);
+        }
+
+        .score-divider {
+            color: #555;
+            margin: 0 4px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="stream-side-panel">
-        <div class="stream-side-header">
-            <span>対戦カード一覧</span>
-            <select id="stream-mode-select" class="stream-mode-selector" onchange="changeStreamMode(this.value)">
-                <option value="team">① チーム戦カード</option>
-                <option value="solo">② 個人戦スケジュール</option>
-                <option value="tourney">③ トーナメント</option>
-            </select>
+    <div class="list-container">
+        <div class="list-title">📺 対戦カード & スコア操作</div>
+        <div id="overlay-matches-list" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- 動的生成 -->
         </div>
-        <div class="stream-card-list" id="stream-card-list-container"></div>
     </div>
 
     <script>
-        var members = [];
-        var teamMatches = [];
-        var soloMatches = [];
-        var tourneyMatches = {};
-        var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
-
-        function loadAppData() {
+        function loadDataAndRender() {
             var json = localStorage.getItem('hadaka_league_master_data');
-            if (json) {
-                try {
-                    var data = JSON.parse(json);
-                    members = data.members || [];
-                    teamMatches = data.teamMatches || [];
-                    soloMatches = data.soloMatches || [];
-                    tourneyMatches = data.tourneyMatches || {};
-                    if (data.activeStreamMatch) {
-                        activeStreamMatch = data.activeStreamMatch;
-                    }
-                } catch(e) {}
-            }
-        }
+            if (!json) return;
+            try {
+                var data = JSON.parse(json);
+                var matches = data.soloMatches || []; // 個人戦スケジュールを例示。トーナメント等の場合は切り替え可能
+                var container = document.getElementById('overlay-matches-list');
+                if (!container) return;
 
-        function saveMasterData() {
-            var json = localStorage.getItem('hadaka_league_master_data');
-            var data = json ? JSON.parse(json) : {};
-            data.members = members;
-            data.teamMatches = teamMatches;
-            data.soloMatches = soloMatches;
-            data.tourneyMatches = tourneyMatches;
-            data.activeStreamMatch = activeStreamMatch;
-            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
-        }
-
-        function refreshOverlay() {
-            loadAppData();
-            renderStreamCardList();
-        }
-
-        function changeStreamMode(modeVal) {
-            activeStreamMatch.mode = modeVal;
-            activeStreamMatch.matchIndex = 0;
-            if (modeVal === 'team') {
-                activeStreamMatch.subIndex = 'senho';
-            } else if (modeVal === 'tourney') {
-                var keys = Object.keys(tourneyMatches);
-                activeStreamMatch.matchIndex = keys.length > 0 ? keys[0] : 0;
-                activeStreamMatch.subIndex = 0;
-            } else {
-                activeStreamMatch.subIndex = 0;
-            }
-            saveMasterData();
-            refreshOverlay();
-        }
-
-        function selectStreamMatch(mode, mIdx, subIdx) {
-            activeStreamMatch.mode = mode;
-            activeStreamMatch.matchIndex = mIdx;
-            activeStreamMatch.subIndex = subIdx;
-            saveMasterData();
-            refreshOverlay();
-        }
-
-        function renderStreamCardList() {
-            var modeSel = document.getElementById('stream-mode-select');
-            if (!modeSel) return;
-            modeSel.value = activeStreamMatch.mode;
-            var mode = modeSel.value;
-
-            var container = document.getElementById('stream-card-list-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (mode === 'team') {
-                if (teamMatches.length === 0) {
-                    container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">チーム戦の対戦がありません</div>';
+                if (matches.length === 0) {
+                    container.innerHTML = '<div style="color:#a0a6cc; font-size:0.9rem; text-align:center; padding:20px;">対戦カードがありません</div>';
                     return;
                 }
-                teamMatches.forEach(function(m, mIdx) {
-                    var roles = [
-                        { key: 'senho', label: '先鋒' },
-                        { key: 'jiho', label: '次鋒' },
-                        { key: 'fukusho', label: '副将' },
-                        { key: 'taisho', label: '大将' }
-                    ];
-                    roles.forEach(function(r) {
-                        var idx1 = m.order1 ? m.order1[r.key] : "";
-                        var idx2 = m.order2 ? m.order2[r.key] : "";
-                        var p1Name = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].name : '未定';
-                        var p2Name = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].name : '未定';
 
-                        var isChecked = (String(activeStreamMatch.matchIndex) === String(mIdx) && activeStreamMatch.subIndex === r.key && activeStreamMatch.mode === 'team');
+                var html = '';
+                matches.forEach(function(m, idx) {
+                    var winner = "-";
+                    if (m.s1 === 2 && m.s2 < 2) winner = m.p1;
+                    else if (m.s2 === 2 && m.s1 < 2) winner = m.p2;
 
-                        var item = document.createElement('div');
-                        item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
-                        item.innerHTML = `
-                            <div class="stream-card-info" onclick="selectStreamMatch('team', ${mIdx}, '${r.key}')">
-                                <div class="stream-card-teams">${m.t1Name} vs ${m.t2Name}</div>
-                                <div class="stream-card-sub">[${r.label}] ${p1Name} vs ${p2Name}</div>
+                    var p1WinClass = (winner === m.p1) ? ' winner' : '';
+                    var p2WinClass = (winner === m.p2) ? ' winner' : '';
+
+                    html += `
+                        <div class="match-card">
+                            <div class="match-header">
+                                <span>第 ${idx + 1} 試合</span>
+                                <span style="color:${winner !== '-' ? '#00ffcc':'#a0a6cc'}">${winner !== '-' ? '勝者: ' + winner : '進行中'}</span>
                             </div>
-                            <label class="stream-checkbox-label">
-                                <input type="checkbox" ${isChecked ? 'checked':''} onclick="selectStreamMatch('team', ${mIdx}, '${r.key}')">
-                                <span>表示</span>
-                            </label>
-                        `;
-                        container.appendChild(item);
-                    });
-                });
-            } else if (mode === 'solo') {
-                if (soloMatches.length === 0) {
-                    container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">個人戦スケジュールがありません</div>';
-                    return;
-                }
-                soloMatches.forEach(function(sm, smIdx) {
-                    var isChecked = (Number(activeStreamMatch.matchIndex) === Number(smIdx) && activeStreamMatch.mode === 'solo');
-                    var item = document.createElement('div');
-                    item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
-                    item.innerHTML = `
-                        <div class="stream-card-info" onclick="selectStreamMatch('solo', ${smIdx}, 0)">
-                            <div class="stream-card-teams">第${smIdx+1}試合: ${sm.p1} vs ${sm.p2}</div>
-                            <div class="stream-card-sub">個人戦リーグ</div>
-                        </div>
-                        <label class="stream-checkbox-label">
-                            <input type="checkbox" ${isChecked ? 'checked':''} onclick="selectStreamMatch('solo', ${smIdx}, 0)">
-                            <span>表示</span>
-                        </label>
-                    `;
-                    container.appendChild(item);
-                });
-            } else if (mode === 'tourney') {
-                var keys = Object.keys(tourneyMatches);
-                var hasMatches = false;
-                keys.forEach(function(rk) {
-                    if (tourneyMatches[rk]) {
-                        tourneyMatches[rk].forEach(function(tm, tmIdx) {
-                            hasMatches = true;
-                            var isChecked = (String(activeStreamMatch.matchIndex) === String(rk) && Number(activeStreamMatch.subIndex) === Number(tmIdx) && activeStreamMatch.mode === 'tourney');
-                            var item = document.createElement('div');
-                            item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
-                            item.innerHTML = `
-                                <div class="stream-card-info" onclick="selectStreamMatch('tourney', '${rk}', ${tmIdx})">
-                                    <div class="stream-card-teams">${tm.p1} vs ${tm.p2}</div>
-                                    <div class="stream-card-sub">トーナメント戦</div>
+                            <div class="players-row">
+                                <span class="player-name${p1WinClass}">${m.p1}</span>
+                                
+                                <div class="score-control-box">
+                                    <!-- 1P側コントロール -->
+                                    <button type="button" class="score-btn" onclick="modifyScore(${idx}, 's1', -1)">-</button>
+                                    <span class="score-val">${m.s1}</span>
+                                    <button type="button" class="score-btn" onclick="modifyScore(${idx}, 's1', 1)">+</button>
+                                    
+                                    <span class="score-divider">-</span>
+                                    
+                                    <!-- 2P側コントロール -->
+                                    <button type="button" class="score-btn minus-p2" onclick="modifyScore(${idx}, 's2', -1)">-</button>
+                                    <span class="score-val">${m.s2}</span>
+                                    <button type="button" class="score-btn" onclick="modifyScore(${idx}, 's2', 1)">+</button>
                                 </div>
-                                <label class="stream-checkbox-label">
-                                    <input type="checkbox" ${isChecked ? 'checked':''} onclick="selectStreamMatch('tourney', '${rk}', ${tmIdx})">
-                                    <span>表示</span>
-                                </label>
-                            `;
-                            container.appendChild(item);
-                        });
-                    }
+
+                                <span class="player-name${p2WinClass}">${m.p2}</span>
+                            </div>
+                        </div>
+                    `;
                 });
-                if (!hasMatches) {
-                    container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">有効なトーナメント対戦がありません</div>';
-                }
+                container.innerHTML = html;
+            } catch(e) {
+                console.error(e);
             }
         }
 
+        function modifyScore(matchIdx, field, delta) {
+            var json = localStorage.getItem('hadaka_league_master_data');
+            if (!json) return;
+            try {
+                var data = JSON.parse(json);
+                if (!data.soloMatches || !data.soloMatches[matchIdx]) return;
+
+                var currentVal = data.soloMatches[matchIdx][field];
+                var newVal = currentVal + delta;
+                if (newVal < 0) newVal = 0;
+                if (newVal > 2) newVal = 2; // 2先ルール
+
+                data.soloMatches[matchIdx][field] = newVal;
+                localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                
+                // 即時再描画
+                loadDataAndRender();
+            } catch(e) {}
+        }
+
+        // 定期同期 & 初期ロード
         window.onload = function() {
-            refreshOverlay();
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'hadaka_league_master_data') {
-                    refreshOverlay();
-                }
-            });
-            setInterval(function() {
-                refreshOverlay();
-            }, 300);
+            loadDataAndRender();
+            setInterval(loadDataAndRender, 300);
         };
     </script>
 </body>
