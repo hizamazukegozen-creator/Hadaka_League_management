@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>HDK LEAGUE - Main Overlay</title>
+    <title>HDK LEAGUE - Top Overlay</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,10 +19,10 @@
             position: relative;
         }
 
-        /* 画面全体の配置コンテナ（下部固定） */
+        /* 画面上部全体を覆う配置コンテナ */
         .overlay-wrapper {
             position: absolute;
-            bottom: 40px;
+            top: 30px;
             left: 0;
             width: 1920px;
             display: flex;
@@ -30,12 +30,12 @@
             align-items: center;
         }
 
-        /* --- 上部：HDK LEAGUE ロゴエリア --- */
+        /* --- 中央配置：HDK LEAGUE ロゴ ＆ ステージ枠 --- */
         .header-brand-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .brand-logo-text {
@@ -46,59 +46,59 @@
         }
 
         .brand-logo-text .hdk {
-            color: #ff2a2a; /* HDK：赤 */
-            text-shadow: 0 0 12px rgba(255, 42, 42, 0.7);
+            color: #ff2a2a;
+            text-shadow: 0 0 12px rgba(255, 42, 42, 0.8);
         }
 
         .brand-logo-text .league {
-            color: #00e5ff; /* LEAGUE：シアン */
-            text-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
+            color: #00e5ff;
+            text-shadow: 0 0 12px rgba(0, 229, 255, 0.8);
         }
 
         .brand-sub-text {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            color: #00e5ff; /* ANGER MANAGEMENT：シアン・小さめ */
+            color: #00e5ff;
             letter-spacing: 4px;
             font-style: italic;
             margin-top: -2px;
             opacity: 0.85;
         }
 
-        /* --- 中央：対戦カード名ボックス --- */
+        /* 対戦カード・ステージタイトル枠 */
         .match-title-box {
-            background: rgba(20, 25, 35, 0.9);
+            background: rgba(20, 25, 35, 0.92);
             border: 2px solid #00e5ff;
-            padding: 6px 24px;
+            padding: 5px 24px;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #ffcc00;
             letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            margin-bottom: 15px;
         }
 
-        /* --- 下部：メインプレイヤー＆スコアレイアウト --- */
+        /* --- プレイヤー枠 ＆ 中央VS/スコア行 --- */
         .main-row {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 0 80px;
+            padding: 0 60px;
         }
 
-        /* プレイヤーボックス共通 */
+        /* プレイヤーボックス */
         .player-box {
-            width: 600px;
-            height: 90px;
-            background: rgba(15, 20, 30, 0.92);
+            width: 500px;
+            height: 85px;
+            background: rgba(15, 20, 30, 0.95);
             border: 2px solid #00e5ff;
             border-radius: 10px;
             display: flex;
             align-items: center;
-            padding: 0 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            padding: 0 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
             position: relative;
             overflow: hidden;
         }
@@ -120,26 +120,25 @@
         }
 
         .player-name {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             letter-spacing: 1px;
         }
 
         .player-rank {
-            font-size: 14px;
+            font-size: 13px;
             color: #94a3b8;
             margin-top: 2px;
         }
 
-        /* --- 中央：VS ＆ スコア表示エリア --- */
+        /* 真ん中の VS ＆ スコア表示 */
         .center-score-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0 40px;
-            position: relative;
+            margin: 0 30px;
         }
 
         .vs-text {
@@ -147,42 +146,41 @@
             font-weight: 900;
             font-style: italic;
             color: #ff2a2a;
-            text-shadow: 0 0 8px rgba(255, 42, 42, 0.8);
-            margin-bottom: 6px;
-            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.9);
+            margin-bottom: 4px;
         }
 
         .score-box {
             background: rgba(15, 20, 30, 0.95);
             border: 2px solid #00e5ff;
             border-radius: 8px;
-            padding: 6px 16px;
+            padding: 5px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
         }
 
         .score-num {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             color: #ffcc00;
-            min-width: 35px;
+            min-width: 30px;
             text-align: center;
         }
 
         .score-divider {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #ffffff;
-            margin: 0 8px;
+            margin: 0 6px;
         }
     </style>
 </head>
 <body>
 
     <div class="overlay-wrapper">
-        <!-- 上部ロゴ＆サブタイトル -->
+        <!-- プレイヤー真ん中上部のロゴ -->
         <div class="header-brand-container">
             <div class="brand-logo-text">
                 <span class="hdk">HDK</span> <span class="league">LEAGUE</span>
@@ -190,22 +188,20 @@
             <div class="brand-sub-text">ANGER MANAGEMENT</div>
         </div>
 
-        <!-- 対戦カード・ステージタイトル -->
+        <!-- 対戦カード名 -->
         <div id="stream-stage-title" class="match-title-box">
-            ラリー一族 vs 友爺Ch 【先鋒】
+            --- vs ---
         </div>
 
-        <!-- メイン対戦・スコア行 -->
+        <!-- プレイヤーおよび中央スコア -->
         <div class="main-row">
-            <!-- プレイヤー1 -->
             <div class="player-box p1">
                 <div class="player-info">
-                    <div id="stream-p1-name" class="player-name">跪漬け御膳</div>
-                    <div id="stream-p1-detail" class="player-rank">ランク: マスター</div>
+                    <div id="stream-p1-name" class="player-name">---</div>
+                    <div id="stream-p1-detail" class="player-rank">ランク: -</div>
                 </div>
             </div>
 
-            <!-- 中央 VS & スコア -->
             <div class="center-score-container">
                 <div class="vs-text">VS</div>
                 <div class="score-box">
@@ -215,26 +211,24 @@
                 </div>
             </div>
 
-            <!-- プレイヤー2 -->
             <div class="player-box p2">
                 <div class="player-info">
-                    <div id="stream-p2-name" class="player-name">ずなぶる</div>
-                    <div id="stream-p2-detail" class="player-rank">ランク: ダイヤモンド</div>
+                    <div id="stream-p2-name" class="player-name">---</div>
+                    <div id="stream-p2-detail" class="player-rank">ランク: -</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // BroadcastChannel によるリアルタイム同期処理
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
 
         function fetchAndRender() {
-            const json = localStorage.getItem('hadaka_league_master_data');
-            if (!json) return;
+            const rawData = localStorage.getItem('hadaka_league_master_data');
+            if (!rawData) return;
 
             try {
-                const data = JSON.parse(json);
+                const data = JSON.parse(rawData);
                 const members = data.members || [];
                 const teamMatches = data.teamMatches || [];
                 const soloMatches = data.soloMatches || [];
@@ -246,28 +240,27 @@
                 let p2Detail = "ランク: -";
                 let s1 = 0;
                 let s2 = 0;
-                let stageTitle = "FEATURED MATCH";
+                let stageTitle = "MATCH";
 
                 if (activeMatch.mode === 'team') {
                     const m = teamMatches[activeMatch.matchIndex];
                     if (m) {
-                        stageTitle = `${m.t1Name || 'チームA'} vs ${m.t2Name || 'チームB'}`;
-                        const rKey = activeMatch.subIndex;
+                        const rKey = activeMatch.subIndex || 'senho';
                         const roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
-                        stageTitle += ` 【${roleLabels[rKey] || rKey}】`;
+                        stageTitle = `${m.t1Name || 'チームA'} vs ${m.t2Name || 'チームB'} 【${roleLabels[rKey] || rKey}】`;
 
                         const idx1 = m.order1 ? m.order1[rKey] : "";
                         const idx2 = m.order2 ? m.order2[rKey] : "";
 
                         if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
-                            p1Name = members[idx1].name || "P1";
+                            p1Name = members[idx1].name || "---";
                             p1Detail = `ランク: ${members[idx1].rankName || '-'}`;
                         } else {
                             p1Name = "（空き）";
                         }
 
                         if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
-                            p2Name = members[idx2].name || "P2";
+                            p2Name = members[idx2].name || "---";
                             p2Detail = `ランク: ${members[idx2].rankName || '-'}`;
                         } else {
                             p2Name = "（空き）";
@@ -282,8 +275,8 @@
                     const sm = soloMatches[activeMatch.matchIndex];
                     if (sm) {
                         stageTitle = `個人戦 第 ${activeMatch.matchIndex + 1} 試合`;
-                        p1Name = sm.p1 || "P1";
-                        p2Name = sm.p2 || "P2";
+                        p1Name = sm.p1 || "---";
+                        p2Name = sm.p2 || "---";
                         p1Detail = "個人戦";
                         p2Detail = "個人戦";
                         s1 = sm.s1 || 0;
@@ -291,25 +284,25 @@
                     }
                 }
 
-                document.getElementById('stream-stage-title').innerText = stageTitle;
-                document.getElementById('stream-p1-name').innerText = p1Name;
-                document.getElementById('stream-p2-name').innerText = p2Name;
-                document.getElementById('stream-p1-detail').innerText = p1Detail;
-                document.getElementById('stream-p2-detail').innerText = p2Detail;
-                document.getElementById('stream-s1').innerText = s1;
-                document.getElementById('stream-s2').innerText = s2;
-            } catch(e) {
-                console.error("Render Error:", e);
+                document.getElementById('stream-stage-title').textContent = stageTitle;
+                document.getElementById('stream-p1-name').textContent = p1Name;
+                document.getElementById('stream-p2-name').textContent = p2Name;
+                document.getElementById('stream-p1-detail').textContent = p1Detail;
+                document.getElementById('stream-p2-detail').textContent = p2Detail;
+                document.getElementById('stream-s1').textContent = s1;
+                document.getElementById('stream-s2').textContent = s2;
+            } catch (err) {
+                console.error("データ描画エラー:", err);
             }
         }
 
-        bc.onmessage = function(event) {
-            if (event.data && event.data.type === 'UPDATE_OVERLAY') {
+        bc.onmessage = function(e) {
+            if (e.data && e.data.type === 'UPDATE_OVERLAY') {
                 fetchAndRender();
             }
         };
 
-        window.onload = fetchAndRender;
+        window.addEventListener('DOMContentLoaded', fetchAndRender);
         fetchAndRender();
     </script>
 </body>
