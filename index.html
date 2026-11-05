@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HDK LEAGUE 管理ツール</title>
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
         body { background-color: #0f111a; color: #f0f0f0; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; height: 100vh; box-sizing: border-box; overflow: hidden; }
         .app-container { display: flex; height: 100vh; box-sizing: border-box; }
@@ -333,7 +336,20 @@
     </div>
 
     <script>
-        const bc = new BroadcastChannel('hadaka_league_sync_channel');
+        // Firebase設定 (ご自身のプロジェクト情報に書き換えてください)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const dataRef = db.ref('hadaka_league/master_data');
+
         var members = [];
         var soloParticipants = [];
         var soloMatches = [];
@@ -347,6 +363,7 @@
         var soloArchives = [];
         var tourneyArchives = [];
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
+        var isRemoteUpdating = false;
 
         function getTodayFormatted() {
             var d = new Date();
@@ -379,6 +396,7 @@
         }
 
         function saveAppData() {
+            if (isRemoteUpdating) return;
             var tourneyTypeElem = document.querySelector('input[name="tourney-type"]:checked');
             var bonusModeElem = document.querySelector('input[name="cost-bonus-mode"]:checked');
             var data = {
@@ -406,28 +424,57 @@
                 ptsTeamWin: document.getElementById('pts-team-win') ? document.getElementById('pts-team-win').value : 0
             };
             localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
-            bc.postMessage(data);
+            dataRef.set(data);
         }
 
-        bc.onmessage = function(e) {
-            if (!e.data) return;
-            if (e.data.type === 'REQUEST_SYNC') {
-                saveAppData();
-            } else if (e.data.type === 'UPDATE_ACTIVE_MATCH') {
-                activeStreamMatch = e.data.activeStreamMatch;
-                saveAppData();
-            } else if (e.data.type === 'UPDATE_SCORE_FROM_OVERLAY') {
-                var d = e.data;
-                if (d.mode === 'team' && teamMatches[d.matchIndex] && teamMatches[d.matchIndex].results[d.subIndex]) {
-                    teamMatches[d.matchIndex].results[d.subIndex][d.field] = d.val;
-                    updateTeamBadgeAndRanking(d.matchIndex);
-                } else if (d.mode === 'solo' && soloMatches[d.matchIndex]) {
-                    soloMatches[d.matchIndex][d.field] = d.val;
-                    renderSoloTournamentUI();
+        // Firebaseからのリアルタイムデータ受信監視
+        dataRef.on('value', (snapshot) => {
+            var data = snapshot.val();
+            if (!data) return;
+            isRemoteUpdating = true;
+            try {
+                members = data.members || [];
+                soloParticipants = data.soloParticipants || [];
+                soloMatches = data.soloMatches || [];
+                tourneyParticipants = data.tourneyParticipants || [];
+                tourneyMatches = data.tourneyMatches || {};
+                teams = data.teams || [{ name: "チーム 1", members: { senho: "", jiho: "", fukusho: "", taisho: "" } }];
+                teamParticipants = data.teamParticipants || [];
+                teamMatches = data.teamMatches || [];
+                currentTeamIndex = data.currentTeamIndex || 0;
+                teamArchives = data.teamArchives || [];
+                soloArchives = data.soloArchives || [];
+                tourneyArchives = data.tourneyArchives || [];
+                if (data.activeStreamMatch) activeStreamMatch = data.activeStreamMatch;
+
+                if (document.getElementById('team-league-date')) document.getElementById('team-league-date').value = data.teamLeagueDate || getTodayFormatted();
+                if (data.soloTitle && document.getElementById('solo-title')) document.getElementById('solo-title').value = data.soloTitle;
+                if (document.getElementById('solo-date')) document.getElementById('solo-date').value = data.soloDate || getTodayFormatted();
+                if (data.soloSeason && document.getElementById('solo-season')) document.getElementById('solo-season').value = data.soloSeason;
+                if (data.tourneyTitle && document.getElementById('tourney-title')) document.getElementById('tourney-title').value = data.tourneyTitle;
+                
+                if (data.tourneyType) {
+                    var radio = document.querySelector('input[name="tourney-type"][value="' + data.tourneyType + '"]');
+                    if (radio) radio.checked = true;
                 }
-                saveAppData();
+                if (data.costBonusMode) {
+                    var bRadio = document.querySelector('input[name="cost-bonus-mode"][value="' + data.costBonusMode + '"]');
+                    if (bRadio) bRadio.checked = true;
+                }
+                if (document.getElementById('setting-max-cost')) document.getElementById('setting-max-cost').value = data.maxCost || 20;
+
+                renderMemberList();
+                updateTeamCost();
+                updateSoloParticipantDisplay();
+                updateTourneyParticipantDisplay();
+                updateTeamParticipantDisplay();
+                if (teamMatches.length > 0) renderTeamLeagueUI(); else updateTeamRankingTable();
+                if (soloMatches.length > 0) { renderSoloTournamentUI(); document.getElementById('solo-tournament-card').style.display = 'block'; }
+                if (Object.keys(tourneyMatches).length > 0) { document.getElementById('tourney-display-card').style.display = 'block'; renderTourneyUI(); }
+            } finally {
+                isRemoteUpdating = false;
             }
-        };
+        });
 
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
@@ -448,34 +495,6 @@
                     soloArchives = data.soloArchives || [];
                     tourneyArchives = data.tourneyArchives || [];
                     if (data.activeStreamMatch) activeStreamMatch = data.activeStreamMatch;
-
-                    if (document.getElementById('team-league-date')) document.getElementById('team-league-date').value = data.teamLeagueDate || todayStr;
-                    if (data.soloTitle && document.getElementById('solo-title')) document.getElementById('solo-title').value = data.soloTitle;
-                    if (document.getElementById('solo-date')) document.getElementById('solo-date').value = data.soloDate || todayStr;
-                    if (data.soloSeason && document.getElementById('solo-season')) document.getElementById('solo-season').value = data.soloSeason;
-                    if (data.tourneyTitle && document.getElementById('tourney-title')) document.getElementById('tourney-title').value = data.tourneyTitle;
-                    
-                    if (data.tourneyType) {
-                        var radio = document.querySelector('input[name="tourney-type"][value="' + data.tourneyType + '"]');
-                        if (radio) radio.checked = true;
-                    }
-                    if (data.costBonusMode) {
-                        var bRadio = document.querySelector('input[name="cost-bonus-mode"][value="' + data.costBonusMode + '"]');
-                        if (bRadio) bRadio.checked = true;
-                    }
-                    if (document.getElementById('setting-max-cost')) document.getElementById('setting-max-cost').value = data.maxCost || 20;
-                    if (document.getElementById('cost-platinum') && data.costP !== undefined) document.getElementById('cost-platinum').value = data.costP;
-                    if (document.getElementById('cost-diamond') && data.costD !== undefined) document.getElementById('cost-diamond').value = data.costD;
-                    if (document.getElementById('cost-master') && data.costM !== undefined) document.getElementById('cost-master').value = data.costM;
-                    if (document.getElementById('cost-highmaster') && data.costHM !== undefined) document.getElementById('cost-highmaster').value = data.costHM;
-                    if (document.getElementById('cost-grandmaster') && data.costGM !== undefined) document.getElementById('cost-grandmaster').value = data.costGM;
-                    if (document.getElementById('cost-ultimate') && data.costU !== undefined) document.getElementById('cost-ultimate').value = data.costU;
-                    if (document.getElementById('cost-legend') && data.costL !== undefined) document.getElementById('cost-legend').value = data.costL;
-                    if (document.getElementById('pts-senho') && data.ptsSenho !== undefined) document.getElementById('pts-senho').value = data.ptsSenho;
-                    if (document.getElementById('pts-jiho') && data.ptsJiho !== undefined) document.getElementById('pts-jiho').value = data.ptsJiho;
-                    if (document.getElementById('pts-fukusho') && data.ptsFukusho !== undefined) document.getElementById('pts-fukusho').value = data.ptsFukusho;
-                    if (document.getElementById('pts-taisho') && data.ptsTaisho !== undefined) document.getElementById('pts-taisho').value = data.ptsTaisho;
-                    if (document.getElementById('pts-team-win') && data.ptsTeamWin !== undefined) document.getElementById('pts-team-win').value = data.ptsTeamWin;
                 } catch(e) {}
             } else {
                 members = [
@@ -842,7 +861,7 @@
                     tbody.innerHTML += `<tr><td>${index + 1}</td><td>${m.name}</td><td>${rankSelectHtml + '</select>'}</td><td>${m.cost}</td><td><div class="action-btn-group"><button type="button" class="team-go-btn" onclick="assignToTeam(${index})">チームに編成</button><button type="button" class="delete-btn" onclick="deleteMember(${index})">削除</button></div></td></tr>`;
                 });
             }
-            renderSoloRegistry(); renderTourneyRegistry(); renderTeamRegistry(); updateTeamSelectOptions(); saveAppData();
+            renderSoloRegistry(); renderTourneyRegistry(); renderTeamRegistry(); updateTeamSelectOptions();
         }
 
         function addMember() {
@@ -850,13 +869,13 @@
             var rank = document.getElementById('new-player-rank') ? document.getElementById('new-player-rank').value : '';
             if (!name) { alert('なまえを入力してください。'); return; }
             members.push({ name, rankName: rank, cost: calcCostFromRank(rank) });
-            document.getElementById('new-player-name').value = ''; renderMemberList();
+            document.getElementById('new-player-name').value = ''; renderMemberList(); saveAppData();
         }
 
         function deleteMember(index) {
             members.splice(index, 1);
             teams.forEach(t => ['senho', 'jiho', 'fukusho', 'taisho'].forEach(role => { if (t.members[role] == index) t.members[role] = ""; else if (t.members[role] > index) t.members[role] = t.members[role] - 1; }));
-            renderMemberList(); loadCurrentTeamToUI();
+            renderMemberList(); loadCurrentTeamToUI(); saveAppData();
         }
 
         function shuffleArray(array) {
@@ -1019,7 +1038,6 @@
                 var keys = Object.keys(tourneyMatches).filter(k => k.startsWith('single_r'));
                 keys.forEach(k => tourneyMatches[k].forEach(m => {
                     var maxScore = (m.isFinal || m.isGrandFinal || m.isResetMatch) ? 3 : 2;
-                    // バリデーション補正：マックスを超えていたらクランプする
                     if (m.s1 > maxScore) m.s1 = maxScore;
                     if (m.s2 > maxScore) m.s2 = maxScore;
 
@@ -1288,7 +1306,7 @@
                     if (name && rank && name !== 'リーグ登録名' && isNaN(name)) { members.push({ name, rankName: rank, cost: calcCostFromRank(rank) }); count++; }
                 }
             });
-            renderMemberList(); textarea.value = ''; alert(count + '件のメンバーを取り込みました！');
+            renderMemberList(); textarea.value = ''; alert(count + '件のメンバーを取り込みました！'); saveAppData();
         }
 
         function importCSV(event) {
@@ -1302,7 +1320,7 @@
                         if (name && rank && name !== 'リーグ登録名') { members.push({ name, rankName: rank, cost: calcCostFromRank(rank) }); count++; }
                     }
                 });
-                renderMemberList(); event.target.value = ''; alert(count + '件のメンバーをCSVから取り込みました！');
+                renderMemberList(); event.target.value = ''; alert(count + '件のメンバーをCSVから取り込みました！'); saveAppData();
             };
             reader.readAsText(file);
         }
