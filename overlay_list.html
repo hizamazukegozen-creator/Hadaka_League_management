@@ -172,7 +172,15 @@
         function changeStreamMode(modeVal) {
             activeStreamMatch.mode = modeVal;
             activeStreamMatch.matchIndex = 0;
-            activeStreamMatch.subIndex = (modeVal === 'team') ? 'senho' : 0;
+            if (modeVal === 'team') {
+                activeStreamMatch.subIndex = 'senho';
+            } else if (modeVal === 'tourney') {
+                var keys = Object.keys(tourneyMatches);
+                activeStreamMatch.matchIndex = keys.length > 0 ? keys[0] : 0;
+                activeStreamMatch.subIndex = 0;
+            } else {
+                activeStreamMatch.subIndex = 0;
+            }
             saveMasterData();
             refreshOverlay();
         }
@@ -213,7 +221,7 @@
                         var p1Name = (idx1 !== "" && idx1 !== undefined && members[idx1]) ? members[idx1].name : '未定';
                         var p2Name = (idx2 !== "" && idx2 !== undefined && members[idx2]) ? members[idx2].name : '未定';
 
-                        var isChecked = (activeStreamMatch.matchIndex === mIdx && activeStreamMatch.subIndex === r.key && activeStreamMatch.mode === 'team');
+                        var isChecked = (String(activeStreamMatch.matchIndex) === String(mIdx) && activeStreamMatch.subIndex === r.key && activeStreamMatch.mode === 'team');
 
                         var item = document.createElement('div');
                         item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
@@ -236,7 +244,7 @@
                     return;
                 }
                 soloMatches.forEach(function(sm, smIdx) {
-                    var isChecked = (activeStreamMatch.matchIndex === smIdx && activeStreamMatch.mode === 'solo');
+                    var isChecked = (Number(activeStreamMatch.matchIndex) === Number(smIdx) && activeStreamMatch.mode === 'solo');
                     var item = document.createElement('div');
                     item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
                     item.innerHTML = `
@@ -255,10 +263,10 @@
                 var keys = Object.keys(tourneyMatches);
                 var hasMatches = false;
                 keys.forEach(function(rk) {
-                    tourneyMatches[rk].forEach(function(tm, tmIdx) {
-                        if (tm.p1 && tm.p1 !== '（未定）' && tm.p2 && tm.p2 !== '（未定）') {
+                    if (tourneyMatches[rk]) {
+                        tourneyMatches[rk].forEach(function(tm, tmIdx) {
                             hasMatches = true;
-                            var isChecked = (activeStreamMatch.matchIndex === rk && activeStreamMatch.subIndex === tmIdx && activeStreamMatch.mode === 'tourney');
+                            var isChecked = (String(activeStreamMatch.matchIndex) === String(rk) && Number(activeStreamMatch.subIndex) === Number(tmIdx) && activeStreamMatch.mode === 'tourney');
                             var item = document.createElement('div');
                             item.className = 'stream-card-item' + (isChecked ? ' active-stream' : '');
                             item.innerHTML = `
@@ -272,8 +280,8 @@
                                 </label>
                             `;
                             container.appendChild(item);
-                        }
-                    });
+                        });
+                    }
                 });
                 if (!hasMatches) {
                     container.innerHTML = '<div style="color:#b3f0ff; text-align:center; padding:15px; font-size:0.8rem;">有効なトーナメント対戦がありません</div>';
