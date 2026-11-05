@@ -2,276 +2,193 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDK LEAGUE - メインステージ</title>
+    <title>HDK LEAGUE - Main Overlay</title>
     <style>
-        html, body {
-            background-color: transparent !important;
-            color: #f0f0f0;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        body {
+            background-color: transparent;
+            color: #ffffff;
             width: 1920px;
             height: 1080px;
             overflow: hidden;
             position: relative;
         }
-
-        .stream-main-stage {
+        /* オーバーレイ全体を配置するコンテナ（下部配置などの調整用） */
+        .overlay-container {
             position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1600px;
+            bottom: 40px;
+            left: 96px;
+            width: 1728px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: transparent;
-            padding: 0;
-            box-sizing: border-box;
         }
-
-        .stream-stage-top-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-        }
-
-        /* 1. 最上部：ロゴ */
-        .stream-stage-logo-box {
-            text-align: center;
-            padding: 2px 20px;
-            background: transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0px;
-        }
-
-        .stream-main-logo {
-            font-size: 2.0rem;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
+        /* ステージタイトル・対戦カード名 */
+        .stage-title-box {
+            background: rgba(10, 15, 30, 0.85);
+            border: 2px solid #00e5ff;
+            border-bottom: none;
+            padding: 8px 32px;
+            font-size: 22px;
+            font-weight: bold;
             letter-spacing: 2px;
-            margin: 0;
-            line-height: 1.0;
-            transform: skewX(-7deg);
+            color: #00e5ff;
+            border-radius: 8px 8px 0 0;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        /* メインスコアボード部分 */
+        .scoreboard-main {
             display: flex;
-            gap: 0.25em;
-        }
-
-        .logo-hdk {
-            color: #ff1a40;
-            text-shadow: 
-                0 0 8px rgba(255, 26, 64, 0.9),
-                0 0 20px rgba(255, 26, 64, 0.7),
-                2px 2px 2px rgba(0, 0, 0, 0.9);
-        }
-
-        .logo-league {
-            color: #00d9ff;
-            text-shadow: 
-                0 0 8px rgba(0, 217, 255, 0.9),
-                0 0 20px rgba(0, 217, 255, 0.7),
-                2px 2px 2px rgba(0, 0, 0, 0.9);
-        }
-
-        .stream-sub-logo {
-            font-size: 0.65rem;
-            font-weight: 800;
-            font-style: italic;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #b3f0ff;
-            margin-top: 2px;
-            text-shadow: 
-                0 0 6px rgba(179, 240, 255, 0.8),
-                1px 1px 2px rgba(0, 0, 0, 0.9);
-            transform: skewX(-7deg);
-        }
-
-        /* 2. マッチタイトル */
-        .stream-stage-match-title {
-            text-align: center;
-            font-size: 0.95rem;
-            color: #ffcc00;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-            background: rgba(20, 23, 36, 0.9);
-            padding: 3px 16px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 204, 0, 0.3);
-            margin-top: 2px;
-        }
-
-        /* 3. VS＆カードエリア */
-        .stream-versus-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             width: 100%;
-            max-width: 1400px;
-            gap: 160px;
-            margin-top: 6px;
-        }
-
-        .stream-player-card {
-            flex: 1;
-            background: rgba(14, 18, 32, 0.95);
-            border: 2px solid #00d9ff;
-            border-radius: 8px;
-            padding: 8px 16px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            backdrop-filter: blur(4px);
-        }
-
-        .stream-player-card.p1-card { border-left: 6px solid #00d9ff; }
-        .stream-player-card.p2-card { border-right: 6px solid #ff1a40; }
-
-        .stream-player-name {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 2px;
-            text-shadow: 0 2px 6px rgba(0, 217, 255, 0.4);
+            height: 110px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 3px solid #00e5ff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
-
-        .stream-player-detail {
-            font-size: 0.75rem;
-            color: #b3f0ff;
-            font-weight: 500;
+        /* プレイヤー1 側 */
+        .player-side.p1 {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.2), transparent);
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
         }
-
-        .stream-vs-badge {
+        /* プレイヤー2 側 */
+        .player-side.p2 {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 30px;
+            background: linear-gradient(270deg, rgba(0, 229, 255, 0.2), transparent);
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            text-align: right;
+        }
+        .player-info {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            flex-shrink: 0;
         }
-
-        .stream-vs-text {
-            font-size: 1.2rem;
-            font-style: italic;
+        .player-name {
+            font-size: 36px;
             font-weight: 900;
-            color: #ff1a40;
-            text-shadow: 0 0 8px rgba(255, 26, 64, 0.9), 0 2px 4px rgba(0,0,0,0.9);
-            line-height: 1;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-
-        .stream-score-display {
+        .player-detail {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        /* スコア表示部 */
+                    .score-center {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 10px;
-            background: rgba(13, 16, 26, 0.95);
-            padding: 4px 14px;
-            border-radius: 10px;
-            border: 1.5px solid #3f466b;
-            font-size: 1.3rem;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+            justify-content: center;
+            width: 180px;
+            background: rgba(0, 0, 0, 0.4);
+            font-size: 54px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: #f8fafc;
+            text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
         }
-
-        .stream-score-num {
-            color: #ffcc00;
-            text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
-            min-width: 24px;
+        .score-num {
+            min-width: 50px;
             text-align: center;
+        }
+        .score-divider {
+            color: #64748b;
+            margin: 0 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="stream-main-stage">
-        <div class="stream-stage-top-box">
-            <!-- 1. 最上部：HDK LEAGUE ロゴ -->
-            <div class="stream-stage-logo-box">
-                <h1 class="stream-main-logo">
-                    <span class="logo-hdk">HDK</span>
-                    <span class="logo-league">LEAGUE</span>
-                </h1>
-                <div class="stream-sub-logo">ANGER MANAGEMENT</div>
+    <div class="overlay-container">
+        <!-- カードタイトル / リーグ情報 -->
+        <div id="stream-stage-title" class="stage-title-box">FEATURED MATCH</div>
+        
+        <!-- スコアボード本体 -->
+        <div class="scoreboard-main">
+            <!-- P1 -->
+            <div class="player-side p1">
+                <div class="player-info">
+                    <div id="stream-p1-name" class="player-name">---</div>
+                    <div id="stream-p1-detail" class="player-detail">ランク: -</div>
+                </div>
             </div>
 
-            <!-- 2. タイトル -->
-            <div class="stream-stage-match-title" id="stream-stage-title">FEATURED MATCH</div>
-            
-            <!-- 3. VS ＆ プレイヤーカード -->
-            <div class="stream-versus-box">
-                <div class="stream-player-card p1-card">
-                    <div class="stream-player-name" id="stream-p1-name">---</div>
-                    <div class="stream-player-detail" id="stream-p1-detail">---</div>
-                </div>
-                
-                <div class="stream-vs-badge">
-                    <div class="stream-vs-text">VS</div>
-                    <div class="stream-score-display">
-                        <span class="stream-score-num" id="stream-s1">0</span>
-                        <span style="color: #888;">-</span>
-                        <span class="stream-score-num" id="stream-s2">0</span>
-                    </div>
-                </div>
+            <!-- スコアセンター -->
+            <div class="score-center">
+                <span id="stream-s1" class="score-num">0</span>
+                <span class="score-divider">-</span>
+                <span id="stream-s2" class="score-num">0</span>
+            </div>
 
-                <div class="stream-player-card p2-card">
-                    <div class="stream-player-name" id="stream-p2-name">---</div>
-                    <div class="stream-player-detail" id="stream-p2-detail">---</div>
+            <!-- P2 -->
+            <div class="player-side p2">
+                <div class="player-info">
+                    <div id="stream-p2-name" class="player-name">---</div>
+                    <div id="stream-p2-detail" class="player-detail">ランク: -</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // OBS環境でも確実に動くデータ取得処理
+        // BroadcastChannel によるタブ間・ソース間リアルタイム通信
+        const bc = new BroadcastChannel('hadaka_league_sync_channel');
+
         function fetchAndRender() {
-            var json = localStorage.getItem('hadaka_league_master_data');
+            const json = localStorage.getItem('hadaka_league_master_data');
             if (!json) return;
 
             try {
-                var data = JSON.parse(json);
-                var members = data.members || [];
-                var teamMatches = data.teamMatches || [];
-                var soloMatches = data.soloMatches || [];
-                var tourneyMatches = data.tourneyMatches || {};
-                var activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
+                const data = JSON.parse(json);
+                const members = data.members || [];
+                const teamMatches = data.teamMatches || [];
+                const soloMatches = data.soloMatches || [];
+                const tourneyMatches = data.tourneyMatches || {};
+                const activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
-                var p1Name = "---";
-                var p2Name = "---";
-                var p1Detail = "ランク: -";
-                var p2Detail = "ランク: -";
-                var s1 = 0;
-                var s2 = 0;
-                var stageTitle = "FEATURED MATCH";
+                let p1Name = "---";
+                let p2Name = "---";
+                let p1Detail = "ランク: -";
+                let p2Detail = "ランク: -";
+                let s1 = 0;
+                let s2 = 0;
+                let stageTitle = "FEATURED MATCH";
 
                 if (activeMatch.mode === 'team') {
-                    var m = teamMatches[activeMatch.matchIndex];
+                    const m = teamMatches[activeMatch.matchIndex];
                     if (m) {
-                        stageTitle = m.t1Name + " vs " + m.t2Name;
-                        var rKey = activeMatch.subIndex;
-                        var roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
-                        stageTitle += " 【" + (roleLabels[rKey] || rKey) + "】";
+                        stageTitle = `${m.t1Name || 'チームA'} vs ${m.t2Name || 'チームB'}`;
+                        const rKey = activeMatch.subIndex;
+                        const roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
+                        stageTitle += ` 【${roleLabels[rKey] || rKey}】`;
 
-                        var idx1 = m.order1 ? m.order1[rKey] : "";
-                        var idx2 = m.order2 ? m.order2[rKey] : "";
+                        const idx1 = m.order1 ? m.order1[rKey] : "";
+                        const idx2 = m.order2 ? m.order2[rKey] : "";
 
                         if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
                             p1Name = members[idx1].name || "P1";
-                            p1Detail = "ランク: " + (members[idx1].rankName || "-");
+                            p1Detail = `ランク: ${members[idx1].rankName || '-'}`;
                         } else {
                             p1Name = "（未定）";
                         }
 
                         if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
                             p2Name = members[idx2].name || "P2";
-                            p2Detail = "ランク: " + (members[idx2].rankName || "-");
+                            p2Detail = `ランク: ${members[idx2].rankName || '-'}`;
                         } else {
                             p2Name = "（未定）";
                         }
@@ -282,9 +199,9 @@
                         }
                     }
                 } else if (activeMatch.mode === 'solo') {
-                    var sm = soloMatches[activeMatch.matchIndex];
+                    const sm = soloMatches[activeMatch.matchIndex];
                     if (sm) {
-                        stageTitle = "個人戦 第 " + (activeMatch.matchIndex + 1) + " 試合";
+                        stageTitle = `個人戦 第 ${activeMatch.matchIndex + 1} 試合`;
                         p1Name = sm.p1 || "P1";
                         p2Name = sm.p2 || "P2";
                         p1Detail = "個人戦";
@@ -292,9 +209,12 @@
                         s1 = sm.s1 || 0;
                         s2 = sm.s2 || 0;
                     }
+                } else if (activeMatch.mode === 'tourney') {
+                    stageTitle = "トーナメント戦";
+                    // 必要に応じてトーナメント側の表示ロジックをここに拡張可能
                 }
 
-                // DOMへの反映処理
+                // DOMへの反映
                 document.getElementById('stream-stage-title').innerText = stageTitle;
                 document.getElementById('stream-p1-name').innerText = p1Name;
                 document.getElementById('stream-p2-name').innerText = p2Name;
@@ -303,16 +223,19 @@
                 document.getElementById('stream-s1').innerText = s1;
                 document.getElementById('stream-s2').innerText = s2;
             } catch(e) {
-                console.error("Data parse error:", e);
+                console.error("Overlay render error:", e);
             }
         }
 
-        // ページ読み込み完了時 ＆ 300msごとに強制リフレッシュ
-        window.onload = function() {
-            fetchAndRender();
-            setInterval(fetchAndRender, 300);
+        // BroadcastChannel から更新通知を受け取った瞬間に再描画
+        bc.onmessage = function(event) {
+            if (event.data && event.data.type === 'UPDATE_OVERLAY') {
+                fetchAndRender();
+            }
         };
-        // 直ちに一回実行
+
+        // 初回ロード時実行
+        window.onload = fetchAndRender;
         fetchAndRender();
     </script>
 </body>
