@@ -18,7 +18,7 @@
             overflow: hidden;
             position: relative;
         }
-        /* オーバーレイ全体の配置コンテナ（下部中央） */
+        /* オーバーレイ配置（下部中央） */
         .overlay-container {
             position: absolute;
             bottom: 40px;
@@ -28,9 +28,9 @@
             flex-direction: column;
             align-items: center;
         }
-        /* ステージタイトル・対戦カード名 */
+        /* ステージタイトル */
         .stage-title-box {
-            background: rgba(10, 15, 30, 0.9);
+            background: rgba(10, 15, 30, 0.95);
             border: 2px solid #00e5ff;
             border-bottom: none;
             padding: 10px 40px;
@@ -41,7 +41,7 @@
             border-radius: 10px 10px 0 0;
             text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
         }
-        /* メインスコアボード部分 */
+        /* スコアボード本体 */
         .scoreboard-main {
             display: flex;
             width: 100%;
@@ -52,7 +52,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
             overflow: hidden;
         }
-        /* プレイヤー1 側 */
+        /* P1 側 */
         .player-side.p1 {
             flex: 1;
             display: flex;
@@ -61,7 +61,7 @@
             background: linear-gradient(90deg, rgba(239, 68, 68, 0.25), transparent);
             border-right: 2px solid rgba(255, 255, 255, 0.1);
         }
-        /* プレイヤー2 側 */
+        /* P2 側 */
         .player-side.p2 {
             flex: 1;
             display: flex;
@@ -88,7 +88,7 @@
             color: #94a3b8;
             margin-top: 4px;
         }
-        /* スコア中央部 */
+        /* スコア表示部 */
         .score-center {
             display: flex;
             align-items: center;
@@ -114,30 +114,24 @@
 <body>
 
     <div class="overlay-container">
-        <!-- カードタイトル / 対戦情報 -->
         <div id="stream-stage-title" class="stage-title-box">FEATURED MATCH</div>
-        
-        <!-- スコアボード本体 -->
         <div class="scoreboard-main">
-            <!-- P1 -->
             <div class="player-side p1">
                 <div class="player-info">
-                    <div id="stream-p1-name" class="player-name">---</div>
+                    <div id="stream-p1-name" class="player-name">PLAYER 1</div>
                     <div id="stream-p1-detail" class="player-detail">ランク: -</div>
                 </div>
             </div>
 
-            <!-- スコアセンター -->
             <div class="score-center">
                 <span id="stream-s1" class="score-num">0</span>
                 <span class="score-divider">-</span>
                 <span id="stream-s2" class="score-num">0</span>
             </div>
 
-            <!-- P2 -->
             <div class="player-side p2">
                 <div class="player-info">
-                    <div id="stream-p2-name" class="player-name">---</div>
+                    <div id="stream-p2-name" class="player-name">PLAYER 2</div>
                     <div id="stream-p2-detail" class="player-detail">ランク: -</div>
                 </div>
             </div>
@@ -145,95 +139,118 @@
     </div>
 
     <script>
-        // BroadcastChannel によるタブ間・OBSソース間の即時リアルタイム通信
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
 
-        function fetchAndRender() {
-            const json = localStorage.getItem('hadaka_league_master_data');
-            if (!json) return;
-
-            try {
-                const data = JSON.parse(json);
-                const members = data.members || [];
-                const teamMatches = data.teamMatches || [];
-                const soloMatches = data.soloMatches || [];
-                const activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
-
-                let p1Name = "---";
-                let p2Name = "---";
-                let p1Detail = "ランク: -";
-                let p2Detail = "ランク: -";
-                let s1 = 0;
-                let s2 = 0;
-                let stageTitle = "FEATURED MATCH";
-
-                if (activeMatch.mode === 'team') {
-                    const m = teamMatches[activeMatch.matchIndex];
-                    if (m) {
-                        stageTitle = `${m.t1Name || 'チームA'} vs ${m.t2Name || 'チームB'}`;
-                        const rKey = activeMatch.subIndex;
-                        const roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
-                        stageTitle += ` 【${roleLabels[rKey] || rKey}】`;
-
-                        const idx1 = m.order1 ? m.order1[rKey] : "";
-                        const idx2 = m.order2 ? m.order2[rKey] : "";
-
-                        if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
-                            p1Name = members[idx1].name || "P1";
-                            p1Detail = `ランク: ${members[idx1].rankName || '-'}`;
-                        } else {
-                            p1Name = "（未定）";
-                        }
-
-                        if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
-                            p2Name = members[idx2].name || "P2";
-                            p2Detail = `ランク: ${members[idx2].rankName || '-'}`;
-                        } else {
-                            p2Name = "（未定）";
-                        }
-
-                        if (m.results && m.results[rKey]) {
-                            s1 = m.results[rKey].s1 || 0;
-                            s2 = m.results[rKey].s2 || 0;
-                        }
-                    }
-                } else if (activeMatch.mode === 'solo') {
-                    const sm = soloMatches[activeMatch.matchIndex];
-                    if (sm) {
-                        stageTitle = `個人戦 第 ${activeMatch.matchIndex + 1} 試合`;
-                        p1Name = sm.p1 || "P1";
-                        p2Name = sm.p2 || "P2";
-                        p1Detail = "個人戦";
-                        p2Detail = "個人戦";
-                        s1 = sm.s1 || 0;
-                        s2 = sm.s2 || 0;
-                    }
-                } else if (activeMatch.mode === 'tourney') {
-                    stageTitle = "トーナメント戦";
+        // デフォルトデータ（データが存在しない場合のフォールバック）
+        const defaultData = {
+            members: [
+                { name: "プレイヤー1", rankName: "Master" },
+                { name: "プレイヤー2", rankName: "Diamond" },
+                { name: "プレイヤー3", rankName: "Platinum" },
+                { name: "プレイヤー4", rankName: "Gold" }
+            ],
+            activeStreamMatch: { mode: 'team', matchIndex: 0, subIndex: 'senho' },
+            teamMatches: [
+                {
+                    t1Name: "チームA", t2Name: "チームB",
+                    order1: { senho: 0, jiho: 1 },
+                    order2: { senho: 2, jiho: 3 },
+                    results: { senho: { s1: 0, s2: 0 } }
                 }
+            ],
+            soloMatches: [
+                { p1: "PLAYER 1", p2: "PLAYER 2", s1: 0, s2: 0 }
+            ]
+        };
 
-                // DOMへの反映
-                document.getElementById('stream-stage-title').innerText = stageTitle;
-                document.getElementById('stream-p1-name').innerText = p1Name;
-                document.getElementById('stream-p2-name').innerText = p2Name;
-                document.getElementById('stream-p1-detail').innerText = p1Detail;
-                document.getElementById('stream-p2-detail').innerText = p2Detail;
-                document.getElementById('stream-s1').innerText = s1;
-                document.getElementById('stream-s2').innerText = s2;
-            } catch(e) {
-                console.error("Overlay render error:", e);
+        function fetchAndRender() {
+            let data = defaultData;
+            const json = localStorage.getItem('hadaka_league_master_data');
+            
+            if (json) {
+                try {
+                    data = JSON.parse(json);
+                } catch(e) {
+                    console.error("Data parse error:", e);
+                }
             }
+
+            const members = data.members || [];
+            const teamMatches = data.teamMatches || [];
+            const soloMatches = data.soloMatches || [];
+            const activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
+
+            let p1Name = "---";
+            let p2Name = "---";
+            let p1Detail = "ランク: -";
+            let p2Detail = "ランク: -";
+            let s1 = 0;
+            let s2 = 0;
+            let stageTitle = "FEATURED MATCH";
+
+            if (activeMatch.mode === 'team') {
+                const m = teamMatches[activeMatch.matchIndex];
+                if (m) {
+                    stageTitle = `${m.t1Name || 'チームA'} vs ${m.t2Name || 'チームB'}`;
+                    const rKey = activeMatch.subIndex || 'senho';
+                    const roleLabels = { senho: '先鋒', jiho: '次鋒', fukusho: '副将', taisho: '大将' };
+                    stageTitle += ` 【${roleLabels[rKey] || rKey}】`;
+
+                    const idx1 = m.order1 ? m.order1[rKey] : "";
+                    const idx2 = m.order2 ? m.order2[rKey] : "";
+
+                    if (idx1 !== "" && idx1 !== undefined && members[idx1]) {
+                        p1Name = members[idx1].name || "P1";
+                        p1Detail = `ランク: ${members[idx1].rankName || '-'}`;
+                    } else {
+                        p1Name = "（未定）";
+                    }
+
+                    if (idx2 !== "" && idx2 !== undefined && members[idx2]) {
+                        p2Name = members[idx2].name || "P2";
+                        p2Detail = `ランク: ${members[idx2].rankName || '-'}`;
+                    } else {
+                        p2Name = "（未定）";
+                    }
+
+                    if (m.results && m.results[rKey]) {
+                        s1 = m.results[rKey].s1 || 0;
+                        s2 = m.results[rKey].s2 || 0;
+                    }
+                }
+            } else if (activeMatch.mode === 'solo') {
+                const sm = soloMatches[activeMatch.matchIndex];
+                if (sm) {
+                    stageTitle = `個人戦 第 ${activeMatch.matchIndex + 1} 試合`;
+                    p1Name = sm.p1 || "P1";
+                    p2Name = sm.p2 || "P2";
+                    p1Detail = "個人戦";
+                    p2Detail = "個人戦";
+                    s1 = sm.s1 || 0;
+                    s2 = sm.s2 || 0;
+                }
+            } else if (activeMatch.mode === 'tourney') {
+                stageTitle = "トーナメント戦";
+            }
+
+            // DOMへ反映
+            document.getElementById('stream-stage-title').innerText = stageTitle;
+            document.getElementById('stream-p1-name').innerText = p1Name;
+            document.getElementById('stream-p2-name').innerText = p2Name;
+            document.getElementById('stream-p1-detail').innerText = p1Detail;
+            document.getElementById('stream-p2-detail').innerText = p2Detail;
+            document.getElementById('stream-s1').innerText = s1;
+            document.getElementById('stream-s2').innerText = s2;
         }
 
-        // 管理画面側から BroadcastChannel で通知を受け取った瞬間に再描画
         bc.onmessage = function(event) {
             if (event.data && event.data.type === 'UPDATE_OVERLAY') {
                 fetchAndRender();
             }
         };
 
-        // 初期ロード時実行
         window.onload = fetchAndRender;
+        document.addEventListener('DOMContentLoaded', fetchAndRender);
         fetchAndRender();
     </script>
 </body>
