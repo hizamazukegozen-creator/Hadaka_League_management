@@ -3378,6 +3378,27 @@
                 document.getElementById('tourney-display-card').style.display = 'block';
                 renderTourneyUI();
             }
+
+            // オーバーレイ側等でのスコア変更を管理画面側へ自動反映させる同期ループ
+            setInterval(function() {
+                var json = localStorage.getItem('hadaka_league_master_data');
+                if (json) {
+                    try {
+                        var data = JSON.parse(json);
+                        teamMatches = data.teamMatches || teamMatches;
+                        soloMatches = data.soloMatches || soloMatches;
+                        tourneyMatches = data.tourneyMatches || tourneyMatches;
+                        
+                        if (document.getElementById('tab-league-team').classList.contains('active')) {
+                            updateTeamRankingTable();
+                        } else if (document.getElementById('tab-league-solo').classList.contains('active')) {
+                            renderSoloTournamentUI();
+                        } else if (document.getElementById('tab-tournament').classList.contains('active')) {
+                            renderTourneyUI();
+                        }
+                    } catch(e) {}
+                }
+            }, 500);
         };
     </script>
 </body>

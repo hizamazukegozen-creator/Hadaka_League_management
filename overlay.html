@@ -184,20 +184,51 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: rgba(13, 16, 26, 0.95);
-            padding: 6px 16px;
+            padding: 6px 12px;
             border-radius: 12px;
             border: 1.5px solid #3f466b;
             font-size: 1.4rem;
             font-weight: bold;
-            letter-spacing: 3px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.7);
         }
 
         .stream-score-num {
             color: #ffcc00;
             text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .score-btn {
+            background: #2a2e45;
+            color: #00d9ff;
+            border: 1px solid #3f466b;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .score-btn:hover {
+            background: #00d9ff;
+            color: #000;
+        }
+
+        .score-btn.btn-p2 {
+            color: #ff1a40;
+        }
+
+        .score-btn.btn-p2:hover {
+            background: #ff1a40;
+            color: #fff;
         }
 
         .stream-side-panel {
@@ -320,9 +351,13 @@
                     <div class="stream-vs-badge">
                         <div class="stream-vs-text">VS</div>
                         <div class="stream-score-display">
+                            <button class="score-btn" onclick="addScore(1, -1)">-</button>
                             <span class="stream-score-num" id="stream-s1">0</span>
-                            <span style="color: #888;">-</span>
+                            <button class="score-btn" onclick="addScore(1, 1)">+</button>
+                            <span style="color: #888; margin: 0 4px;">-</span>
+                            <button class="score-btn btn-p2" onclick="addScore(2, -1)">-</button>
                             <span class="stream-score-num" id="stream-s2">0</span>
+                            <button class="score-btn btn-p2" onclick="addScore(2, 1)">+</button>
                         </div>
                     </div>
 
@@ -354,7 +389,6 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
-        // データの読み込み
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (json) {
@@ -371,31 +405,91 @@
             }
         }
 
+        function saveMasterData() {
+            var json = localStorage.getItem('hadaka_league_master_data');
+            var data = json ? JSON.parse(json) : {};
+            data.members = members;
+            data.teamMatches = teamMatches;
+            data.soloMatches = soloMatches;
+            data.tourneyMatches = tourneyMatches;
+            data.activeStreamMatch = activeStreamMatch;
+            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+        }
+
         function refreshOverlay() {
             loadAppData();
             renderStreamCardList();
             updateStreamStageDisplay();
         }
 
+        // オーバーレイ側からスコアを加減算して更新し、ストレージ経由でindexへ即時反映
+        function addScore(playerNum, delta) {
+            loadAppData();
+
+            if (activeStreamMatch.mode === 'team') {
+                var m = teamMatches[activeStreamMatch.matchIndex];
+                if (m) {
+                    if (!m.results) m.results = {};
+                    var rKey = activeStreamMatch.subIndex;
+                    if (!m.results[rKey]) m.results[rKey] = { s1: 0, s2: 0, winner: 0 };
+
+                    if (playerNum === 1) {
+                        m.results[rKey].s1 = Math.max(0, Math.min(2, (m.results[rKey].s1 || 0) + delta));
+                    } else {
+                        m.results[rKey].s2 = Math.max(0, Math.min(2, (m.results[rKey].s2 || 0) + delta));
+                    }
+
+                    // 勝者判定の自動更新
+                    if (m.results[rKey].s1 === 2 && m.results[rKey].s2 < 2) {
+                        m.results[rKey].winner = 1;
+                    } else if (m.results[rKey].s2 === 2 && m.results[rKey].s1 < 2) {
+                        m.results[rKey].winner = 2;
+                    } else {
+                        m.results[rKey].winner = 0;
+                    }
+                }
+            } else if (activeStreamMatch.mode === 'solo') {
+                var sm = soloMatches[activeStreamMatch.matchIndex];
+                if (sm) {
+                    if (playerNum === 1) {
+                        sm.s1 = Math.max(0, Math.min(2, (sm.s1 || 0) + delta));
+                    } else {
+                        sm.s2 = Math.max(0, Math.min(2, (sm.s2 || 0) + delta));
+                    }
+                }
+            } else if (activeStreamMatch.mode === 'tourney') {
+                var rk = activeStreamMatch.matchIndex;
+                var tmIdx = activeStreamMatch.subIndex;
+                if (tourneyMatches[rk] && tourneyMatches[rk][tmIdx]) {
+                    var tm = tourneyMatches[rk][tmIdx];
+                    var isFinalRound = tm.isFinal || tm.isGrandFinal || tm.isResetMatch;
+                    var maxScore = isFinalRound ? 3 : 2;
+
+                    if (playerNum === 1) {
+                        tm.s1 = Math.max(0, Math.min(maxScore, (tm.s1 || 0) + delta));
+                    } else {
+                        tm.s2 = Math.max(0, Math.min(maxScore, (tm.s2 || 0) + delta));
+                    }
+                }
+            }
+
+            saveMasterData();
+            refreshOverlay();
+        }
+
         function changeStreamMode(modeVal) {
             activeStreamMatch.mode = modeVal;
             activeStreamMatch.matchIndex = 0;
             activeStreamMatch.subIndex = (modeVal === 'team') ? 'senho' : 0;
-            saveAndReflect();
+            saveMasterData();
+            refreshOverlay();
         }
 
         function selectStreamMatch(mode, mIdx, subIdx) {
             activeStreamMatch.mode = mode;
             activeStreamMatch.matchIndex = mIdx;
             activeStreamMatch.subIndex = subIdx;
-            saveAndReflect();
-        }
-
-        function saveAndReflect() {
-            var json = localStorage.getItem('hadaka_league_master_data');
-            var data = json ? JSON.parse(json) : {};
-            data.activeStreamMatch = activeStreamMatch;
-            localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+            saveMasterData();
             refreshOverlay();
         }
 
@@ -581,18 +675,14 @@
 
         window.onload = function() {
             refreshOverlay();
-            
-            // ローカルストレージの変更イベント（他タブ変更時）
             window.addEventListener('storage', function(e) {
                 if (e.key === 'hadaka_league_master_data') {
                     refreshOverlay();
                 }
             });
-
-            // OBS側で確実に動作させるための定時ポーリング（200ms）
             setInterval(function() {
                 refreshOverlay();
-            }, 200);
+            }, 300);
         };
     </script>
 </body>
