@@ -71,14 +71,19 @@
                 teamMatches.forEach((m, mIdx) => {
                     ['senho', 'jiho', 'fukusho', 'taisho'].forEach(rKey => {
                         var label = rKey === 'senho' ? '先鋒' : rKey === 'jiho' ? '次鋒' : rKey === 'fukusho' ? '副将' : '大将';
+                        var idx1 = m.order1 ? m.order1[rKey] : "";
+                        var idx2 = m.order2 ? m.order2[rKey] : "";
+                        var p1Name = (idx1 !== "" && members[idx1]) ? members[idx1].name : "選手1";
+                        var p2Name = (idx2 !== "" && members[idx2]) ? members[idx2].name : "選手2";
                         var res = m.results && m.results[rKey] ? m.results[rKey] : { s1: 0, s2: 0 };
                         var isActive = (activeStreamMatch.mode === 'team' && activeStreamMatch.matchIndex === mIdx && activeStreamMatch.subIndex === rKey);
+
                         html += `<div class="match-card ${isActive ? 'is-active' : ''}">
                             <div class="match-header"><span>${m.t1Name} vs ${m.t2Name} 【${label}】</span>
                             <button class="stage-select-btn ${isActive ? 'active' : ''}" onclick="setActiveMatch('team', ${mIdx}, '${rKey}')">${isActive ? '📺 配信中' : '📺 メインに表示'}</button></div>
-                            <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p1-badge">1P</span><span class="player-name">選手1</span></div>
+                            <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p1-badge">1P</span><span class="player-name">${p1Name}</span></div>
                             <div class="score-control"><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's1', -1)">-</button><span class="score-val">${res.s1}</span><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's1', 1)">+</button></div></div>
-                            <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p2-badge">2P</span><span class="player-name">選手2</span></div>
+                            <div class="player-row"><div style="display:flex; gap:8px; align-items:center;"><span class="side-badge p2-badge">2P</span><span class="player-name">${p2Name}</span></div>
                             <div class="score-control"><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's2', -1)">-</button><span class="score-val">${res.s2}</span><button class="score-btn" onclick="modifyScore('team', ${mIdx}, '${rKey}', 's2', 1)">+</button></div></div>
                         </div>`;
                     });

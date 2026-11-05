@@ -45,14 +45,6 @@
         .team-tab-btn.active { background-color: #00ffcc; color: #0f111a; border-color: #00ffcc; }
         .add-team-btn { background-color: #ff4655; color: #fff; border: none; padding: 8px 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-left: auto; }
         .delete-team-btn { background-color: #2a2e45; color: #ff808b; border: 1px solid #ff4655; padding: 6px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
-        .tournament-wrapper { display: flex; gap: 25px; overflow-x: auto; padding: 20px 10px; align-items: flex-start; }
-        .bracket-column { display: flex; flex-direction: column; gap: 15px; min-width: 220px; }
-        .bracket-column h4 { color: #00ffcc; text-align: center; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #3f466b; padding-bottom: 6px; font-size: 0.95rem; }
-        .bracket-match { background: #141724; border: 1px solid #3f466b; border-radius: 6px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
-        .bracket-player { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #0f111a; border-radius: 4px; margin-bottom: 4px; font-size: 0.9rem; }
-        .bracket-player.winner { color: #00ffcc; font-weight: bold; border: 1px solid #00ffcc; background: #102624; }
-        .bracket-player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px; }
-        .bracket-score-input { width: 36px; text-align: center; background: #1a1d2d; border: 1px solid #3f466b; color: #fff; padding: 3px 4px; border-radius: 4px; font-size: 0.85rem; }
         .tournament-entry-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
         .tournament-entry-table th, .tournament-entry-table td { border: 1px solid #2a2e45; padding: 8px 12px; text-align: left; }
         .tournament-entry-table th { background-color: #10121b; color: #a0a6cc; }
@@ -323,19 +315,22 @@
             var payload = { stageTitle: "--- vs ---", p1Name: "---", p2Name: "---", p1Detail: "ランク: -", p2Detail: "ランク: -", s1: 0, s2: 0 };
             if (activeStreamMatch.mode === 'team' && teamMatches[activeStreamMatch.matchIndex]) {
                 var m = teamMatches[activeStreamMatch.matchIndex], rKey = activeStreamMatch.subIndex;
-                payload.stageTitle = `${m.t1Name} vs ${m.t2Name} 【${rKey === 'senho'?'先鋒':rKey === 'jiho'?'次鋒':rKey === 'fukusho'?'副将':'大将'}】`;
+                var label = rKey === 'senho' ? '先鋒' : rKey === 'jiho' ? '次鋒' : rKey === 'fukusho' ? '副将' : '大将';
+                payload.stageTitle = `${m.t1Name} vs ${m.t2Name} 【${label}】`;
                 var idx1 = m.order1 ? m.order1[rKey] : "", idx2 = m.order2 ? m.order2[rKey] : "";
                 var m1 = (idx1 !== "" && members[idx1]) ? members[idx1] : null;
                 var m2 = (idx2 !== "" && members[idx2]) ? members[idx2] : null;
                 payload.p1Name = m1 ? m1.name : "（未定）"; payload.p2Name = m2 ? m2.name : "（未定）";
+                payload.p1Detail = m1 ? `ランク: ${m1.rankName}` : "ランク: -";
+                payload.p2Detail = m2 ? `ランク: ${m2.rankName}` : "ランク: -";
                 if (m.results && m.results[rKey]) { payload.s1 = m.results[rKey].s1 || 0; payload.s2 = m.results[rKey].s2 || 0; }
             } else if (activeStreamMatch.mode === 'solo' && soloMatches[activeStreamMatch.matchIndex]) {
                 var m = soloMatches[activeStreamMatch.matchIndex];
                 payload.stageTitle = `個人戦 第 ${activeStreamMatch.matchIndex + 1} 試合`;
-                payload.p1Name = m.p1; payload.p2Name = m.p2; payload.s1 = m.s1 || 0; payload.s2 = m.s2 || 0;
+                payload.p1Name = m.p1; payload.p2Name = m.p2; payload.p1Detail = "個人戦"; payload.p2Detail = "個人戦"; payload.s1 = m.s1 || 0; payload.s2 = m.s2 || 0;
             } else if (activeStreamMatch.mode === 'tourney' && tourneyMatches[activeStreamMatch.subIndex]) {
                 var m = tourneyMatches[activeStreamMatch.subIndex][activeStreamMatch.matchIndex];
-                if (m) { payload.stageTitle = `[${activeStreamMatch.subIndex}] 試合`; payload.p1Name = m.p1; payload.p2Name = m.p2; payload.s1 = m.s1 || 0; payload.s2 = m.s2 || 0; }
+                if (m) { payload.stageTitle = `[${activeStreamMatch.subIndex}] 試合`; payload.p1Name = m.p1; payload.p2Name = m.p2; payload.p1Detail = "トーナメント"; payload.p2Detail = "トーナメント"; payload.s1 = m.s1 || 0; payload.s2 = m.s2 || 0; }
             }
             return payload;
         }
