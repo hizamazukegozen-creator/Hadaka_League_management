@@ -18,7 +18,7 @@
             overflow: hidden;
             position: relative;
         }
-        /* オーバーレイ全体を配置するコンテナ（下部配置などの調整用） */
+        /* オーバーレイ全体の配置コンテナ（下部中央） */
         .overlay-container {
             position: absolute;
             bottom: 40px;
@@ -30,22 +30,22 @@
         }
         /* ステージタイトル・対戦カード名 */
         .stage-title-box {
-            background: rgba(10, 15, 30, 0.85);
+            background: rgba(10, 15, 30, 0.9);
             border: 2px solid #00e5ff;
             border-bottom: none;
-            padding: 8px 32px;
-            font-size: 22px;
+            padding: 10px 40px;
+            font-size: 24px;
             font-weight: bold;
             letter-spacing: 2px;
             color: #00e5ff;
-            border-radius: 8px 8px 0 0;
+            border-radius: 10px 10px 0 0;
             text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
         }
         /* メインスコアボード部分 */
         .scoreboard-main {
             display: flex;
             width: 100%;
-            height: 110px;
+            height: 120px;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
             border: 3px solid #00e5ff;
             border-radius: 12px;
@@ -57,8 +57,8 @@
             flex: 1;
             display: flex;
             align-items: center;
-            padding: 0 30px;
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.2), transparent);
+            padding: 0 40px;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.25), transparent);
             border-right: 2px solid rgba(255, 255, 255, 0.1);
         }
         /* プレイヤー2 側 */
@@ -67,8 +67,8 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 30px;
-            background: linear-gradient(270deg, rgba(0, 229, 255, 0.2), transparent);
+            padding: 0 40px;
+            background: linear-gradient(270deg, rgba(0, 229, 255, 0.25), transparent);
             border-left: 2px solid rgba(255, 255, 255, 0.1);
             text-align: right;
         }
@@ -77,27 +77,27 @@
             flex-direction: column;
         }
         .player-name {
-            font-size: 36px;
+            font-size: 40px;
             font-weight: 900;
             letter-spacing: 1px;
             color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
         }
         .player-detail {
             font-size: 16px;
             color: #94a3b8;
             margin-top: 4px;
         }
-        /* スコア表示部 */
-                    .score-center {
+        /* スコア中央部 */
+        .score-center {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 180px;
-            background: rgba(0, 0, 0, 0.4);
-            font-size: 54px;
+            width: 200px;
+            background: rgba(0, 0, 0, 0.5);
+            font-size: 60px;
             font-weight: 900;
-            letter-spacing: 8px;
+            letter-spacing: 10px;
             color: #f8fafc;
             text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
         }
@@ -114,7 +114,7 @@
 <body>
 
     <div class="overlay-container">
-        <!-- カードタイトル / リーグ情報 -->
+        <!-- カードタイトル / 対戦情報 -->
         <div id="stream-stage-title" class="stage-title-box">FEATURED MATCH</div>
         
         <!-- スコアボード本体 -->
@@ -145,7 +145,7 @@
     </div>
 
     <script>
-        // BroadcastChannel によるタブ間・ソース間リアルタイム通信
+        // BroadcastChannel によるタブ間・OBSソース間の即時リアルタイム通信
         const bc = new BroadcastChannel('hadaka_league_sync_channel');
 
         function fetchAndRender() {
@@ -157,7 +157,6 @@
                 const members = data.members || [];
                 const teamMatches = data.teamMatches || [];
                 const soloMatches = data.soloMatches || [];
-                const tourneyMatches = data.tourneyMatches || {};
                 const activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
                 let p1Name = "---";
@@ -211,7 +210,6 @@
                     }
                 } else if (activeMatch.mode === 'tourney') {
                     stageTitle = "トーナメント戦";
-                    // 必要に応じてトーナメント側の表示ロジックをここに拡張可能
                 }
 
                 // DOMへの反映
@@ -227,14 +225,14 @@
             }
         }
 
-        // BroadcastChannel から更新通知を受け取った瞬間に再描画
+        // 管理画面側から BroadcastChannel で通知を受け取った瞬間に再描画
         bc.onmessage = function(event) {
             if (event.data && event.data.type === 'UPDATE_OVERLAY') {
                 fetchAndRender();
             }
         };
 
-        // 初回ロード時実行
+        // 初期ロード時実行
         window.onload = fetchAndRender;
         fetchAndRender();
     </script>
