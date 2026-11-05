@@ -6,7 +6,7 @@
     <title>HDK LEAGUE - 対戦カードリスト</title>
     <style>
         body {
-            background-color: transparent; /* OBS透過用、必要に応じて #0f111a 等に変更 */
+            background-color: transparent;
             color: #f0f0f0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
@@ -18,7 +18,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
         }
 
@@ -35,7 +35,7 @@
         }
 
         .match-card {
-            background: rgba(20, 23, 36, 0.9);
+            background: rgba(20, 23, 36, 0.95);
             border: 1px solid #3f466b;
             border-radius: 8px;
             padding: 12px 15px;
@@ -47,7 +47,7 @@
 
         .match-header {
             font-size: 0.8rem;
-            color: #a0a6cc;
+            color: #ffcc00;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
@@ -57,7 +57,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
         }
 
@@ -65,7 +65,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 130px;
+            max-width: 110px;
         }
 
         .player-name.winner {
@@ -73,7 +73,6 @@
             text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
         }
 
-        /* ご希望のスコア増減コントロール */
         .score-control-box {
             display: flex;
             align-items: center;
@@ -83,22 +82,22 @@
             border-radius: 6px;
             padding: 4px 8px;
             gap: 4px;
+            flex-shrink: 0;
         }
 
         .score-btn {
             background-color: #1a1d2d;
             border: 1px solid #3f466b;
             color: #00d9ff;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
-            transition: all 0.1s;
+            font-size: 0.85rem;
         }
         .score-btn.minus-p2 {
             color: #ff4655;
@@ -109,17 +108,16 @@
         }
 
         .score-val {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 900;
             color: #ffcc00;
-            width: 24px;
+            width: 20px;
             text-align: center;
-            text-shadow: 0 0 6px rgba(255, 204, 0, 0.5);
         }
 
         .score-divider {
             color: #555;
-            margin: 0 4px;
+            margin: 0 2px;
             font-weight: bold;
         }
     </style>
@@ -134,84 +132,157 @@
     </div>
 
     <script>
+        var members = [];
+        var teamMatches = [];
+        var soloMatches = [];
+
         function loadDataAndRender() {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (!json) return;
             try {
                 var data = JSON.parse(json);
-                var matches = data.soloMatches || []; // 個人戦スケジュールを例示。トーナメント等の場合は切り替え可能
+                members = data.members || [];
+                teamMatches = data.teamMatches || [];
+                soloMatches = data.soloMatches || [];
                 var container = document.getElementById('overlay-matches-list');
                 if (!container) return;
 
-                if (matches.length === 0) {
-                    container.innerHTML = '<div style="color:#a0a6cc; font-size:0.9rem; text-align:center; padding:20px;">対戦カードがありません</div>';
-                    return;
+                var html = '';
+
+                // 1. チーム戦のカード生成
+                if (teamMatches.length > 0) {
+                    teamMatches.forEach(function(m, mIdx) {
+                        var roles = [
+                            { key: 'senho', label: '先鋒' },
+                            { key: 'jiho', label: '次鋒' },
+                            { key: 'fukusho', label: '副将' },
+                            { key: 'taisho', label: '大将' }
+                        ];
+                        roles.forEach(function(r) {
+                            var idx1 = m.order1 ? m.order1[r.key] : "";
+                            var idx2 = m.order2 ? m.order2[r.key] : "";
+                            var p1Name = (idx1 !== "" && members[idx1]) ? members[idx1].name : "（未定）";
+                            var p2Name = (idx2 !== "" && members[idx2]) ? members[idx2].name : "（未定）";
+
+                            if (!m.results) m.results = {};
+                            if (!m.results[r.key]) m.results[r.key] = { s1: 0, s2: 0, winner: 0 };
+                            var res = m.results[r.key];
+
+                            var p1Win = (res.winner === 1) ? ' winner' : '';
+                            var p2Win = (res.winner === 2) ? ' winner' : '';
+
+                            html += `
+                                <div class="match-card">
+                                    <div class="match-header">
+                                        <span>${m.t1Name} vs ${m.t2Name}</span>
+                                        <span style="color:#00ffcc;">【${r.label}】</span>
+                                    </div>
+                                    <div class="players-row">
+                                        <span class="player-name${p1Win}" title="${p1Name}">${p1Name}</span>
+                                        <div class="score-control-box">
+                                            <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', -1)">-</button>
+                                            <span class="score-val">${res.s1}</span>
+                                            <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's1', 1)">+</button>
+                                            <span class="score-divider">-</span>
+                                            <button type="button" class="score-btn minus-p2" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', -1)">-</button>
+                                            <span class="score-val">${res.s2}</span>
+                                            <button type="button" class="score-btn" onclick="modifyTeamScore(${mIdx}, '${r.key}', 's2', 1)">+</button>
+                                        </div>
+                                        <span class="player-name${p2Win}" title="${p2Name}">${p2Name}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    });
                 }
 
-                var html = '';
-                matches.forEach(function(m, idx) {
-                    var winner = "-";
-                    if (m.s1 === 2 && m.s2 < 2) winner = m.p1;
-                    else if (m.s2 === 2 && m.s1 < 2) winner = m.p2;
+                // 2. 個人戦のカード生成
+                if (soloMatches.length > 0) {
+                    soloMatches.forEach(function(m, idx) {
+                        var winner = "-";
+                        if (m.s1 === 2 && m.s2 < 2) winner = m.p1;
+                        else if (m.s2 === 2 && m.s1 < 2) winner = m.p2;
 
-                    var p1WinClass = (winner === m.p1) ? ' winner' : '';
-                    var p2WinClass = (winner === m.p2) ? ' winner' : '';
+                        var p1Win = (winner === m.p1) ? ' winner' : '';
+                        var p2Win = (winner === m.p2) ? ' winner' : '';
 
-                    html += `
-                        <div class="match-card">
-                            <div class="match-header">
-                                <span>第 ${idx + 1} 試合</span>
-                                <span style="color:${winner !== '-' ? '#00ffcc':'#a0a6cc'}">${winner !== '-' ? '勝者: ' + winner : '進行中'}</span>
-                            </div>
-                            <div class="players-row">
-                                <span class="player-name${p1WinClass}">${m.p1}</span>
-                                
-                                <div class="score-control-box">
-                                    <!-- 1P側コントロール -->
-                                    <button type="button" class="score-btn" onclick="modifyScore(${idx}, 's1', -1)">-</button>
-                                    <span class="score-val">${m.s1}</span>
-                                    <button type="button" class="score-btn" onclick="modifyScore(${idx}, 's1', 1)">+</button>
-                                    
-                                    <span class="score-divider">-</span>
-                                    
-                                    <!-- 2P側コントロール -->
-                                    <button type="button" class="score-btn minus-p2" onclick="modifyScore(${idx}, 's2', -1)">-</button>
-                                    <span class="score-val">${m.s2}</span>
-                                    <button type="button" class="score-btn" onclick="modifyScore(${idx}, 's2', 1)">+</button>
+                        html += `
+                            <div class="match-card">
+                                <div class="match-header">
+                                    <span>個人戦 第 ${idx + 1} 試合</span>
+                                    <span>${winner !== '-' ? '勝者: ' + winner : '進行中'}</span>
                                 </div>
-
-                                <span class="player-name${p2WinClass}">${m.p2}</span>
+                                <div class="players-row">
+                                    <span class="player-name${p1Win}" title="${m.p1}">${m.p1}</span>
+                                    <div class="score-control-box">
+                                        <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', -1)">-</button>
+                                        <span class="score-val">${m.s1}</span>
+                                        <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's1', 1)">+</button>
+                                        <span class="score-divider">-</span>
+                                        <button type="button" class="score-btn minus-p2" onclick="modifySoloScore(${idx}, 's2', -1)">-</button>
+                                        <span class="score-val">${m.s2}</span>
+                                        <button type="button" class="score-btn" onclick="modifySoloScore(${idx}, 's2', 1)">+</button>
+                                    </div>
+                                    <span class="player-name${p2Win}" title="${m.p2}">${m.p2}</span>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
+                        `;
+                    });
+                }
+
+                if (html === '') {
+                    container.innerHTML = '<div style="color:#a0a6cc; font-size:0.9rem; text-align:center; padding:20px;">対戦カードがありません（チーム戦または個人戦を生成してください）</div>';
+                } else {
+                    container.innerHTML = html;
+                }
             } catch(e) {
                 console.error(e);
             }
         }
 
-        function modifyScore(matchIdx, field, delta) {
+        function modifySoloScore(matchIdx, field, delta) {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (!json) return;
             try {
                 var data = JSON.parse(json);
                 if (!data.soloMatches || !data.soloMatches[matchIdx]) return;
-
-                var currentVal = data.soloMatches[matchIdx][field];
-                var newVal = currentVal + delta;
-                if (newVal < 0) newVal = 0;
-                if (newVal > 2) newVal = 2; // 2先ルール
-
-                data.soloMatches[matchIdx][field] = newVal;
+                var val = (data.soloMatches[matchIdx][field] || 0) + delta;
+                if (val < 0) val = 0;
+                if (val > 2) val = 2;
+                data.soloMatches[matchIdx][field] = val;
                 localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
-                
-                // 即時再描画
                 loadDataAndRender();
             } catch(e) {}
         }
 
-        // 定期同期 & 初期ロード
+        function modifyTeamScore(matchIdx, rKey, field, delta) {
+            var json = localStorage.getItem('hadaka_league_master_data');
+            if (!json) return;
+            try {
+                var data = JSON.parse(json);
+                if (!data.teamMatches || !data.teamMatches[matchIdx]) return;
+                var m = data.teamMatches[matchIdx];
+                if (!m.results) m.results = {};
+                if (!m.results[rKey]) m.results[rKey] = { s1: 0, s2: 0, winner: 0 };
+                
+                var val = (m.results[rKey][field] || 0) + delta;
+                if (val < 0) val = 0;
+                if (val > 2) val = 2;
+                m.results[rKey][field] = val;
+
+                if (m.results[rKey].s1 === 2 && m.results[rKey].s2 < 2) {
+                    m.results[rKey].winner = 1;
+                } else if (m.results[rKey].s2 === 2 && m.results[rKey].s1 < 2) {
+                    m.results[rKey].winner = 2;
+                } else {
+                    m.results[rKey].winner = 0;
+                }
+
+                localStorage.setItem('hadaka_league_master_data', JSON.stringify(data));
+                loadDataAndRender();
+            } catch(e) {}
+        }
+
         window.onload = function() {
             loadDataAndRender();
             setInterval(loadDataAndRender, 300);
