@@ -18,7 +18,7 @@
             overflow: hidden;
             position: relative;
         }
-        /* オーバーレイ全体を配置するコンテナ（下部配置などの調整用） */
+        /* オーバーレイ全体を配置するコンテナ（下部配置） */
         .overlay-container {
             position: absolute;
             bottom: 40px;
@@ -28,7 +28,7 @@
             flex-direction: column;
             align-items: center;
         }
-        /* ステージタイトル・対戦カード名 */
+        /* ステージタイトル・対戦カード名（ご指定のブランドカラー・トーンを維持） */
         .stage-title-box {
             background: rgba(10, 15, 30, 0.85);
             border: 2px solid #00e5ff;
@@ -88,13 +88,13 @@
             color: #94a3b8;
             margin-top: 4px;
         }
-        /* スコア表示部 */
+        /* スコア表示部（四角い不自然な背景ブロックを排除し、すっきりとしたデザインに修正） */
         .score-center {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 180px;
-            background: rgba(0, 0, 0, 0.4);
+            background: transparent;
             font-size: 54px;
             font-weight: 900;
             letter-spacing: 8px;
@@ -157,7 +157,6 @@
                 const members = data.members || [];
                 const teamMatches = data.teamMatches || [];
                 const soloMatches = data.soloMatches || [];
-                const tourneyMatches = data.tourneyMatches || {};
                 const activeMatch = data.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
                 let p1Name = "---";
