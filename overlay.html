@@ -17,6 +17,10 @@
             position: relative;
         }
 
+        .top-action-bar {
+            display: none !important;
+        }
+
         .stream-view-container {
             display: flex;
             gap: 40px;
@@ -350,6 +354,7 @@
         var tourneyMatches = {};
         var activeStreamMatch = { mode: 'team', matchIndex: 0, subIndex: 'senho' };
 
+        // データの読み込み
         function loadAppData() {
             var json = localStorage.getItem('hadaka_league_master_data');
             if (json) {
@@ -576,7 +581,15 @@
 
         window.onload = function() {
             refreshOverlay();
-            // 200ミリ秒ごとにストレージを監視し、管理ツール側の更新（スコアやカード選択）を即時反映する
+            
+            // ローカルストレージの変更イベント（他タブ変更時）
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'hadaka_league_master_data') {
+                    refreshOverlay();
+                }
+            });
+
+            // OBS側で確実に動作させるための定時ポーリング（200ms）
             setInterval(function() {
                 refreshOverlay();
             }, 200);
