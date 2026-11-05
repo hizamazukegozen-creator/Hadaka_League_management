@@ -180,6 +180,7 @@
             line-height: 1;
         }
 
+        /* スコア変更ボタン付きディスプレイ */
         .stream-score-display {
             display: flex;
             justify-content: center;
@@ -215,6 +216,7 @@
             align-items: center;
             justify-content: center;
             user-select: none;
+            transition: all 0.15s ease;
         }
 
         .score-btn:hover {
@@ -350,6 +352,7 @@
                     
                     <div class="stream-vs-badge">
                         <div class="stream-vs-text">VS</div>
+                        <!-- 中央のスコア変更ボタン付きエリア -->
                         <div class="stream-score-display">
                             <button class="score-btn" onclick="addScore(1, -1)">-</button>
                             <span class="stream-score-num" id="stream-s1">0</span>
@@ -422,7 +425,7 @@
             updateStreamStageDisplay();
         }
 
-        // オーバーレイ側からスコアを加減算して更新し、ストレージ経由でindexへ即時反映
+        // オーバーレイ側からスコアを加減算して更新し、ストレージ経由で管理画面側へ即時同期
         function addScore(playerNum, delta) {
             loadAppData();
 
@@ -439,7 +442,6 @@
                         m.results[rKey].s2 = Math.max(0, Math.min(2, (m.results[rKey].s2 || 0) + delta));
                     }
 
-                    // 勝者判定の自動更新
                     if (m.results[rKey].s1 === 2 && m.results[rKey].s2 < 2) {
                         m.results[rKey].winner = 1;
                     } else if (m.results[rKey].s2 === 2 && m.results[rKey].s1 < 2) {
