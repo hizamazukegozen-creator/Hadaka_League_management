@@ -1236,6 +1236,7 @@
                 teamArchives: teamArchives,
                 soloArchives: soloArchives,
                 tourneyArchives: tourneyArchives,
+                activeStreamMatch: window.activeStreamMatch || { mode: 'team', matchIndex: 0, subIndex: 'senho' },
                 soloTitle: document.getElementById('solo-title') ? document.getElementById('solo-title').value : '',
                 soloDate: document.getElementById('solo-date') ? document.getElementById('solo-date').value : '',
                 soloSeason: document.getElementById('solo-season') ? document.getElementById('solo-season').value : '',
@@ -1261,8 +1262,14 @@
             bc.postMessage(data);
         }
 
+        // オーバーレイ側から「データちょうだい」と要求されたときに応答する仕組み
+        bc.onmessage = function(e) {
+            if (e.data && e.data.type === 'REQUEST_SYNC') {
+                saveAppData(); // 現在の状態を再送
+            }
+        };
+
         function loadAppData() {
-            // 初期データ（ローカルストレージを使わないため、起動時はデフォルト値セット）
             members = [
                 { name: "裸のラリーさん", rankName: "マスター", cost: 3 },
                 { name: "enushi35", rankName: "プラチナ", cost: 1 },
@@ -1288,7 +1295,7 @@
 
             if (document.getElementById('label-role-senho')) document.getElementById('label-role-senho').textContent = `先鋒 (${s}pt)`;
             if (document.getElementById('label-role-jiho')) document.getElementById('label-role-jiho').textContent = `次鋒 (${j}pt)`;
-            if (document.getElementById('label-role-fukusho')) document.getElementById('label-role-fukusho').textContent = `副将 (${f}pt)`;
+            if (document.getElementById('label-role-fukusoxu')) document.getElementById('label-role-fukusho').textContent = `副将 (${f}pt)`;
             if (document.getElementById('label-role-taisho')) document.getElementById('label-role-taisho').textContent = `大将 (${t}pt)`;
         }
 
@@ -3325,6 +3332,9 @@
                 document.getElementById('tourney-display-card').style.display = 'block';
                 renderTourneyUI();
             }
+
+            // 起動時にオーバーレイ側へ現在のデータを配信する
+            setTimeout(saveAppData, 200);
         };
     </script>
 </body>
